@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/lib/authStore';
+import { login } from '@/actions';
 
 const loginSchema = z.object({
     email: z.string().email('Email tidak valid'),
@@ -32,36 +33,21 @@ export function LoginSection() {
     const onSubmit = async (data: LoginForm) => {
         setIsLoading(true);
         try {
-            // TODO: Replace with actual API call
-            // const response = await fetch('/api/auth/login', {
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify(data),
-            // });
-            // const result = await response.json();
+            // Memanggil API beneran menggunakan action helpers kita
+            const response = await login(data);
 
-            // Simulate API call for now
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Menggunakan data mock sesuai header di App
-            if (data.email === 'admin@sman1ketapang.sch.id' && data.password === 'password123') {
-                const mockUser = {
-                    id: '1',
-                    name: 'Admin User',
-                    email: 'admin@sman1ketapang.sch.id',
-                    role: 'ADMIN' as const,
-                };
-
-                setAuth('mock-jwt-token', mockUser);
+            if (response.success && response.data?.token) {
+                const user = response.data.user;
+                setAuth(response.data.token, user);
                 toast.success('Login berhasil!');
 
                 const from = location.state?.from?.pathname || '/';
                 navigate(from, { replace: true });
             } else {
-                toast.error('Email atau password salah');
+                toast.error(response.error || 'Email atau password salah');
             }
         } catch (error) {
-            toast.error('Terjadi kesalahan saat login');
+            toast.error('Terjadi kesalahan koneksi saat login');
         } finally {
             setIsLoading(false);
         }

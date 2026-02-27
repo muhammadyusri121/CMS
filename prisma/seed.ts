@@ -1,24 +1,28 @@
 import { PrismaClient, Role, PostCategory, DocType } from '@prisma/client'
+import bcrypt from 'bcrypt'
 
 const prisma = new PrismaClient()
 
 async function main() {
     console.log('Mulai menanam data (seeding) ke database...')
 
+    const hashedPassword = await bcrypt.hash('password123', 10);
+
     // 1. Seed Data: User (Autentikasi CMS)
     const users = [
-        { email: 'admin@sman1ketapang.sch.id', password: 'password123', name: 'Super Admin', role: Role.ADMIN },
-        { email: 'editor@sman1ketapang.sch.id', password: 'password123', name: 'Editor Web', role: Role.EDITOR },
-        { email: 'author@sman1ketapang.sch.id', password: 'password123', name: 'Penulis Sekolah', role: Role.AUTHOR },
+        { email: 'adminbaru@sman1ketapang.sch.id', password: hashedPassword, name: 'Admin Baru', role: Role.ADMIN },
+        { email: 'admin@sman1ketapang.sch.id', password: hashedPassword, name: 'Super Admin', role: Role.ADMIN },
+        { email: 'editor@sman1ketapang.sch.id', password: hashedPassword, name: 'Editor Web', role: Role.EDITOR },
+        { email: 'author@sman1ketapang.sch.id', password: hashedPassword, name: 'Penulis Sekolah', role: Role.AUTHOR },
     ]
     for (const u of users) {
         await prisma.user.upsert({
             where: { email: u.email },
-            update: {},
+            update: { password: u.password },
             create: u,
         })
     }
-    console.log('✅ Data User berhasil ditambahkan')
+    console.log('✅ Data User berhasil ditambahkan (Password otomatis di-hash: password123)')
 
     // 2. Seed Data: GTK (Education Personnel)
     const personnel = [
@@ -79,12 +83,16 @@ async function main() {
 
     // 6. Seed Data: Ekstrakurikuler (Extracurricular)
     const ekstrakurikuler = [
-        { name: 'Pramuka', coach: 'Kak Pembina', image_url: 'https://images.unsplash.com/photo-1517164850305-99a3e6cb8ade?auto=format&fit=crop&q=80&w=400&h=300' },
-        { name: 'Paskibra', coach: 'Sersan Mayor TNI', image_url: 'https://images.unsplash.com/photo-1596726265737-013695eb04d6?auto=format&fit=crop&q=80&w=400&h=300' },
-        { name: 'Futsal', coach: 'Coach Fajar', image_url: 'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?auto=format&fit=crop&q=80&w=400&h=300' },
+        { title: 'Kegiatan Kemah Pramuka 2026', slug: 'kemah-pramuka-2026', content: 'Kegiatan kemah bakti pramuka tahunan sdb...', ekskul_name: 'Pramuka', thumbnail: 'https://images.unsplash.com/photo-1517164850305-99a3e6cb8ade?auto=format&fit=crop&q=80&w=400&h=300', is_published: true },
+        { title: 'Paskibraka Siap Bertugas Upacara', slug: 'paskibraka-bertugas', content: 'Latihan rutin setiap sabtu...', ekskul_name: 'Paskibra', thumbnail: 'https://images.unsplash.com/photo-1596726265737-013695eb04d6?auto=format&fit=crop&q=80&w=400&h=300', is_published: true },
+        { title: 'Futsal SMAN 1 Juara 1', slug: 'futsal-juara-1', content: 'Turnamen futsal antar sekolah...', ekskul_name: 'Futsal', thumbnail: 'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?auto=format&fit=crop&q=80&w=400&h=300', is_published: true },
     ]
     for (const extra of ekstrakurikuler) {
-        await prisma.extracurricular.create({ data: extra })
+        await prisma.extracurricular.upsert({
+            where: { slug: extra.slug },
+            update: {},
+            create: extra,
+        })
     }
     console.log('✅ Data Ekstrakurikuler berhasil ditambahkan')
 

@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Search, Pencil, Trash2, FileText, Download, Calendar, BookOpen, FileClock } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, FileText, Download, Calendar, BookOpen, FileClock, UploadCloud, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTable } from '@/components/ui-custom/DataTable';
@@ -58,10 +58,12 @@ const documentTypeColors: Record<DocumentType, string> = {
 };
 
 export function DocumentsSection() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [documents, setDocuments] = useState<AcademicDocument[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // Dialog states
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -125,7 +127,7 @@ export function DocumentsSection() {
   const onSubmit = async (data: AcademicDocumentFormData) => {
     try {
       setIsSubmitting(true);
-      
+
       if (selectedDocument) {
         const response = await updateAcademicDocument(selectedDocument.id, data);
         if (response.success) {
@@ -156,7 +158,7 @@ export function DocumentsSection() {
 
   const onDeleteConfirm = async () => {
     if (!selectedDocument) return;
-    
+
     try {
       setIsSubmitting(true);
       const response = await deleteAcademicDocument(selectedDocument.id);
@@ -171,6 +173,45 @@ export function DocumentsSection() {
       toast.error('Terjadi kesalahan');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Ukuran file maksimal 5MB');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'documents');
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: formData
+      });
+
+      const result = await response.json();
+      if (result.success && result.data?.url) {
+        form.setValue('file_path', result.data.url);
+        toast.success('File berhasil diunggah');
+      } else {
+        toast.error(result.error || 'Gagal mengunggah file');
+      }
+    } catch (error) {
+      toast.error('Terjadi kesalahan saat mengunggah');
+    } finally {
+      setIsUploading(false);
+      // Reset input agar bisa upload kembar file baru yang sama jika error
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -212,15 +253,21 @@ export function DocumentsSection() {
     {
       accessorKey: 'file_path',
       header: 'Aksi',
-      cell: () => (
+      cell: ({ row }) => (
         <Button
           variant="ghost"
           size="sm"
           className="text-blue-600 hover:text-blue-700 hover:bg-blue-950/40"
-          onClick={() => toast.info('Fitur download akan tersedia soon')}
+          onClick={() => {
+            if (row.original.file_path) {
+              window.open(row.original.file_path, '_blank');
+            } else {
+              toast.error('File belum tersedia');
+            }
+          }}
         >
           <Download className="h-4 w-4 mr-1" />
-          Download
+          Lihat / Unduh
         </Button>
       ),
     },
@@ -288,7 +335,7 @@ export function DocumentsSection() {
         pageIndex={0}
         pageSize={filteredDocuments.length}
         totalItems={filteredDocuments.length}
-        onPageChange={() => {}}
+        onPageChange={() => { }}
         isLoading={isLoading}
       />
 
@@ -345,13 +392,32 @@ export function DocumentsSection() {
               name="file_path"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Path File</FormLabel>
+                  <FormLabel>File / Dokumen</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="/documents/nama-file.pdf" />
+                    <div className="flex gap-2 items-center">
+                      <Input {...field} placeholder="https:// ... (URL File)" className="flex-1" />
+                      <input
+                        type="file"
+                        className="hidden"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.zip"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploading}
+                        className="shrink-0"
+                      >
+                        {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UploadCloud className="h-4 w-4 mr-2" />}
+                        {isUploading ? 'Unggah...' : 'Upload File'}
+                      </Button>
+                    </div>
                   </FormControl>
                   <FormMessage />
-                  <p className="text-xs text-slate-500">
-                    Path relatif dari root storage (contoh: /documents/file.pdf)
+                  <p className="text-xs text-slate-500 mt-1">
+                    Anda bisa mengunggah file PDF/Word langsung, atau isikan URL file secara manual.
                   </p>
                 </FormItem>
               )}

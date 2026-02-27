@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Search, Pencil, Trash2, Eye, EyeOff, ImageIcon } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Eye, EyeOff, ImageIcon, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTable } from '@/components/ui-custom/DataTable';
@@ -36,6 +36,7 @@ import {
   deletePost,
 } from '@/actions';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/lib/authStore';
 import type { ColumnDef, SortingState } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -63,18 +64,59 @@ export function PostsSection() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [sorting, setSorting] = useState<SortingState>([{ id: 'created_at', desc: true }]);
-  
+
   // Pagination
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  
+
   // Dialog states
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Ukuran file maksimal 5MB');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'posts');
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${useAuthStore.getState().token}`,
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (result.success && result.data?.url) {
+        form.setValue('thumbnail', result.data.url);
+        toast.success('Thumbnail berhasil diunggah');
+      } else {
+        toast.error(result.error || 'Gagal mengunggah thumbnail');
+      }
+    } catch (error) {
+      toast.error('Terjadi kesalahan koneksi saat mengunggah');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const form = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
@@ -90,7 +132,7 @@ export function PostsSection() {
 
   // Watch title for auto-generating slug
   const watchTitle = form.watch('title');
-  
+
   useEffect(() => {
     if (watchTitle && !selectedPost) {
       form.setValue('slug', generateSlug(watchTitle));
@@ -158,7 +200,7 @@ export function PostsSection() {
   const onSubmit = async (data: PostFormData) => {
     try {
       setIsSubmitting(true);
-      
+
       if (selectedPost) {
         const response = await updatePost(selectedPost.id, data);
         if (response.success) {
@@ -190,7 +232,7 @@ export function PostsSection() {
 
   const onDeleteConfirm = async () => {
     if (!selectedPost) return;
-    
+
     try {
       setIsSubmitting(true);
       const response = await deletePost(selectedPost.id);
@@ -412,9 +454,27 @@ export function PostsSection() {
                 <FormItem>
                   <FormLabel>URL Thumbnail</FormLabel>
                   <FormControl>
-                    <div className="relative">
-                      <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                      <Input {...field} placeholder="https://example.com/image.jpg" className="pl-10" />
+                    <div className="flex gap-2 relative">
+                      <div className="relative flex-1">
+                        <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                        <Input {...field} placeholder="https://example.com/image.jpg" className="pl-10" />
+                      </div>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploading}
+                        className="border-slate-700 bg-slate-900"
+                      >
+                        {isUploading ? '...' : <Upload className="h-4 w-4" />}
+                      </Button>
                     </div>
                   </FormControl>
                   <FormMessage />

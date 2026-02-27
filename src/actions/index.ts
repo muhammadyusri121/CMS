@@ -1,7 +1,8 @@
 import type { DashboardStats, ApiResponse } from '@/types';
 
 // Helper for making API calls
-const API_URL = 'http://localhost:3000/api';
+// Beradaptasi secara relatif terhadap hostname Frontend
+const API_URL = '/api';
 
 const authHeader = (): Record<string, string> => {
     if (typeof window === 'undefined') return {};
@@ -10,10 +11,18 @@ const authHeader = (): Record<string, string> => {
 };
 
 const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
+    // Determine content type based on whether body is FormData
+    const isFormData = (options.body && options.body instanceof FormData);
+
     const headers = new Headers({
-        'Content-Type': 'application/json',
         ...authHeader(),
     });
+
+    // Only add basic JSON Application Content-Type if it's NOT a File Upload FormData
+    // (if FormData, the browser automatically establishes the correct multipart/form-data with boundaries)
+    if (!isFormData) {
+        headers.set('Content-Type', 'application/json');
+    }
 
     if (options.headers) {
         const customHeaders = new Headers(options.headers);

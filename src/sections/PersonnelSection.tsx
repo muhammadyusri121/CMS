@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Search, Pencil, Trash2, ImageIcon } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, ImageIcon, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTable } from '@/components/ui-custom/DataTable';
@@ -27,18 +27,60 @@ import {
   deleteEducationPersonnel,
 } from '@/actions';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/lib/authStore';
 import type { ColumnDef } from '@tanstack/react-table';
 
 export function PersonnelSection() {
   const [personnel, setPersonnel] = useState<EducationPersonnel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // Dialog states
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedPersonnel, setSelectedPersonnel] = useState<EducationPersonnel | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Ukuran file maksimal 5MB');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'personnel');
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${useAuthStore.getState().token}`,
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (result.success && result.data?.url) {
+        form.setValue('image_url', result.data.url);
+        toast.success('Foto berhasil diunggah');
+      } else {
+        toast.error(result.error || 'Gagal mengunggah foto');
+      }
+    } catch (error) {
+      toast.error('Terjadi kesalahan koneksi saat mengunggah');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const form = useForm<EducationPersonnelFormData>({
     resolver: zodResolver(educationPersonnelSchema),
@@ -103,7 +145,7 @@ export function PersonnelSection() {
   const onSubmit = async (data: EducationPersonnelFormData) => {
     try {
       setIsSubmitting(true);
-      
+
       if (selectedPersonnel) {
         const response = await updateEducationPersonnel(selectedPersonnel.id, data);
         if (response.success) {
@@ -135,7 +177,7 @@ export function PersonnelSection() {
 
   const onDeleteConfirm = async () => {
     if (!selectedPersonnel) return;
-    
+
     try {
       setIsSubmitting(true);
       const response = await deleteEducationPersonnel(selectedPersonnel.id);
@@ -262,7 +304,7 @@ export function PersonnelSection() {
         pageIndex={0}
         pageSize={filteredPersonnel.length}
         totalItems={filteredPersonnel.length}
-        onPageChange={() => {}}
+        onPageChange={() => { }}
         isLoading={isLoading}
       />
 
@@ -323,9 +365,27 @@ export function PersonnelSection() {
                 <FormItem>
                   <FormLabel>URL Foto</FormLabel>
                   <FormControl>
-                    <div className="relative">
-                      <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                      <Input {...field} placeholder="https://example.com/image.jpg" className="pl-10" />
+                    <div className="flex gap-2 relative">
+                      <div className="relative flex-1">
+                        <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                        <Input {...field} placeholder="https://example.com/image.jpg" className="pl-10" />
+                      </div>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploading}
+                        className="border-slate-700 bg-slate-900"
+                      >
+                        {isUploading ? '...' : <Upload className="h-4 w-4" />}
+                      </Button>
                     </div>
                   </FormControl>
                   <FormMessage />
