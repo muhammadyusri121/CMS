@@ -1,0 +1,230 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 4%;
+    --foreground: 210 20% 98%;
+    --card: 222 47% 6%;
+    --card-foreground: 210 20% 98%;
+    --popover: 222 47% 6%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 45 93% 47%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 45 93% 47%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 45 93% 47%;
+    --radius: 0.5rem;
+    --sidebar-background: 222 47% 4%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 45 93% 47%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-ring: 45 93% 47%;
+    
+    /* Custom Gold Theme Variables */
+    --gold-50: 48 100% 96%;
+    --gold-100: 48 100% 90%;
+    --gold-200: 48 100% 80%;
+    --gold-300: 45 93% 70%;
+    --gold-400: 45 93% 57%;
+    --gold-500: 45 93% 47%;
+    --gold-600: 43 89% 40%;
+    --gold-700: 40 80% 33%;
+    --gold-800: 38 75% 27%;
+    --gold-900: 36 70% 22%;
+    
+    --slate-950: 222 47% 6%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Luxury Gold Card Styles */
+  .gold-card {
+    @apply bg-white border border-blue-200/50 shadow-lg shadow-blue-100/50;
+  }
+  
+  .gold-card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:shadow-blue-200/50 hover:border-blue-300;
+  }
+  
+  /* Gold Gradient Backgrounds */
+  .gold-gradient {
+    background: linear-gradient(135deg, hsl(var(--gold-400)) 0%, hsl(var(--gold-500)) 50%, hsl(var(--gold-600)) 100%);
+  }
+  
+  .gold-gradient-subtle {
+    background: linear-gradient(135deg, hsl(var(--gold-50)) 0%, hsl(var(--gold-100)) 100%);
+  }
+  
+  /* Gold Text Gradient */
+  .gold-text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--gold-400)) 0%, hsl(var(--gold-600)) 100%);
+  }
+  
+  /* Gold Border Glow */
+  .gold-border-glow {
+    box-shadow: 0 0 0 1px hsl(var(--gold-500) / 0.3), 0 0 20px hsl(var(--gold-500) / 0.1);
+  }
+  
+  /* Sidebar Gold Accent */
+  .sidebar-gold-item {
+    @apply relative overflow-hidden;
+  }
+  
+  .sidebar-gold-item::before {
+    content: '';
+    @apply absolute left-0 top-0 h-full w-1 bg-blue-500 opacity-0 transition-opacity duration-200;
+  }
+  
+  .sidebar-gold-item:hover::before,
+  .sidebar-gold-item.active::before {
+    @apply opacity-100;
+  }
+  
+  /* Luxury Button Styles */
+  .btn-gold {
+    @apply bg-blue-500 text-slate-950 font-semibold;
+    @apply hover:bg-blue-400 active:bg-blue-600;
+    @apply transition-all duration-200;
+  }
+  
+  .btn-gold-outline {
+    @apply border-2 border-blue-500 text-blue-600 bg-transparent;
+    @apply hover:bg-blue-50 hover:text-blue-700;
+    @apply transition-all duration-200;
+  }
+  
+  /* Status Badges */
+  .badge-gold {
+    @apply bg-blue-100 text-blue-800 border border-blue-200;
+  }
+  
+  /* Data Table Styles */
+  .table-gold-header {
+    @apply bg-slate-950 text-blue-400;
+  }
+  
+  .table-gold-row {
+    @apply border-b border-blue-100/50 hover:bg-blue-50/50;
+  }
+  
+  /* Form Input Gold Focus */
+  .input-gold:focus {
+    @apply ring-2 ring-blue-500/50 border-blue-500;
+  }
+  
+  /* Scrollbar Styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-slate-100;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-blue-300 rounded-full;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-blue-400;
+  }
+}
+
+@layer utilities {
+  /* Animation Utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+  }
+  
+  .animate-slide-in-up {
+    animation: slideInUp 0.3s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  @keyframes slideInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* TipTap Editor Styles */
+.ProseMirror {
+  @apply min-h-[200px] p-4 outline-none;
+}
+
+.ProseMirror p {
+  @apply mb-4;
+}
+
+.ProseMirror h1 {
+  @apply text-3xl font-bold mb-4;
+}
+
+.ProseMirror h2 {
+  @apply text-2xl font-bold mb-3;
+}
+
+.ProseMirror h3 {
+  @apply text-xl font-bold mb-2;
+}
+
+.ProseMirror ul {
+  @apply list-disc pl-6 mb-4;
+}
+
+.ProseMirror ol {
+  @apply list-decimal pl-6 mb-4;
+}
+
+.ProseMirror blockquote {
+  @apply border-l-4 border-blue-400 pl-4 italic my-4;
+}
+
+.ProseMirror code {
+  @apply bg-slate-100 px-1 py-0.5 rounded text-sm font-mono;
+}
+
+.ProseMirror pre {
+  @apply bg-slate-900 text-slate-50 p-4 rounded-lg mb-4 overflow-x-auto;
+}
+
+.ProseMirror pre code {
+  @apply bg-transparent text-inherit p-0;
+}
