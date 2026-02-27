@@ -34,4 +34,4 @@ COPY --from=builder /app/server ./server
 EXPOSE 3000
 
 # Eksekusi migrasi database otomatis saat jalan, lalu hidupkan server API (TSX)
-CMD ["sh", "-c", "npx prisma db push && npx tsx server/index.ts"]
+# CMD ["sh", "-c", "npx prisma db push && npx tsx server/index.ts"]
