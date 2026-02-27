@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import { randomUUID } from 'crypto';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -565,6 +567,17 @@ app.get('/api/dashboard-stats', requireAuth, async (req, res) => {
             graduatedStudents
         });
     } catch (error) { handleError(res, error); }
+});
+
+// --- Serving Frontend Build (Production) ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+
+// Fallback rute untuk SPA (Single Page Application) Frontend
+app.get('*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.listen(PORT, () => {
