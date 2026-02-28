@@ -1,0 +1,46 @@
+{
+  "hash": "e499fcf9",
+  "configHash": "8801625b",
+  "lockfileHash": "28c30ebf",
+  "browserHash": "81ecfefc",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "df12cbaa",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "fb82d6c5",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "ae78987d",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "73c9b3a8",
+      "needsInterop": false
+    },
+    "sonner": {
+      "src": "../../node_modules/sonner/dist/index.mjs",
+      "file": "sonner.js",
+      "fileHash": "2a567bd4",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-OAORDXIJ": {
+      "file": "chunk-OAORDXIJ.js"
+    },
+    "chunk-R4VOGKSS": {
+      "file": "chunk-R4VOGKSS.js"
+    }
+  }
+}

@@ -5,8 +5,8 @@ import { Plus, Search, Pencil, Trash2, GraduationCap, CheckCircle2, XCircle } fr
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTable } from '@/components/ui-custom/DataTable';
-import { FormDialog } from '@/components/ui-custom/FormDialog';
 import { DeleteDialog } from '@/components/ui-custom/DeleteDialog';
+import { FormDialog } from '@/components/ui-custom/FormDialog';
 import {
   Form,
   FormControl,
@@ -34,13 +34,13 @@ export function GraduationSection() {
   const [isLoading, setIsLoading] = useState(true);
   const [nisnSearch, setNisnSearch] = useState('');
   const [sorting, setSorting] = useState<SortingState>([{ id: 'created_at', desc: true }]);
-  
+
   // Pagination
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  
+
   // Dialog states
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -120,7 +120,7 @@ export function GraduationSection() {
   const onSubmit = async (data: GraduationFormData) => {
     try {
       setIsSubmitting(true);
-      
+
       if (selectedGraduation) {
         const response = await updateGraduation(selectedGraduation.nisn, data);
         if (response.success) {
@@ -149,7 +149,7 @@ export function GraduationSection() {
 
   const onDeleteConfirm = async () => {
     if (!selectedGraduation) return;
-    
+
     try {
       setIsSubmitting(true);
       const response = await deleteGraduation(selectedGraduation.nisn);
@@ -319,8 +319,8 @@ export function GraduationSection() {
                 <FormItem>
                   <FormLabel>NISN</FormLabel>
                   <FormControl>
-                    <Input 
-                      {...field} 
+                    <Input
+                      {...field}
                       placeholder="Masukkan NISN (10-20 digit)"
                       disabled={!!selectedGraduation}
                     />

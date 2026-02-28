@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
 import type { Extracurricular } from '@/types';
-import { extracurricularSchema } from '@/schemas';
+import { extracurricularSchema } from '@/schemas'; 
 import type { ExtracurricularFormData } from '@/schemas';
 import {
   getExtracurriculars,

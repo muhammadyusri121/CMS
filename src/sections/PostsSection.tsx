@@ -81,35 +81,41 @@ export function PostsSection() {
   const [isUploading, setIsUploading] = useState(false);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('Ukuran file maksimal 5MB');
-      return;
-    }
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
 
     try {
       setIsUploading(true);
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('folder', 'posts');
+      const newUrls = [...(form.getValues('images') || [])];
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${useAuthStore.getState().token}`,
-        },
-        body: formData,
-      });
+      for (const file of files) {
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error(`Ukuran file ${file.name} maksimal 5MB`);
+          continue;
+        }
 
-      const result = await response.json();
-      if (result.success && result.data?.url) {
-        form.setValue('thumbnail', result.data.url);
-        toast.success('Thumbnail berhasil diunggah');
-      } else {
-        toast.error(result.error || 'Gagal mengunggah thumbnail');
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('folder', 'posts');
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${useAuthStore.getState().token}`,
+          },
+          body: formData,
+        });
+
+        const result = await response.json();
+        if (result.success && result.data?.url) {
+          newUrls.push(result.data.url);
+          toast.success('Gambar berhasil diunggah');
+        } else {
+          toast.error(result.error || 'Gagal mengunggah gambar');
+        }
       }
+
+      form.setValue('images', newUrls);
     } catch (error) {
       toast.error('Terjadi kesalahan koneksi saat mengunggah');
     } finally {
@@ -125,7 +131,7 @@ export function PostsSection() {
       slug: '',
       content: '',
       category: PostCategory.NEWS,
-      thumbnail: '',
+      images: [],
       is_published: false,
     },
   });
@@ -173,7 +179,7 @@ export function PostsSection() {
       slug: '',
       content: '',
       category: PostCategory.NEWS,
-      thumbnail: '',
+      images: [],
       is_published: false,
     });
     setIsFormOpen(true);
@@ -186,7 +192,7 @@ export function PostsSection() {
       slug: post.slug,
       content: post.content,
       category: post.category,
-      thumbnail: post.thumbnail || '',
+      images: post.images || [],
       is_published: post.is_published,
     });
     setIsFormOpen(true);
@@ -213,7 +219,7 @@ export function PostsSection() {
       } else {
         const response = await createPost({
           ...data,
-          thumbnail: data.thumbnail || null,
+          images: data.images || [],
         });
         if (response.success) {
           toast.success(response.message || 'Postingan berhasil ditambahkan');
@@ -265,8 +271,8 @@ export function PostsSection() {
         return (
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-slate-800 flex items-center justify-center overflow-hidden">
-              {post.thumbnail ? (
-                <img src={post.thumbnail} alt="" className="h-full w-full object-cover" />
+              {post.images && post.images.length > 0 ? (
+                <img src={post.images[0]} alt="" className="h-full w-full object-cover" />
               ) : (
                 <ImageIcon className="h-5 w-5 text-slate-500" />
               )}
@@ -449,32 +455,90 @@ export function PostsSection() {
             />
             <FormField
               control={form.control}
-              name="thumbnail"
+              name="images"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>URL Thumbnail</FormLabel>
+                  <FormLabel>Kumpulan Gambar (Bisa lebih dari 1)</FormLabel>
                   <FormControl>
-                    <div className="flex gap-2 relative">
-                      <div className="relative flex-1">
-                        <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                        <Input {...field} placeholder="https://example.com/image.jpg" className="pl-10" />
+                    <div className="space-y-4">
+                      {field.value && field.value.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {field.value.map((url, idx) => (
+                            <div key={idx} className="relative h-20 w-20 rounded-md overflow-hidden bg-slate-800 flex items-center justify-center group border border-slate-700">
+                              <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newVals = [...field.value];
+                                  newVals.splice(idx, 1);
+                                  field.onChange(newVals);
+                                }}
+                                className="absolute inset-0 bg-red-900/50 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity flex cursor-pointer text-white"
+                              >
+                                <Trash2 className="h-5 w-5 text-white" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex gap-2">
+                        <div className="relative flex-1">
+                          <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                          <Input
+                            placeholder="Ketik URL manual untuk ditambahkan & tekan tombol + di kanan..."
+                            className="pl-10"
+                            id="manual-url-input"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const inputNode = e.currentTarget;
+                                const val = inputNode.value.trim();
+                                if (val) {
+                                  field.onChange([...(field.value || []), val]);
+                                  inputNode.value = '';
+                                }
+                              }
+                            }}
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            const inputNode = document.getElementById('manual-url-input') as HTMLInputElement;
+                            const val = inputNode?.value.trim();
+                            if (val) {
+                              field.onChange([...(field.value || []), val]);
+                              if (inputNode) inputNode.value = '';
+                            }
+                          }}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
                       </div>
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleFileUpload}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={isUploading}
-                        className="border-slate-700 bg-slate-900"
-                      >
-                        {isUploading ? '...' : <Upload className="h-4 w-4" />}
-                      </Button>
+
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          className="hidden"
+                          accept="image/*"
+                          multiple
+                          onChange={handleFileUpload}
+                        />
+                        <Button
+                          type="button"
+                          variant="default"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={isUploading}
+                          className="w-full"
+                        >
+                          {isUploading ? 'Menunggu Proses...' : (
+                            <><Upload className="h-4 w-4 mr-2" /> Upload Multiple dari PC</>
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </FormControl>
                   <FormMessage />

@@ -6,7 +6,7 @@ export const educationPersonnelSchema = z.object({
   full_name: z.string().min(1, 'Nama lengkap wajib diisi').max(100, 'Nama maksimal 100 karakter'),
   nip: z.string().min(1, 'NIP wajib diisi').max(20, 'NIP maksimal 20 karakter'),
   position: z.string().min(1, 'Jabatan wajib diisi').max(100, 'Jabatan maksimal 100 karakter'),
-  image_url: z.string().url('URL gambar tidak valid').optional().or(z.literal('')),
+  image_url: z.string().optional().or(z.literal('')),
   sort_order: z.number().int().min(0, 'Urutan minimal 0'),
 });
 
@@ -20,7 +20,7 @@ export const postSchema = z.object({
   category: z.nativeEnum(PostCategory).refine((val) => Object.values(PostCategory).includes(val), {
     message: 'Kategori wajib dipilih',
   }),
-  thumbnail: z.string().url('URL thumbnail tidak valid').optional().or(z.literal('')),
+  images: z.array(z.string()),
   is_published: z.boolean(),
 });
 
@@ -53,7 +53,7 @@ export const extracurricularSchema = z.object({
   title: z.string().min(1, 'Judul wajib diisi').max(200, 'Judul maksimal 200 karakter'),
   content: z.string().min(1, 'Konten wajib diisi'),
   ekskul_name: z.string().min(1, 'Nama ekstrakurikuler wajib diisi').max(100, 'Nama maksimal 100 karakter'),
-  thumbnail: z.string().url('URL gambar tidak valid').optional().or(z.literal('')),
+  thumbnail: z.string().optional().or(z.literal('')),
   is_published: z.boolean(),
 });
 
@@ -63,7 +63,7 @@ export type ExtracurricularFormData = z.infer<typeof extracurricularSchema>;
 export const facilitySchema = z.object({
   name: z.string().min(1, 'Nama fasilitas wajib diisi').max(100, 'Nama maksimal 100 karakter'),
   quantity: z.number().int().min(0, 'Jumlah minimal 0'),
-  image_url: z.string().url('URL gambar tidak valid').optional().or(z.literal('')),
+  image_url: z.string().optional().or(z.literal('')),
 });
 
 export type FacilityFormData = z.infer<typeof facilitySchema>;

@@ -37,15 +37,15 @@ model EducationPersonnel {
 
 // --- Modul: Articles & Content (Innovation, News, Student Work, etc.) ---
 model Post {
-  id           String   @id @default(cuid())
+  id           String       @id @default(cuid())
   title        String
-  slug         String   @unique
-  content      String   @db.Text
+  slug         String       @unique
+  content      String       @db.Text
   category     PostCategory
-  thumbnail    String?
-  is_published Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  images       String[] // Gambar galeri / slider (banyak gambar)
+  is_published Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
 
 enum PostCategory {

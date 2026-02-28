@@ -37,7 +37,7 @@ export interface Post {
   slug: string;
   content: string;
   category: PostCategory;
-  thumbnail: string | null;
+  images: string[];
   is_published: boolean;
   created_at: Date;
   updated_at: Date;

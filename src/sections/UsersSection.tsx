@@ -7,7 +7,7 @@ import { Trash2, Edit, Plus, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function UsersSection() {
-    const [users, setUsers] = useState<any[]>([]);
+    const [users, setUsers] = useState<any[]>([]); 
     const [loading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({ id: '', name: '', email: '', password: '', role: 'EDITOR' });
