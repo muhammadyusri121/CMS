@@ -11,6 +11,7 @@ import { ExtracurricularSection } from '@/sections/ExtracurricularSection';
 import { FacilitiesSection } from '@/sections/FacilitiesSection';
 import { LoginSection } from '@/sections/LoginSection';
 import { UsersSection } from '@/sections/UsersSection';
+import { ApiTestSection } from '@/sections/ApiTestSection';
 import { useAuthStore } from '@/lib/authStore';
 import { useLayoutStore } from '@/lib/layoutStore';
 
@@ -118,6 +119,14 @@ function UsersPage() {
   );
 }
 
+function ApiTestPage() {
+  return (
+    <DashboardLayout title="Uji Data API" subtitle="Ujicoba get data JSON murni">
+      <ApiTestSection />
+    </DashboardLayout>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -142,6 +151,7 @@ function App() {
         <Route path="/documents" element={<ProtectedRoute><DocumentsPage /></ProtectedRoute>} />
         <Route path="/extracurricular" element={<ProtectedRoute><ExtracurricularPage /></ProtectedRoute>} />
         <Route path="/facilities" element={<ProtectedRoute><FacilitiesPage /></ProtectedRoute>} />
+        <Route path="/test-api" element={<ProtectedRoute><ApiTestPage /></ProtectedRoute>} />
         <Route path="/users" element={<ProtectedRoute allowRole="ADMIN"><UsersPage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

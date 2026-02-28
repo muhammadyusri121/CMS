@@ -42,7 +42,6 @@ import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
 const categoryLabels: Record<PostCategory, string> = {
-  [PostCategory.INNOVATION]: 'Inovasi',
   [PostCategory.NEWS]: 'Berita',
   [PostCategory.STUDENT_WORK]: 'Karya Siswa',
   [PostCategory.DOUBLE_TRACK]: 'Double Track',
@@ -51,7 +50,6 @@ const categoryLabels: Record<PostCategory, string> = {
 };
 
 const categoryColors: Record<PostCategory, string> = {
-  [PostCategory.INNOVATION]: 'bg-purple-100 text-purple-700',
   [PostCategory.NEWS]: 'bg-blue-100 text-blue-700',
   [PostCategory.STUDENT_WORK]: 'bg-emerald-100 text-emerald-700',
   [PostCategory.DOUBLE_TRACK]: 'bg-blue-100 text-blue-700',

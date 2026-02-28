@@ -11,7 +11,8 @@ import {
     LogOut,
     ChevronLeft,
     ChevronRight,
-    Hexagon
+    Hexagon,
+    Database
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/authStore';
 import { useLayoutStore } from '@/lib/layoutStore';
@@ -24,6 +25,7 @@ const navigation = [
     { name: 'Dokumen Akademik', href: '/documents', icon: Files },
     { name: 'Ekstrakurikuler', href: '/extracurricular', icon: Activity },
     { name: 'Fasilitas', href: '/facilities', icon: Building },
+    { name: 'Uji Data API', href: '/test-api', icon: Database },
 ];
 
 export function Sidebar() {
@@ -88,8 +90,8 @@ export function Sidebar() {
                                     onClick={() => { if (window.innerWidth < 1024) closeMobileMenu(); }}
                                     title={isSidebarCollapsed ? item.name : undefined}
                                     className={`group relative flex items-center rounded-2xl px-3 py-3 font-medium transition-all duration-300 ease-in-out ${isActive
-                                            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md shadow-blue-500/20'
-                                            : 'text-[#94A3B8] hover:bg-[#334155] hover:text-[#E5E7EB]'
+                                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md shadow-blue-500/20'
+                                        : 'text-[#94A3B8] hover:bg-[#334155] hover:text-[#E5E7EB]'
                                         } ${isSidebarCollapsed ? 'lg:justify-center justify-start' : ''}`}
                                 >
                                     <Icon
@@ -119,8 +121,8 @@ export function Sidebar() {
                                     onClick={() => { if (window.innerWidth < 1024) closeMobileMenu(); }}
                                     title={isSidebarCollapsed ? "Pengelola Sistem" : undefined}
                                     className={`group relative flex items-center rounded-2xl px-3 py-3 font-medium transition-all duration-300 ease-in-out ${location.pathname === '/users'
-                                            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md shadow-blue-500/20'
-                                            : 'text-[#94A3B8] hover:bg-[#334155] hover:text-[#E5E7EB]'
+                                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md shadow-blue-500/20'
+                                        : 'text-[#94A3B8] hover:bg-[#334155] hover:text-[#E5E7EB]'
                                         } ${isSidebarCollapsed ? 'lg:justify-center justify-start' : ''}`}
                                 >
                                     <UserCog

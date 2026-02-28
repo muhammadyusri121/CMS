@@ -268,11 +268,14 @@ app.get('/api/posts', async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-const generateUniqueSlug = async (title: string) => {
+const generateUniqueSlug = async (title: string, excludeId?: string) => {
     const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     let slug = baseSlug;
     let counter = 1;
-    while (await prisma.post.findUnique({ where: { slug } })) {
+    let condition: any = { slug };
+    if (excludeId) condition.NOT = { id: excludeId };
+
+    while (await prisma.post.findFirst({ where: condition })) {
         slug = `${baseSlug}-${counter}`;
         counter++;
     }
@@ -301,12 +304,12 @@ app.put('/api/posts/:id', requireAuth, async (req, res) => {
         const { created_at, updated_at, id: _, category, ...data } = req.body;
         let slug = undefined;
         if (data.title) {
-            slug = await generateUniqueSlug(data.title);
+            slug = await generateUniqueSlug(data.title, id);
             (data as any).slug = slug;
         }
         const post = await prisma.post.update({
             where: { id },
-            data: { ...data, updatedAt: new Date() }
+            data: { ...data, category: category, updatedAt: new Date() }
         });
         handleSuccess(res, { ...post, created_at: post.createdAt, updated_at: post.updatedAt }, 'Postingan berhasil diperbarui');
     } catch (error) { handleError(res, error); }

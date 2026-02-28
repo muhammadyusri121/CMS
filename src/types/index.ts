@@ -1,7 +1,6 @@
 // Database Models Types
 
 export const PostCategory = {
-  INNOVATION: 'INNOVATION',
   NEWS: 'NEWS',
   STUDENT_WORK: 'STUDENT_WORK',
   DOUBLE_TRACK: 'DOUBLE_TRACK',

@@ -228,3 +228,15 @@
 .ProseMirror pre code {
   @apply bg-transparent text-inherit p-0;
 }
+
+
+@layer base {
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
