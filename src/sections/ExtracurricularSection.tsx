@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
 import type { Extracurricular } from '@/types';
-import { extracurricularSchema } from '@/schemas'; 
+import { extracurricularSchema } from '@/schemas';
 import type { ExtracurricularFormData } from '@/schemas';
 import {
   getExtracurriculars,
@@ -329,7 +329,7 @@ export function ExtracurricularSection() {
             placeholder="Cari judul artikel atau nama ekskul..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-slate-950 border-slate-700 focus:border-blue-500 focus:ring-blue-500/20"
+            className="pl-10 bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 shadow-xl focus:border-blue-500 focus:ring-blue-500/20"
           />
         </div>
       </div>

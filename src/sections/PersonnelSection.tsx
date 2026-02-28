@@ -12,7 +12,7 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel, 
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -291,7 +291,7 @@ export function PersonnelSection() {
             placeholder="Cari berdasarkan nama, NIP, atau jabatan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-slate-950 border-slate-700 focus:border-blue-500 focus:ring-blue-500/20"
+            className="pl-10 bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 shadow-xl focus:border-blue-500 focus:ring-blue-500/20"
           />
         </div>
       </div>

@@ -7,7 +7,7 @@ import { Trash2, Edit, Plus, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function UsersSection() {
-    const [users, setUsers] = useState<any[]>([]); 
+    const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({ id: '', name: '', email: '', password: '', role: 'EDITOR' });
@@ -87,7 +87,7 @@ export function UsersSection() {
 
             <div className="grid gap-6 md:grid-cols-2">
                 {/* Table list */}
-                <div className="rounded-xl border bg-slate-950 shadow-sm p-4">
+                <div className="rounded-xl border border-slate-800/50 bg-slate-900/40 backdrop-blur-xl shadow-xl p-6">
                     <h2 className="text-lg font-semibold mb-4">Daftar Pengelola</h2>
                     {loading ? <p>Loading...</p> : (
                         <ul className="space-y-3">
@@ -110,7 +110,7 @@ export function UsersSection() {
                 </div>
 
                 {/* Form */}
-                <div className="rounded-xl border bg-slate-950 shadow-sm p-4">
+                <div className="rounded-xl border border-slate-800/50 bg-slate-900/40 backdrop-blur-xl shadow-xl p-6">
                     <h2 className="text-lg font-semibold mb-4">{isEditing ? 'Edit Pengelola' : 'Tambah Pengelola Baru'}</h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <Input name="name" placeholder="Nama Lengkap" value={formData.name} onChange={handleChange} required />

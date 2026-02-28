@@ -54,7 +54,7 @@ export function RichTextEditor({
   return (
     <div
       className={cn(
-        'rounded-xl border bg-slate-950 overflow-hidden',
+        'rounded-xl border border-slate-800/60 bg-slate-900/40 backdrop-blur-xl overflow-hidden shadow-lg',
         error
           ? 'border-red-500 focus-within:ring-2 focus-within:ring-red-500/20'
           : 'border-slate-800 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500',
@@ -84,9 +84,9 @@ export function RichTextEditor({
             <Redo className="h-4 w-4" />
           </Toggle>
         </div>
-        
+
         <Separator orientation="vertical" className="mx-1 h-6 bg-blue-200" />
-        
+
         {/* Headings */}
         <div className="flex items-center gap-0.5">
           <Toggle
@@ -120,9 +120,9 @@ export function RichTextEditor({
             <Heading3 className="h-4 w-4" />
           </Toggle>
         </div>
-        
+
         <Separator orientation="vertical" className="mx-1 h-6 bg-blue-200" />
-        
+
         {/* Formatting */}
         <div className="flex items-center gap-0.5">
           <Toggle
@@ -158,9 +158,9 @@ export function RichTextEditor({
             <Code className="h-4 w-4" />
           </Toggle>
         </div>
-        
+
         <Separator orientation="vertical" className="mx-1 h-6 bg-blue-200" />
-        
+
         {/* Lists */}
         <div className="flex items-center gap-0.5">
           <Toggle
@@ -195,7 +195,7 @@ export function RichTextEditor({
           </Toggle>
         </div>
       </div>
-      
+
       {/* Editor Content */}
       <EditorContent
         editor={editor}

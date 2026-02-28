@@ -279,7 +279,7 @@ export function GraduationSection() {
               setNisnSearch(e.target.value);
               setPageIndex(0);
             }}
-            className="pl-10 bg-slate-950 border-blue-200 focus:border-blue-500 focus:ring-blue-500/20"
+            className="pl-10 bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 shadow-xl focus:border-blue-500 focus:ring-blue-500/20"
           />
         </div>
         <p className="text-xs text-blue-600 mt-2">

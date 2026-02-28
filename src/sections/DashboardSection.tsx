@@ -10,7 +10,7 @@ import {
   CheckCircle2,
   Clock,
   RefreshCw,
-} from 'lucide-react'; 
+} from 'lucide-react';
 import { StatsCard } from '@/components/ui-custom/StatsCard';
 import { getDashboardStats } from '@/actions';
 import type { DashboardStats } from '@/types';
@@ -57,7 +57,7 @@ export function DashboardSection() {
 
   if (!stats) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-slate-950 rounded-2xl border border-slate-800 shadow-sm mt-8">
+      <div className="flex flex-col items-center justify-center py-20 bg-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-800/50 shadow-xl mt-8">
         <div className="h-16 w-16 rounded-full bg-red-50 flex items-center justify-center mb-4">
           <RefreshCw className="h-8 w-8 text-red-500" />
         </div>
@@ -141,7 +141,7 @@ export function DashboardSection() {
       {/* Quick Info & System Status */}
       <div className="grid gap-5 grid-cols-1 xl:grid-cols-2">
         {/* Recent Activity */}
-        <div className="rounded-2xl border border-slate-700/60 bg-slate-950 p-5 sm:p-6 shadow-sm flex flex-col h-full hover:shadow-md transition-shadow">
+        <div className="rounded-2xl border border-slate-800/50 bg-slate-900/40 backdrop-blur-xl p-5 sm:p-6 shadow-xl flex flex-col h-full hover:shadow-2xl transition-all duration-300">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-950/40 text-violet-600">
@@ -177,7 +177,7 @@ export function DashboardSection() {
         </div>
 
         {/* System Status */}
-        <div className="rounded-2xl border border-slate-700/60 bg-slate-950 p-5 sm:p-6 shadow-sm flex flex-col h-full hover:shadow-md transition-shadow">
+        <div className="rounded-2xl border border-slate-800/50 bg-slate-900/40 backdrop-blur-xl p-5 sm:p-6 shadow-xl flex flex-col h-full hover:shadow-2xl transition-all duration-300">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-950/40 text-indigo-600">

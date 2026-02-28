@@ -17,27 +17,27 @@ interface StatsCardProps {
 
 const variantStyles = {
   default: {
-    card: 'bg-slate-950 border-slate-800/80',
+    card: 'bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 shadow-lg',
     icon: 'bg-slate-900 text-slate-500',
     value: 'text-slate-200',
   },
   gold: {
-    card: 'bg-slate-950 border-slate-800',
+    card: 'bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 shadow-lg',
     icon: 'bg-blue-950/40 text-blue-600',
     value: 'text-slate-200',
   },
   blue: {
-    card: 'bg-slate-950 border-blue-100/60',
+    card: 'bg-slate-900/40 backdrop-blur-xl border border-blue-900/40 shadow-lg',
     icon: 'bg-blue-950/40 text-blue-600',
     value: 'text-slate-200',
   },
   green: {
-    card: 'bg-slate-950 border-emerald-100/60',
+    card: 'bg-slate-900/40 backdrop-blur-xl border border-emerald-900/40 shadow-lg',
     icon: 'bg-emerald-950/40 text-emerald-600',
     value: 'text-slate-200',
   },
   purple: {
-    card: 'bg-slate-950 border-purple-100/60',
+    card: 'bg-slate-900/40 backdrop-blur-xl border border-purple-900/40 shadow-lg',
     icon: 'bg-purple-950/40 text-purple-600',
     value: 'text-slate-200',
   },

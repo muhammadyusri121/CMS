@@ -322,7 +322,7 @@ export function DocumentsSection() {
             placeholder="Cari berdasarkan nama atau tipe dokumen..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-slate-950 border-slate-700 focus:border-blue-500 focus:ring-blue-500/20"
+            className="pl-10 bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 shadow-xl focus:border-blue-500 focus:ring-blue-500/20"
           />
         </div>
       </div>

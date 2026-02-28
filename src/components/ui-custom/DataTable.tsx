@@ -70,18 +70,18 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       {/* Table */}
-      <div className="rounded-xl border border-slate-800 bg-slate-950 shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-800/50 bg-slate-900/40 backdrop-blur-xl shadow-xl overflow-hidden">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="bg-slate-950 hover:bg-slate-950"
+                className="bg-slate-900/40 backdrop-blur-xl hover:bg-slate-800/40"
               >
                 {headerGroup.headers.map((header) => {
                   const isSortable = header.column.getCanSort();
                   const sortDirection = header.column.getIsSorted();
-                  
+
                   return (
                     <TableHead
                       key={header.id}
@@ -95,9 +95,9 @@ export function DataTable<TData, TValue>({
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                         {isSortable && (
                           <span className="inline-flex">
                             {sortDirection === 'asc' && (
@@ -137,7 +137,7 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   className={cn(
                     'table-gold-row transition-colors',
-                    index % 2 === 0 ? 'bg-slate-950' : 'bg-slate-900/50'
+                    index % 2 === 0 ? 'bg-slate-900/40 backdrop-blur-xl' : 'bg-slate-900/20 backdrop-blur-lg'
                   )}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -177,7 +177,7 @@ export function DataTable<TData, TValue>({
             <span className="font-medium text-slate-50">{endItem}</span> dari{' '}
             <span className="font-medium text-slate-50">{totalItems}</span> data
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -197,7 +197,7 @@ export function DataTable<TData, TValue>({
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            
+
             <div className="flex items-center gap-1">
               {Array.from({ length: Math.min(5, pageCount) }, (_, i) => {
                 let pageNum: number;
@@ -210,7 +210,7 @@ export function DataTable<TData, TValue>({
                 } else {
                   pageNum = pageIndex - 2 + i;
                 }
-                
+
                 return (
                   <Button
                     key={pageNum}
@@ -229,7 +229,7 @@ export function DataTable<TData, TValue>({
                 );
               })}
             </div>
-            
+
             <Button
               variant="outline"
               size="icon"
