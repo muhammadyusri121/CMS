@@ -79,7 +79,6 @@ model AcademicDocument {
 enum DocType {
   REGULATION
   SCHEDULE
-  CALENDAR
   TEACHING_MATERIAL
 }
 
@@ -103,4 +102,13 @@ model Facility {
   quantity  Int      @default(1)
   image_url String?
   createdAt DateTime @default(now())
+}
+
+// --- Modul: Calendar (Holidays) ---
+model Holiday {
+  id          String   @id @default(cuid())
+  date        DateTime // Tanggal perayaan
+  description String   // Nama perayaan/libur
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

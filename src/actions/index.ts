@@ -58,6 +58,10 @@ export const createExtracurricular = async (v: any): Promise<any> => fetchApi('/
 export const updateExtracurricular = async (id: any, v: any): Promise<any> => fetchApi(`/extracurriculars/${id}`, { method: 'PUT', body: JSON.stringify(v) });
 export const deleteExtracurricular = async (id: any): Promise<any> => fetchApi(`/extracurriculars/${id}`, { method: 'DELETE' });
 
+export const getHolidays = async (): Promise<any> => fetchApi('/holidays');
+export const uploadHolidays = async (formData: FormData): Promise<any> => fetchApi('/holidays/upload', { method: 'POST', body: formData });
+export const deleteHoliday = async (id: string): Promise<any> => fetchApi(`/holidays/${id}`, { method: 'DELETE' });
+
 export const getFacilities = async (): Promise<any> => fetchApi('/facilities');
 export const createFacility = async (v: any): Promise<any> => fetchApi('/facilities', { method: 'POST', body: JSON.stringify(v) });
 export const updateFacility = async (id: any, v: any): Promise<any> => fetchApi(`/facilities/${id}`, { method: 'PUT', body: JSON.stringify(v) });

@@ -12,7 +12,8 @@ import {
     ChevronLeft,
     ChevronRight,
     Hexagon,
-    Database
+    Database,
+    Calendar
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/authStore';
 import { useLayoutStore } from '@/lib/layoutStore';
@@ -23,6 +24,7 @@ const navigation = [
     { name: 'Postingan', href: '/posts', icon: FileText },
     { name: 'Data Kelulusan', href: '/graduation', icon: GraduationCap },
     { name: 'Dokumen Akademik', href: '/documents', icon: Files },
+    { name: 'Kalender Libur', href: '/holidays', icon: Calendar },
     { name: 'Ekstrakurikuler', href: '/extracurricular', icon: Activity },
     { name: 'Fasilitas', href: '/facilities', icon: Building },
     { name: 'Uji Data API', href: '/test-api', icon: Database },

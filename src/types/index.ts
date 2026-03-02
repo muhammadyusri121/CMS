@@ -13,7 +13,6 @@ export type PostCategory = typeof PostCategory[keyof typeof PostCategory];
 export const DocumentType = {
   REGULATION: 'REGULATION',
   SCHEDULE: 'SCHEDULE',
-  CALENDAR: 'CALENDAR',
   TEACHING_MATERIAL: 'TEACHING_MATERIAL',
 } as const;
 

@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import * as xlsx from 'xlsx';
 
 dotenv.config();
 
@@ -533,6 +534,74 @@ app.delete('/api/facilities/:id', requireAuth, async (req, res) => {
         const { id } = req.params as { id: string };
         await prisma.facility.delete({ where: { id } });
         handleSuccess(res, null, 'Fasilitas berhasil dihapus');
+    } catch (error) { handleError(res, error); }
+});
+
+// --- Manajemen Kalender / Hari Libur (Holidays) ---
+app.get('/api/holidays', async (req, res) => {
+    try {
+        const holidays = await prisma.holiday.findMany({
+            orderBy: { date: 'asc' }
+        });
+        const formatted = holidays.map((h: any) => ({ ...h, created_at: h.createdAt, updated_at: h.updatedAt }));
+        handleSuccess(res, formatted);
+    } catch (error) { handleError(res, error); }
+});
+
+app.post('/api/holidays/upload', requireAuth, uploadMiddleware.single('file'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ success: false, error: "Tidak ada file yang diunggah" });
+
+        // Baca excel dari file buffer
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+
+        // Konversi ke array of objects
+        const data: any[] = xlsx.utils.sheet_to_json(sheet);
+
+        // Hapus holidays sebelumnya (opsional) atau kita timpa yg ada
+        // Untuk amannya dan simpel, kita tidak menghapus yang sudah ada (kecuali user request replace all)
+        // Kita hanya tambahkan ke database
+
+        const validHolidays = data.filter(row => row['Tanggal'] && row['Bulan'] && row['Tahun'] && row['Perayaan']);
+
+        const insertData = validHolidays.map(row => {
+            const day = row['Tanggal'];
+            const month = row['Bulan'];
+            const year = row['Tahun'];
+            const description = row['Perayaan'];
+
+            // Format JS Date (Month is 0-indexed in JS, but here we construct string)
+            const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T00:00:00.000Z`;
+
+            return {
+                date: new Date(dateStr),
+                description: description
+            }
+        });
+
+        if (insertData.length === 0) {
+            return res.status(400).json({ success: false, error: "Format Excel tidak valid atau kosong. Pastikan kolom: Tanggal, Bulan, Tahun, Perayaan" });
+        }
+
+        // Simpan bulk data ke dalam database
+        await prisma.holiday.createMany({
+            data: insertData
+        });
+
+        handleSuccess(res, { count: insertData.length }, `${insertData.length} hari perayaan berhasil ditambahkan`);
+    } catch (error) {
+        console.error("Error process excel", error);
+        handleError(res, error);
+    }
+});
+
+app.delete('/api/holidays/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params as { id: string };
+        await prisma.holiday.delete({ where: { id } });
+        handleSuccess(res, null, 'Hari libur berhasil dihapus');
     } catch (error) { handleError(res, error); }
 });
 

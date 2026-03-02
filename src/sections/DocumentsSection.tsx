@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Search, Pencil, Trash2, FileText, Download, Calendar, BookOpen, FileClock, UploadCloud, Loader2 } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, FileText, Download, Calendar, BookOpen, UploadCloud, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTable } from '@/components/ui-custom/DataTable';
@@ -39,21 +39,18 @@ import type { ColumnDef } from '@tanstack/react-table';
 const documentTypeLabels: Record<DocumentType, string> = {
   [DocumentType.REGULATION]: 'Peraturan',
   [DocumentType.SCHEDULE]: 'Jadwal',
-  [DocumentType.CALENDAR]: 'Kalender',
   [DocumentType.TEACHING_MATERIAL]: 'Materi Ajar',
 };
 
 const documentTypeIcons: Record<DocumentType, React.ElementType> = {
   [DocumentType.REGULATION]: FileText,
   [DocumentType.SCHEDULE]: Calendar,
-  [DocumentType.CALENDAR]: FileClock,
   [DocumentType.TEACHING_MATERIAL]: BookOpen,
 };
 
 const documentTypeColors: Record<DocumentType, string> = {
   [DocumentType.REGULATION]: 'bg-red-100 text-red-700',
   [DocumentType.SCHEDULE]: 'bg-blue-100 text-blue-700',
-  [DocumentType.CALENDAR]: 'bg-emerald-100 text-emerald-700',
   [DocumentType.TEACHING_MATERIAL]: 'bg-purple-100 text-purple-700',
 };
 
@@ -401,7 +398,7 @@ export function DocumentsSection() {
                         className="hidden"
                         ref={fileInputRef}
                         onChange={handleFileUpload}
-                        accept=".pdf,.doc,.docx,.xls,.xlsx,.zip"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.zip" // ini adalah type file yang diizinkan
                       />
                       <Button
                         type="button"

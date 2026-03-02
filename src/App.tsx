@@ -11,6 +11,7 @@ import { ExtracurricularSection } from '@/sections/ExtracurricularSection';
 import { FacilitiesSection } from '@/sections/FacilitiesSection';
 import { LoginSection } from '@/sections/LoginSection';
 import { UsersSection } from '@/sections/UsersSection';
+import { HolidaysSection } from '@/sections/HolidaysSection';
 import { ApiTestSection } from '@/sections/ApiTestSection';
 import { useAuthStore } from '@/lib/authStore';
 import { useLayoutStore } from '@/lib/layoutStore';
@@ -101,6 +102,14 @@ function DocumentsPage() {
   );
 }
 
+function HolidaysPage() {
+  return (
+    <DashboardLayout title="Kalender Libur" subtitle="Kelola kalender dan perayaan">
+      <HolidaysSection />
+    </DashboardLayout>
+  );
+}
+
 function ExtracurricularPage() {
   return (
     <DashboardLayout title="Ekstrakurikuler" subtitle="Kelola kegiatan siswa">
@@ -155,6 +164,7 @@ function App() {
         <Route path="/posts" element={<ProtectedRoute><PostsPage /></ProtectedRoute>} />
         <Route path="/graduation" element={<ProtectedRoute><GraduationPage /></ProtectedRoute>} />
         <Route path="/documents" element={<ProtectedRoute><DocumentsPage /></ProtectedRoute>} />
+        <Route path="/holidays" element={<ProtectedRoute><HolidaysPage /></ProtectedRoute>} />
         <Route path="/extracurricular" element={<ProtectedRoute><ExtracurricularPage /></ProtectedRoute>} />
         <Route path="/facilities" element={<ProtectedRoute><FacilitiesPage /></ProtectedRoute>} />
         <Route path="/test-api" element={<ProtectedRoute><ApiTestPage /></ProtectedRoute>} />
