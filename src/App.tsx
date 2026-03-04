@@ -41,15 +41,9 @@ function DashboardLayout({ children, title, subtitle }: {
   const { isSidebarCollapsed } = useLayoutStore();
 
   return (
-    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
-      {/* Ambient glowing background for whole app */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] rounded-full bg-blue-900/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-5%] w-[30%] h-[30%] rounded-full bg-indigo-900/10 blur-[100px]" />
-      </div>
-
+    <div className="min-h-screen bg-[#ecf0f3] text-slate-700 selection:bg-cyan-500/30 relative overflow-hidden font-sans">
       <Sidebar />
-      <div className={`relative z-10 min-h-screen flex flex-col transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'lg:pl-[80px]' : 'lg:pl-[260px]'}`}>
+      <div className={`relative z-10 min-h-screen flex flex-col transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'lg:pl-[90px]' : 'lg:pl-[260px]'}`}>
         <Header title={title} subtitle={subtitle} />
         <main className="flex-1 p-4 lg:p-8 overflow-x-hidden">
           <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">

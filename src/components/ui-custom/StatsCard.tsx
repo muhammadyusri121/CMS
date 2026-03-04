@@ -17,38 +17,36 @@ interface StatsCardProps {
 
 const variantStyles = {
   default: {
-    card: 'bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 shadow-lg',
-    icon: 'bg-slate-900 text-slate-500',
-    value: 'text-slate-200',
+    card: 'bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]',
+    icon: 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] text-cyan-500',
+    hover: 'hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]',
   },
   gold: {
-    card: 'bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 shadow-lg',
-    icon: 'bg-blue-950/40 text-blue-600',
-    value: 'text-slate-200',
+    card: 'bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]',
+    icon: 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] text-cyan-500',
+    hover: 'hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]',
   },
   blue: {
-    card: 'bg-slate-900/40 backdrop-blur-xl border border-blue-900/40 shadow-lg',
-    icon: 'bg-blue-950/40 text-blue-600',
-    value: 'text-slate-200',
+    card: 'bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]',
+    icon: 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] text-cyan-500',
+    hover: 'hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]',
   },
   green: {
-    card: 'bg-slate-900/40 backdrop-blur-xl border border-emerald-900/40 shadow-lg',
-    icon: 'bg-emerald-950/40 text-emerald-600',
-    value: 'text-slate-200',
+    card: 'bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]',
+    icon: 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] text-cyan-500',
+    hover: 'hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]',
   },
   purple: {
-    card: 'bg-slate-900/40 backdrop-blur-xl border border-purple-900/40 shadow-lg',
-    icon: 'bg-purple-950/40 text-purple-600',
-    value: 'text-slate-200',
+    card: 'bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]',
+    icon: 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] text-cyan-500',
+    hover: 'hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]',
   },
 };
 
 export function StatsCard({
   title,
   value,
-  description,
   icon: Icon,
-  trend,
   variant = 'default',
   className,
 }: StatsCardProps) {
@@ -57,56 +55,35 @@ export function StatsCard({
   return (
     <Card
       className={cn(
-        'group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-700/60',
+        'group relative overflow-hidden transition-all duration-300 rounded-[30px] cursor-pointer',
         styles.card,
+        styles.hover,
         className
       )}
     >
-      <CardContent className="p-5">
-        <div className="flex flex-row items-center gap-4">
+      <CardContent className="p-6 relative z-10 flex flex-col items-center justify-between text-center h-full min-h-[220px]">
+
+        <div className="flex flex-col items-center w-full">
           <div
             className={cn(
-              'flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-colors',
+              'flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-[20px] transition-all duration-300 mb-4 group-hover:scale-95 group-hover:shadow-[inset_6px_6px_12px_#d1d9e6,inset_-6px_-6px_12px_#ffffff]',
               styles.icon
             )}
           >
-            <Icon className="h-5 w-5" />
+            <Icon className="h-7 w-7 transition-all stroke-[2.5]" />
           </div>
-          <div className="flex-1 space-y-1 min-w-0">
-            <p className="text-sm font-medium text-slate-500 truncate">
-              {title}
-            </p>
-            <div className="flex items-baseline gap-2">
-              <h3 className={cn('text-2xl font-bold tracking-tight', styles.value)}>
-                {value}
-              </h3>
-            </div>
+
+          <p className="text-[13px] font-semibold text-slate-500 tracking-wide mb-6">
+            {title}
+          </p>
+        </div>
+
+        <div className="w-full mt-auto">
+          <div className="w-full h-[45px] flex items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 to-cyan-500 text-white font-bold text-xl shadow-[4px_4px_10px_#d1d9e6,-4px_-4px_10px_#ffffff,inset_2px_2px_4px_rgba(255,255,255,0.4)] group-hover:scale-[1.02] transition-transform">
+            {value}
           </div>
         </div>
 
-        {(description || trend) && (
-          <div className="mt-4 flex items-center justify-between">
-            {description && (
-              <p className="text-xs text-slate-500 truncate mr-2">
-                {description}
-              </p>
-            )}
-            {trend && (
-              <div className="flex items-center shrink-0">
-                <span
-                  className={cn(
-                    'text-[11px] font-semibold px-1.5 py-0.5 rounded-md flex items-center',
-                    trend.isPositive
-                      ? 'bg-emerald-950/40 text-emerald-600'
-                      : 'bg-red-50 text-red-600'
-                  )}
-                >
-                  {trend.isPositive ? '+' : '-'}{trend.value}%
-                </span>
-              </div>
-            )}
-          </div>
-        )}
       </CardContent>
     </Card>
   );

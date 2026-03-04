@@ -273,7 +273,7 @@ const generateUniqueSlug = async (title: string, excludeId?: string) => {
     const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     let slug = baseSlug;
     let counter = 1;
-    let condition: any = { slug };
+    const condition: any = { slug };
     if (excludeId) condition.NOT = { id: excludeId };
 
     while (await prisma.post.findFirst({ where: condition })) {

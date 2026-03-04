@@ -43,13 +43,29 @@ export function DashboardSection() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-8 w-48 bg-slate-800 rounded-lg"></div>
-        <div className="h-4 w-64 bg-slate-800 rounded-lg"></div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="space-y-8 animate-pulse p-4">
+        {/* Header Skeleton */}
+        <div className="space-y-3">
+          <div className="h-8 w-1/3 bg-slate-800 rounded-lg"></div>
+          <div className="h-4 w-1/4 bg-slate-800 rounded-lg"></div>
+        </div>
+
+        {/* Cards Skeleton */}
+        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-28 rounded-2xl bg-slate-800" />
+            <div key={i} className="h-40 rounded-[30px] bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] relative overflow-hidden flex flex-col justify-between p-6 items-center">
+              <div className="h-14 w-14 rounded-2xl bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]"></div>
+              <div className="h-10 w-full rounded-full bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] mt-auto"></div>
+            </div>
           ))}
+        </div>
+
+        {/* Bottom Detailed Skeletons */}
+        <div className="grid gap-5 grid-cols-1 xl:grid-cols-2">
+          <div className="h-80 rounded-[30px] bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] relative overflow-hidden">
+          </div>
+          <div className="h-80 rounded-[30px] bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] relative overflow-hidden">
+          </div>
         </div>
       </div>
     );
@@ -57,42 +73,48 @@ export function DashboardSection() {
 
   if (!stats) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-800/50 shadow-xl mt-8">
-        <div className="h-16 w-16 rounded-full bg-red-50 flex items-center justify-center mb-4">
-          <RefreshCw className="h-8 w-8 text-red-500" />
+      <div className="flex flex-col items-center justify-center py-20 bg-slate-900/40 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] mt-8 rounded-3xl relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5"></div>
+        <div className="relative mb-6 group z-10">
+          <div className="relative h-20 w-20 rounded-2xl bg-slate-800/50 border border-white/10 flex items-center justify-center shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+            <RefreshCw className="h-10 w-10 text-red-400 group-hover:rotate-180 transition-transform duration-700 drop-shadow-[0_0_8px_rgba(248,113,113,0.8)]" />
+          </div>
         </div>
-        <h3 className="text-lg font-semibold text-slate-200">Gagal Memuat Data</h3>
-        <p className="text-sm text-slate-500 mb-6">Silakan refresh halaman untuk mencoba lagi</p>
-        <button onClick={loadStats} className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors">
-          Coba Lagi
+        <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-wide z-10">Gagal Memuat Data</h3>
+        <p className="text-sm font-medium text-slate-400 mb-8 max-w-sm text-center mt-2 z-10">Silakan refresh halaman untuk memuat ulang statistik dashboard Anda.</p>
+        <button onClick={loadStats} className="relative px-8 py-3 rounded-xl overflow-hidden group z-10 border border-white/10 bg-slate-800/50 hover:bg-slate-700/50 transition-all font-bold text-white shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:shadow-[0_0_25px_rgba(239,68,68,0.4)]">
+          <div className="absolute inset-0 bg-gradient-to-tr from-red-600/20 via-rose-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-red-400 to-rose-600 shadow-[0_0_10px_rgba(239,68,68,1)] rounded-r-full" />
+          <span className="relative z-10">Coba Lagi</span>
         </button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700 ease-out">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-700/60 pb-5">
-        <div className="space-y-1">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-50">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 pb-6">
+        <div className="space-y-1.5">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-700 drop-shadow-sm">
             Overview Dashboard
           </h2>
-          <p className="text-sm sm:text-base text-slate-500">
-            Pantau ringkasan data dan aktivitas SMAN 1 Ketapang secara real-time.
+          <p className="text-sm font-bold text-cyan-500 tracking-wide uppercase">
+            PANTAU RINGKASAN DATA DAN AKTIVITAS SMAN 1 KETAPANG.
           </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/40 border border-emerald-100">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+
+        <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[#ecf0f3] border-none shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]">
+          <span className="relative flex h-2.5 w-2.5 ml-1">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)]"></span>
           </span>
-          <span className="text-xs font-medium text-emerald-700">Sistem Online & Terhubung</span>
+          <span className="text-xs font-bold text-cyan-500 tracking-wider uppercase drop-shadow-[0_0_8px_rgba(6,182,212,0.4)] px-1">System Online</span>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
         <StatsCard
           title="Total Personel"
           value={stats.totalPersonnel}
@@ -139,21 +161,22 @@ export function DashboardSection() {
       </div>
 
       {/* Quick Info & System Status */}
-      <div className="grid gap-5 grid-cols-1 xl:grid-cols-2">
+      <div className="grid gap-8 grid-cols-1 xl:grid-cols-2">
         {/* Recent Activity */}
-        <div className="rounded-2xl border border-slate-800/50 bg-slate-900/40 backdrop-blur-xl p-5 sm:p-6 shadow-xl flex flex-col h-full hover:shadow-2xl transition-all duration-300">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-950/40 text-violet-600">
-                <Activity className="h-5 w-5" />
+        <div className="group relative rounded-[30px] bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] p-6 sm:p-8 flex flex-col h-full overflow-hidden">
+          <div className="flex items-center justify-between mb-8 relative z-10">
+            <div className="flex items-center gap-5">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#ecf0f3] text-cyan-500 transition-all duration-300 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]">
+                <Activity className="h-6 w-6 stroke-[2.5]" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-slate-200">Aktivitas Terbaru</h3>
-                <p className="text-xs text-slate-500">Log perubahan 24 jam terakhir</p>
+                <h3 className="text-xl font-bold text-slate-700 tracking-wide">Aktivitas Terbaru</h3>
+                <p className="text-xs font-semibold text-cyan-500 tracking-wide mt-1 uppercase">LOG PERUBAHAN 24 JAM TERAKHIR</p>
               </div>
             </div>
           </div>
-          <div className="space-y-0.5 flex-1 flex flex-col justify-center">
+
+          <div className="space-y-4 flex-1 flex flex-col justify-center relative z-10">
             {[
               { action: 'Postingan baru dipublikasikan', time: '2 menit yang lalu', type: 'post' },
               { action: 'Data kelulusan angkatan 2024 diperbarui', time: '1 jam yang lalu', type: 'graduation' },
@@ -162,49 +185,57 @@ export function DashboardSection() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="group flex items-start sm:items-center justify-between py-3 rounded-lg hover:bg-slate-900 px-3 -mx-3 transition-colors"
+                className="flex items-start sm:items-center justify-between py-4 px-5 rounded-[20px] bg-[#ecf0f3] hover:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all duration-300 cursor-pointer shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] group/item"
               >
-                <div className="flex items-start sm:items-center gap-3">
-                  <div className="mt-1 sm:mt-0 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-800 text-slate-500 group-hover:bg-violet-100 group-hover:text-violet-600 transition-colors">
-                    <Clock className="h-3 w-3" />
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ecf0f3] text-slate-400 group-hover/item:text-cyan-500 transition-all shadow-[inset_2px_2px_5px_#d1d9e6,inset_-2px_-2px_5px_#ffffff]">
+                    <Clock className="h-4 w-4 stroke-[2.5]" />
                   </div>
-                  <span className="text-sm font-medium text-slate-300">{item.action}</span>
+                  <span className="text-sm font-bold text-slate-600 group-hover/item:text-cyan-600 transition-colors">
+                    {item.action}
+                  </span>
                 </div>
-                <span className="text-xs font-medium text-slate-500 whitespace-nowrap ml-4">{item.time}</span>
+                <span className="text-[11px] font-bold tracking-wider text-slate-400 whitespace-nowrap ml-4">
+                  {item.time}
+                </span>
               </div>
             ))}
           </div>
         </div>
 
         {/* System Status */}
-        <div className="rounded-2xl border border-slate-800/50 bg-slate-900/40 backdrop-blur-xl p-5 sm:p-6 shadow-xl flex flex-col h-full hover:shadow-2xl transition-all duration-300">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-950/40 text-indigo-600">
-                <CheckCircle2 className="h-5 w-5" />
+        <div className="group relative rounded-[30px] bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] p-6 sm:p-8 flex flex-col h-full overflow-hidden">
+          <div className="flex items-center justify-between mb-8 relative z-10">
+            <div className="flex items-center gap-5">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#ecf0f3] text-cyan-500 transition-all duration-300 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]">
+                <CheckCircle2 className="h-6 w-6 stroke-[2.5]" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-slate-200">Status Layanan</h3>
-                <p className="text-xs text-slate-500">Kondisi integrasi & sistem</p>
+                <h3 className="text-xl font-bold text-slate-700 tracking-wide">Status Layanan</h3>
+                <p className="text-xs font-semibold text-cyan-500 tracking-wide mt-1 uppercase">KONDISI INTEGRASI & SISTEM JARINGAN</p>
               </div>
             </div>
           </div>
-          <div className="space-y-3 flex-1 flex flex-col justify-center">
+
+          <div className="space-y-4 flex-1 flex flex-col justify-center relative z-10">
             {[
-              { name: 'Koneksi Database PostgreSQL', status: 'Terhubung', color: 'bg-emerald-500', bg: 'bg-emerald-950/40', text: 'text-emerald-700' },
-              { name: 'API Services SMANKA', status: 'Berjalan', color: 'bg-emerald-500', bg: 'bg-emerald-950/40', text: 'text-emerald-700' },
-              { name: 'Penyimpanan Media (Storage)', status: 'Optimal', color: 'bg-emerald-500', bg: 'bg-emerald-950/40', text: 'text-emerald-700' },
-              { name: 'Automated Backup System', status: 'Sinkronisasi', color: 'bg-blue-500', bg: 'bg-blue-950/40', text: 'text-blue-700' },
+              { name: 'Koneksi Database PostgreSQL', status: 'Terhubung', badgeCore: 'bg-emerald-50 text-emerald-600', badgeBorder: 'shadow-[inset_2px_2px_5px_rgba(16,185,129,0.2),inset_-2px_-2px_5px_white]' },
+              { name: 'API Services SMANKA', status: 'Berjalan', badgeCore: 'bg-emerald-50 text-emerald-600', badgeBorder: 'shadow-[inset_2px_2px_5px_rgba(16,185,129,0.2),inset_-2px_-2px_5px_white]' },
+              { name: 'Penyimpanan Media (Storage)', status: 'Optimal', badgeCore: 'bg-emerald-50 text-emerald-600', badgeBorder: 'shadow-[inset_2px_2px_5px_rgba(16,185,129,0.2),inset_-2px_-2px_5px_white]' },
+              { name: 'Automated Backup System', status: 'Sinkronisasi', badgeCore: 'bg-cyan-50 text-cyan-600', badgeBorder: 'shadow-[inset_2px_2px_5px_rgba(6,182,212,0.2),inset_-2px_-2px_5px_white]' },
             ].map((item, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between py-3 px-4 rounded-xl border border-slate-800 bg-slate-900/50 hover:bg-slate-900 transition-colors"
+                className="flex items-center justify-between py-4 px-5 rounded-[20px] bg-[#ecf0f3] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-colors group/item shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]"
               >
-                <span className="text-sm font-medium text-slate-300">{item.name}</span>
-                <div className={cn('flex items-center gap-2 px-2.5 py-1 rounded-full', item.bg)}>
-                  <span className={cn('h-1.5 w-1.5 rounded-full', item.color)} />
-                  <span className={cn('text-xs font-semibold', item.text)}>{item.status}</span>
+                <div className="flex items-center gap-4">
+                  <div className="h-3 w-3 rounded-full bg-[#ecf0f3] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] group-hover/item:bg-cyan-400 group-hover/item:shadow-none transition-colors" />
+                  <span className="text-sm font-bold tracking-wide text-slate-600 group-hover/item:text-cyan-600 transition-colors">{item.name}</span>
                 </div>
+
+                <span className={cn('text-[11px] font-bold tracking-wider px-4 py-2 rounded-full border-none', item.badgeCore, item.badgeBorder)}>
+                  {item.status}
+                </span>
               </div>
             ))}
           </div>

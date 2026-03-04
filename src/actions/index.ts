@@ -40,7 +40,7 @@ export const getDashboardStats = async (): Promise<ApiResponse<DashboardStats>> 
     return fetchApi('/dashboard-stats');
 };
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const getUsers = async (): Promise<ApiResponse<any[]>> => fetchApi('/users');
 export const createUser = async (data: any): Promise<ApiResponse<any>> => fetchApi('/users', { method: 'POST', body: JSON.stringify(data) });
 export const updateUser = async (id: string, data: any): Promise<ApiResponse<any>> => fetchApi(`/users/${id}`, { method: 'PUT', body: JSON.stringify(data) });
