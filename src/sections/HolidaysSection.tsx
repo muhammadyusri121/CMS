@@ -108,13 +108,13 @@ export function HolidaysSection() {
         const dateStr = new Date(row.original.date).toLocaleDateString('id-ID', {
           weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
-        return <span className="text-slate-50">{dateStr}</span>;
+        return <span className="font-bold text-slate-700">{dateStr}</span>;
       },
     },
     {
       accessorKey: 'description',
       header: 'Perayaan / Keterangan',
-      cell: ({ row }) => <span className="text-slate-50 font-medium">{row.original.description}</span>,
+      cell: ({ row }) => <span className="font-bold text-slate-700">{row.original.description}</span>,
     },
     {
       id: 'actions',
@@ -124,9 +124,9 @@ export function HolidaysSection() {
           variant="ghost"
           size="icon"
           onClick={() => handleDeleteHoliday(row.original)}
-          className="h-8 w-8 text-slate-500 hover:text-red-600 hover:bg-red-50"
+          className="h-10 w-10 rounded-full bg-[#ecf0f3] text-red-500 hover:text-red-600 border-none shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-4 w-4" strokeWidth={2.5} />
         </Button>
       ),
     },
@@ -136,8 +136,8 @@ export function HolidaysSection() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-slate-50">Kalender Akademik (Libur & Perayaan)</h2>
-          <p className="text-slate-500">Kelola jadwal hari libur akademik dengan mengunggah format Excel</p>
+          <h2 className="text-2xl font-bold text-cyan-500 tracking-tight">Kalender Akademik (Libur & Perayaan)</h2>
+          <p className="text-slate-500 font-medium">Kelola jadwal hari libur akademik dengan mengunggah format Excel</p>
         </div>
         <div className="flex items-center gap-2">
           <input
@@ -149,10 +149,10 @@ export function HolidaysSection() {
           />
           <Button
             onClick={() => holidayInputRef.current?.click()}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 shadow-lg shadow-emerald-900/20"
+            className="flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-cyan-500 text-white rounded-full px-6 h-12 shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] transition-all font-bold"
             disabled={isUploadingHoliday}
           >
-            {isUploadingHoliday ? <Loader2 className="h-4 w-4 animate-spin" /> : <UploadCloud className="h-4 w-4" />}
+            {isUploadingHoliday ? <Loader2 className="h-5 w-5 animate-spin" /> : <UploadCloud className="h-5 w-5" strokeWidth={2.5} />}
             {isUploadingHoliday ? 'Memproses...' : 'Upload Excel Kalender'}
           </Button>
         </div>
@@ -160,12 +160,12 @@ export function HolidaysSection() {
 
       <div className="flex items-center gap-4 mb-6">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-cyan-500 font-bold" />
           <Input
             placeholder="Cari perayaan atau libur..."
             value={holidaySearchQuery}
             onChange={(e) => setHolidaySearchQuery(e.target.value)}
-            className="pl-10 bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 shadow-xl focus:border-blue-500 focus:ring-blue-500/20"
+            className="w-full pl-14 h-12 bg-[#ecf0f3] border-none rounded-full text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_6px_6px_10px_#d1d9e6,inset_-6px_-6px_10px_#ffffff] font-medium transition-shadow"
           />
         </div>
       </div>

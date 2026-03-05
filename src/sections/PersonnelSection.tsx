@@ -210,15 +210,15 @@ export function PersonnelSection() {
         const person = row.original;
         return (
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10 border-2 border-blue-200">
-              <AvatarImage src={person.image_url || undefined} />
-              <AvatarFallback className="bg-blue-100 text-blue-700 text-sm font-semibold">
+            <Avatar className="h-10 w-10 border-none bg-[#ecf0f3] shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]">
+              <AvatarImage src={person.image_url || undefined} className="rounded-full object-cover" />
+              <AvatarFallback className="bg-transparent text-cyan-500 text-sm font-bold">
                 {person.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-medium text-slate-50">{person.full_name}</p>
-              <p className="text-xs text-slate-500">NIP: {person.nip}</p>
+              <p className="font-bold text-slate-700">{person.full_name}</p>
+              <p className="text-xs font-semibold text-slate-400">NIP: {person.nip}</p>
             </div>
           </div>
         );
@@ -228,7 +228,7 @@ export function PersonnelSection() {
       accessorKey: 'position',
       header: 'Jabatan',
       cell: ({ row }) => (
-        <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-200">
+        <Badge variant="secondary" className="bg-[#ecf0f3] text-cyan-600 border-none shadow-[2px_2px_5px_#d1d9e6,-2px_-2px_5px_#ffffff] hover:bg-[#ecf0f3] px-3 py-1 font-bold">
           {row.original.position}
         </Badge>
       ),
@@ -237,7 +237,7 @@ export function PersonnelSection() {
       accessorKey: 'sort_order',
       header: 'Urutan',
       cell: ({ row }) => (
-        <span className="text-sm text-slate-500">{row.original.sort_order}</span>
+        <span className="text-sm font-bold text-slate-400">{row.original.sort_order}</span>
       ),
     },
     {
@@ -251,17 +251,17 @@ export function PersonnelSection() {
               variant="ghost"
               size="icon"
               onClick={() => handleEdit(person)}
-              className="h-8 w-8 text-slate-500 hover:text-blue-600 hover:bg-blue-950/40"
+              className="h-10 w-10 rounded-full bg-[#ecf0f3] text-cyan-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"
             >
-              <Pencil className="h-4 w-4" />
+              <Pencil className="h-4 w-4" strokeWidth={2.5} />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => handleDelete(person)}
-              className="h-8 w-8 text-slate-500 hover:text-red-600 hover:bg-red-50"
+              className="h-10 w-10 rounded-full bg-[#ecf0f3] text-red-500 hover:text-red-600 border-none shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" strokeWidth={2.5} />
             </Button>
           </div>
         );
@@ -274,11 +274,11 @@ export function PersonnelSection() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-50">Personel Pendidik</h2>
-          <p className="text-slate-500">Kelola data tenaga pendidik dan kependidikan</p>
+          <h2 className="text-2xl font-bold text-cyan-500 tracking-tight">Personel Pendidik</h2>
+          <p className="text-slate-500 font-medium">Kelola data tenaga pendidik dan kependidikan</p>
         </div>
-        <Button onClick={handleCreate} className="btn-gold gap-2">
-          <Plus className="h-4 w-4" />
+        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-cyan-500 text-white rounded-full px-6 h-12 shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] transition-all font-bold group">
+          <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" strokeWidth={2.5} />
           Tambah Personel
         </Button>
       </div>
@@ -286,12 +286,12 @@ export function PersonnelSection() {
       {/* Search */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-cyan-500 font-bold" />
           <Input
             placeholder="Cari berdasarkan nama, NIP, atau jabatan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 shadow-xl focus:border-blue-500 focus:ring-blue-500/20"
+            className="w-full pl-14 h-12 bg-[#ecf0f3] border-none rounded-full text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_6px_6px_10px_#d1d9e6,inset_-6px_-6px_10px_#ffffff] font-medium transition-shadow"
           />
         </div>
       </div>
@@ -326,7 +326,7 @@ export function PersonnelSection() {
                 <FormItem>
                   <FormLabel>Nama Lengkap</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan nama lengkap" />
+                    <Input {...field} placeholder="Masukkan nama lengkap" className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -339,7 +339,7 @@ export function PersonnelSection() {
                 <FormItem>
                   <FormLabel>NIP</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan NIP" />
+                    <Input {...field} placeholder="Masukkan NIP" className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -352,7 +352,7 @@ export function PersonnelSection() {
                 <FormItem>
                   <FormLabel>Jabatan</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan jabatan" />
+                    <Input {...field} placeholder="Masukkan jabatan" className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -367,8 +367,8 @@ export function PersonnelSection() {
                   <FormControl>
                     <div className="flex gap-2 relative">
                       <div className="relative flex-1">
-                        <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                        <Input {...field} placeholder="https://example.com/image.jpg" className="pl-10" />
+                        <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-cyan-500 font-bold" />
+                        <Input {...field} placeholder="https://example.com/image.jpg" className="w-full pl-12 h-12 bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium transition-shadow" />
                       </div>
                       <input
                         type="file"
@@ -379,12 +379,12 @@ export function PersonnelSection() {
                       />
                       <Button
                         type="button"
-                        variant="outline"
+                        variant="ghost"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isUploading}
-                        className="border-slate-700 bg-slate-900"
+                        className="h-12 w-12 rounded-2xl border-none bg-[#ecf0f3] text-cyan-500 hover:text-cyan-600 shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:bg-[#ecf0f3] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
                       >
-                        {isUploading ? '...' : <Upload className="h-4 w-4" />}
+                        {isUploading ? '...' : <Upload className="h-5 w-5" strokeWidth={2.5} />}
                       </Button>
                     </div>
                   </FormControl>
@@ -404,6 +404,7 @@ export function PersonnelSection() {
                       type="number"
                       onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                       placeholder="Urutan tampilan"
+                      className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12"
                     />
                   </FormControl>
                   <FormMessage />

@@ -81,26 +81,25 @@ export function UsersSection() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">Kelola Pengelola Utama (Admin)</h1>
-                <Button onClick={fetchUsers} variant="outline" size="sm"><RefreshCw className="mr-2 h-4 w-4" />Refresh</Button>
+                <h1 className="text-2xl font-bold text-cyan-500 tracking-tight">Kelola Pengelola Utama (Admin)</h1>
+                <Button onClick={fetchUsers} variant="ghost" size="sm" className="rounded-full bg-[#ecf0f3] text-cyan-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all font-bold px-4 h-10"><RefreshCw className="mr-2 h-4 w-4" strokeWidth={2.5} />Refresh</Button>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-                {/* Table list */}
-                <div className="rounded-xl border border-slate-800/50 bg-slate-900/40 backdrop-blur-xl shadow-xl p-6">
-                    <h2 className="text-lg font-semibold mb-4">Daftar Pengelola</h2>
+                <div className="bg-[#ecf0f3] border-none rounded-3xl p-6 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]">
+                    <h2 className="text-xl font-bold text-cyan-600 mb-6">Daftar Pengelola</h2>
                     {loading ? <p>Loading...</p> : (
                         <ul className="space-y-3">
                             {users.map(u => (
-                                <li key={u.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-900">
+                                <li key={u.id} className="flex items-center justify-between p-4 border-none rounded-2xl shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all duration-300">
                                     <div>
-                                        <p className="font-medium">{u.name}</p>
-                                        <p className="text-xs text-slate-500">{u.email} &bull; {u.role}</p>
+                                        <p className="font-bold text-slate-700">{u.name}</p>
+                                        <p className="text-xs font-bold text-slate-400">{u.email} &bull; {u.role}</p>
                                     </div>
                                     {u.id !== currentUser?.id && currentUser?.role === 'ADMIN' && (
                                         <div className="flex gap-2">
-                                            <Button variant="outline" size="icon" onClick={() => handleEdit(u)}><Edit className="h-4 w-4 text-blue-500" /></Button>
-                                            <Button variant="outline" size="icon" onClick={() => handleDelete(u.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                                            <Button variant="ghost" size="icon" onClick={() => handleEdit(u)} className="h-10 w-10 flex-shrink-0 rounded-full bg-[#ecf0f3] text-cyan-500 hover:text-cyan-600 border-none shadow-[2px_2px_5px_#d1d9e6,-2px_-2px_5px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"><Edit className="h-4 w-4" strokeWidth={2.5} /></Button>
+                                            <Button variant="ghost" size="icon" onClick={() => handleDelete(u.id)} className="h-10 w-10 flex-shrink-0 rounded-full bg-[#ecf0f3] text-red-500 hover:text-red-600 border-none shadow-[2px_2px_5px_#d1d9e6,-2px_-2px_5px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"><Trash2 className="h-4 w-4" strokeWidth={2.5} /></Button>
                                         </div>
                                     )}
                                 </li>
@@ -110,24 +109,24 @@ export function UsersSection() {
                 </div>
 
                 {/* Form */}
-                <div className="rounded-xl border border-slate-800/50 bg-slate-900/40 backdrop-blur-xl shadow-xl p-6">
-                    <h2 className="text-lg font-semibold mb-4">{isEditing ? 'Edit Pengelola' : 'Tambah Pengelola Baru'}</h2>
+                <div className="bg-[#ecf0f3] border-none rounded-3xl p-6 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]">
+                    <h2 className="text-xl font-bold text-cyan-600 mb-6">{isEditing ? 'Edit Pengelola' : 'Tambah Pengelola Baru'}</h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <Input name="name" placeholder="Nama Lengkap" value={formData.name} onChange={handleChange} required />
-                        <Input name="email" type="email" placeholder="Email Login" value={formData.email} onChange={handleChange} required />
-                        <Input name="password" type="password" placeholder={isEditing ? "(Kosongkan jika tidak ingin ubah password)" : "Password Baru"} value={formData.password} onChange={handleChange} required={!isEditing} />
-                        <select name="role" value={formData.role} onChange={handleChange} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                        <Input name="name" placeholder="Nama Lengkap" value={formData.name} onChange={handleChange} required className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12" />
+                        <Input name="email" type="email" placeholder="Email Login" value={formData.email} onChange={handleChange} required className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12" />
+                        <Input name="password" type="password" placeholder={isEditing ? "(Kosongkan jika tidak ingin ubah password)" : "Password Baru"} value={formData.password} onChange={handleChange} required={!isEditing} className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12" />
+                        <select name="role" value={formData.role} onChange={handleChange} className="h-12 w-full rounded-2xl border-none bg-[#ecf0f3] px-4 py-2 text-slate-600 focus-visible:outline-none focus-visible:ring-0 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium cursor-pointer">
                             <option value="ADMIN">ADMIN (Super User)</option>
                             <option value="EDITOR">EDITOR (Ubah Konten)</option>
                             <option value="AUTHOR">AUTHOR (Tulis Konten)</option>
                         </select>
-                        <div className="flex gap-2">
-                            <Button type="submit" disabled={loading} className="flex-1 bg-blue-500 text-white hover:bg-blue-600">
-                                {isEditing ? <Edit className="mr-2 h-4 w-4" /> : <Plus className="mr-2 h-4 w-4" />}
-                                {isEditing ? 'Simpan' : 'Tambahkan'}
+                        <div className="flex gap-4 mt-6">
+                            <Button type="submit" disabled={loading} className="flex-1 bg-gradient-to-r from-cyan-400 to-cyan-500 text-white rounded-full h-12 shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] font-bold transition-all border-none text-base">
+                                {isEditing ? <Edit className="mr-2 h-5 w-5" strokeWidth={2.5} /> : <Plus className="mr-2 h-5 w-5" strokeWidth={2.5} />}
+                                {isEditing ? 'Simpan Data' : 'Tambahkan'}
                             </Button>
                             {isEditing && (
-                                <Button type="button" variant="outline" onClick={() => { setIsEditing(false); setFormData({ id: '', name: '', email: '', password: '', role: 'EDITOR' }) }}>Batal</Button>
+                                <Button type="button" variant="ghost" onClick={() => { setIsEditing(false); setFormData({ id: '', name: '', email: '', password: '', role: 'EDITOR' }) }} className="rounded-full bg-[#ecf0f3] text-slate-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all h-12 px-6 font-bold text-base">Batal</Button>
                             )}
                         </div>
                     </form>
