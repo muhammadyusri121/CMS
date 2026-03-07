@@ -17,29 +17,29 @@ interface StatsCardProps {
 
 const variantStyles = {
   default: {
-    card: 'bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]',
-    icon: 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] text-cyan-500',
-    hover: 'hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]',
+    card: 'bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155]',
+    icon: 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] text-cyan-500',
+    hover: 'hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]',
   },
   gold: {
-    card: 'bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]',
-    icon: 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] text-cyan-500',
-    hover: 'hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]',
+    card: 'bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155]',
+    icon: 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] text-cyan-500',
+    hover: 'hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]',
   },
   blue: {
-    card: 'bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]',
-    icon: 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] text-cyan-500',
-    hover: 'hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]',
+    card: 'bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155]',
+    icon: 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] text-cyan-500',
+    hover: 'hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]',
   },
   green: {
-    card: 'bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]',
-    icon: 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] text-cyan-500',
-    hover: 'hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]',
+    card: 'bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155]',
+    icon: 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] text-cyan-500',
+    hover: 'hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]',
   },
   purple: {
-    card: 'bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]',
-    icon: 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] text-cyan-500',
-    hover: 'hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]',
+    card: 'bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155]',
+    icon: 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] text-cyan-500',
+    hover: 'hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]',
   },
 };
 
@@ -66,7 +66,7 @@ export function StatsCard({
         <div className="flex flex-col items-center w-full">
           <div
             className={cn(
-              'flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-[20px] transition-all duration-300 mb-4 group-hover:scale-95 group-hover:shadow-[inset_6px_6px_12px_#d1d9e6,inset_-6px_-6px_12px_#ffffff]',
+              'flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-[20px] transition-all duration-300 mb-4 group-hover:scale-95 group-hover:shadow-[inset_6px_6px_12px_#0f172a,inset_-6px_-6px_12px_#334155]',
               styles.icon
             )}
           >
@@ -79,7 +79,7 @@ export function StatsCard({
         </div>
 
         <div className="w-full mt-auto">
-          <div className="w-full h-[45px] flex items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 to-cyan-500 text-white font-bold text-xl shadow-[4px_4px_10px_#d1d9e6,-4px_-4px_10px_#ffffff,inset_2px_2px_4px_rgba(255,255,255,0.4)] group-hover:scale-[1.02] transition-transform">
+          <div className="w-full h-[45px] flex items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-bold text-xl shadow-[4px_4px_10px_#0f172a,-4px_-4px_10px_#334155,inset_2px_2px_4px_rgba(255,255,255,0.4)] group-hover:scale-[1.02] transition-transform">
             {value}
           </div>
         </div>

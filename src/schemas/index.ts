@@ -5,6 +5,7 @@ import { PostCategory, DocumentType } from '@/types';
 export const educationPersonnelSchema = z.object({
   full_name: z.string().min(1, 'Nama lengkap wajib diisi').max(100, 'Nama maksimal 100 karakter'),
   nip: z.string().min(1, 'NIP wajib diisi').max(20, 'NIP maksimal 20 karakter'),
+  email: z.string().email('Format email tidak valid').optional().or(z.literal('')),
   position: z.string().min(1, 'Jabatan wajib diisi').max(100, 'Jabatan maksimal 100 karakter'),
   image_url: z.string().optional().or(z.literal('')),
   sort_order: z.number().int().min(0, 'Urutan minimal 0'),
@@ -30,7 +31,9 @@ export type PostFormData = z.infer<typeof postSchema>;
 export const graduationSchema = z.object({
   nisn: z.string().min(10, 'NISN minimal 10 digit').max(20, 'NISN maksimal 20 karakter'),
   student_name: z.string().min(1, 'Nama siswa wajib diisi').max(100, 'Nama maksimal 100 karakter'),
-  exam_number: z.string().min(1, 'Nomor ujian wajib diisi').max(50, 'Nomor ujian maksimal 50 karakter'),
+  birthday: z.string().optional().or(z.literal('')),
+  gender: z.string().optional().or(z.literal('')),
+  class_name: z.string().optional().or(z.literal('')),
   is_graduated: z.boolean(),
   graduation_year: z.number().int().min(2000, 'Tahun minimal 2000').max(2100, 'Tahun maksimal 2100'),
 });

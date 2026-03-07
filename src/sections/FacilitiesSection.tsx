@@ -202,14 +202,14 @@ export function FacilitiesSection() {
         const facility = row.original;
         return (
           <div className="flex items-center gap-3">
-            <Avatar className="h-12 w-12 border-none shrink-0 shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]">
+            <Avatar className="h-12 w-12 border-none shrink-0 shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155]">
               <AvatarImage src={facility.image_url || undefined} />
-              <AvatarFallback className="bg-[#ecf0f3] text-cyan-500 font-bold">
+              <AvatarFallback className="bg-[#1e293b] text-cyan-500 font-bold">
                 <Building2 className="h-5 w-5" strokeWidth={2.5} />
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-bold text-slate-700">{facility.name}</p>
+              <p className="font-bold text-slate-200">{facility.name}</p>
             </div>
           </div>
         );
@@ -221,7 +221,7 @@ export function FacilitiesSection() {
       cell: ({ row }) => (
         <div className="flex items-center gap-2 font-bold">
           <Package className="h-5 w-5 text-cyan-500" strokeWidth={2.5} />
-          <Badge className="bg-[#ecf0f3] text-cyan-600 border-none shadow-[2px_2px_5px_#d1d9e6,-2px_-2px_5px_#ffffff] hover:bg-[#ecf0f3] px-3 py-1 font-bold">
+          <Badge className="bg-[#1e293b] text-cyan-600 border-none shadow-[2px_2px_5px_#0f172a,-2px_-2px_5px_#334155] hover:bg-[#1e293b] px-3 py-1 font-bold">
             {row.original.quantity} unit
           </Badge>
         </div>
@@ -238,7 +238,7 @@ export function FacilitiesSection() {
               variant="ghost"
               size="icon"
               onClick={() => handleEdit(facility)}
-              className="h-10 w-10 rounded-full bg-[#ecf0f3] text-cyan-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"
+              className="h-10 w-10 rounded-full bg-[#1e293b] text-cyan-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"
             >
               <Pencil className="h-4 w-4" strokeWidth={2.5} />
             </Button>
@@ -246,7 +246,7 @@ export function FacilitiesSection() {
               variant="ghost"
               size="icon"
               onClick={() => handleDelete(facility)}
-              className="h-10 w-10 rounded-full bg-[#ecf0f3] text-red-500 hover:text-red-600 border-none shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"
+              className="h-10 w-10 rounded-full bg-[#1e293b] text-red-500 hover:text-red-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"
             >
               <Trash2 className="h-4 w-4" strokeWidth={2.5} />
             </Button>
@@ -264,7 +264,7 @@ export function FacilitiesSection() {
           <h2 className="text-2xl font-bold text-cyan-500 tracking-tight">Fasilitas</h2>
           <p className="text-slate-500 font-medium">Kelola sarana dan prasarana sekolah</p>
         </div>
-        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-cyan-500 text-white rounded-full px-6 h-12 shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] transition-all font-bold group">
+        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-full px-6 h-12 shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] transition-all font-bold group">
           <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" strokeWidth={2.5} />
           Tambah Fasilitas
         </Button>
@@ -278,7 +278,7 @@ export function FacilitiesSection() {
             placeholder="Cari berdasarkan nama fasilitas..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 h-12 bg-[#ecf0f3] border-none rounded-full text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_6px_6px_10px_#d1d9e6,inset_-6px_-6px_10px_#ffffff] font-medium transition-shadow"
+            className="w-full pl-14 h-12 bg-[#1e293b] border-none rounded-full text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_6px_6px_10px_#0f172a,inset_-6px_-6px_10px_#334155] font-medium transition-shadow"
           />
         </div>
       </div>
@@ -313,7 +313,7 @@ export function FacilitiesSection() {
                 <FormItem>
                   <FormLabel>Nama Fasilitas</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan nama fasilitas" className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12" />
+                    <Input {...field} placeholder="Masukkan nama fasilitas" className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -331,7 +331,7 @@ export function FacilitiesSection() {
                       type="number"
                       onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                       placeholder="Masukkan jumlah"
-                      className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12"
+                      className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12"
                     />
                   </FormControl>
                   <FormMessage />
@@ -348,7 +348,7 @@ export function FacilitiesSection() {
                     <div className="flex gap-2 relative items-center">
                       <div className="relative flex-1">
                         <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-cyan-500 font-bold" />
-                        <Input {...field} placeholder="https://example.com/image.jpg" className="w-full pl-12 h-12 bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium transition-shadow" />
+                        <Input {...field} placeholder="https://example.com/image.jpg" className="w-full pl-12 h-12 bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium transition-shadow" />
                       </div>
                       <input
                         type="file"
@@ -362,7 +362,7 @@ export function FacilitiesSection() {
                         variant="ghost"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isUploading}
-                        className="h-12 w-12 rounded-2xl border-none bg-[#ecf0f3] text-cyan-500 hover:text-cyan-600 shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:bg-[#ecf0f3] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
+                        className="h-12 w-12 rounded-2xl border-none bg-[#1e293b] text-cyan-500 hover:text-cyan-600 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:bg-[#1e293b] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155]"
                       >
                         {isUploading ? '...' : <Upload className="h-5 w-5" strokeWidth={2.5} />}
                       </Button>

@@ -52,14 +52,14 @@ export function Sidebar() {
             )}
 
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-[#ecf0f3] border-none transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0 shadow-[15px_0_30px_rgba(209,217,230,0.8)]' : '-translate-x-full lg:translate-x-0'
+                className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-[#1e293b] border-none transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0 shadow-[15px_0_30px_rgba(209,217,230,0.8)]' : '-translate-x-full lg:translate-x-0'
                     } ${isSidebarCollapsed ? 'lg:w-[90px] w-[280px]' : 'w-[280px]'
                     }`}
             >
                 {/* Toggle Button for Desktop */}
                 <button
                     onClick={toggleSidebar}
-                    className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 h-8 w-8 items-center justify-center rounded-full bg-[#ecf0f3] border-none text-cyan-500 hover:text-cyan-600 transition-all z-50 shadow-[2px_2px_5px_#d1d9e6,-2px_-2px_5px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
+                    className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 h-8 w-8 items-center justify-center rounded-full bg-[#1e293b] border-none text-cyan-500 hover:text-cyan-600 transition-all z-50 shadow-[2px_2px_5px_#0f172a,-2px_-2px_5px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155]"
                     aria-label="Toggle Sidebar"
                 >
                     {isSidebarCollapsed ? <ChevronRight size={16} strokeWidth={3} /> : <ChevronLeft size={16} strokeWidth={3} />}
@@ -68,7 +68,7 @@ export function Sidebar() {
                 {/* 1️⃣ Logo Section */}
                 <div className={`flex h-32 shrink-0 items-center transition-all duration-300 ${isSidebarCollapsed ? 'justify-center lg:px-0 px-8' : 'px-8'}`}>
                     <div className="flex items-center gap-4">
-                        <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-[20px] bg-[#ecf0f3] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff]">
+                        <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-[20px] bg-[#1e293b] shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155]">
                             <Hexagon className="h-7 w-7 text-cyan-500 relative z-10" fill="currentColor" strokeWidth={1} />
                         </div>
                         {!isSidebarCollapsed && (
@@ -98,16 +98,16 @@ export function Sidebar() {
                                     onClick={() => { if (window.innerWidth < 1024) closeMobileMenu(); }}
                                     title={isSidebarCollapsed ? item.name : undefined}
                                     className={`group relative flex items-center overflow-visible rounded-full font-bold transition-all duration-300 ease-in-out ${isActive
-                                        ? 'text-white shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff]'
-                                        : 'text-slate-500 hover:text-cyan-500 shadow-[2px_2px_4px_transparent,-2px_-2px_4px_transparent] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]'
+                                        ? 'text-white shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155]'
+                                        : 'text-white hover:text-cyan-500 shadow-[2px_2px_4px_transparent,-2px_-2px_4px_transparent] hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]'
                                         } ${isSidebarCollapsed ? 'flex-col justify-center h-[52px] w-[52px] mx-auto p-0' : 'px-5 py-3.5 mx-2'}`}
                                 >
                                     {isActive ? (
-                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-[28px]" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-[28px]" />
                                     ) : (
-                                        <div className="absolute inset-0 bg-[#ecf0f3] rounded-[28px] opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-300" />
+                                        <div className="absolute inset-0 bg-[#1e293b] rounded-[28px] opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-300" />
                                     )}
-                                    <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${isActive ? 'bg-cyan-500 shadow-[inset_2px_2px_4px_rgba(255,255,255,0.4),2px_2px_8px_rgba(0,0,0,0.1)]' : 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] group-hover:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] text-cyan-500'} ${isSidebarCollapsed ? 'mr-0' : 'mr-4'} `}>
+                                    <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${isActive ? 'bg-cyan-500 shadow-[inset_2px_2px_4px_rgba(255,255,255,0.4),2px_2px_8px_rgba(0,0,0,0.1)]' : 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] group-hover:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] text-cyan-500'} ${isSidebarCollapsed ? 'mr-0' : 'mr-4'} `}>
                                         <Icon className="h-5 w-5" aria-hidden="true" strokeWidth={isActive ? 2.5 : 2} />
                                     </div>
                                     <span
@@ -132,16 +132,16 @@ export function Sidebar() {
                                     onClick={() => { if (window.innerWidth < 1024) closeMobileMenu(); }}
                                     title={isSidebarCollapsed ? "Pengelola Sistem" : undefined}
                                     className={`group relative flex items-center overflow-visible rounded-full font-bold transition-all duration-300 ease-in-out ${location.pathname === '/users'
-                                        ? 'text-white shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff]'
-                                        : 'text-slate-500 hover:text-cyan-500 shadow-[2px_2px_4px_transparent,-2px_-2px_4px_transparent] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff]'
+                                        ? 'text-white shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155]'
+                                        : 'text-white hover:text-cyan-500 shadow-[2px_2px_4px_transparent,-2px_-2px_4px_transparent] hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]'
                                         } ${isSidebarCollapsed ? 'flex-col justify-center h-[52px] w-[52px] mx-auto p-0' : 'px-5 py-3.5 mx-2'}`}
                                 >
                                     {location.pathname === '/users' ? (
-                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-[28px]" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-[28px]" />
                                     ) : (
-                                        <div className="absolute inset-0 bg-[#ecf0f3] rounded-[28px] opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-300" />
+                                        <div className="absolute inset-0 bg-[#1e293b] rounded-[28px] opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-300" />
                                     )}
-                                    <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${location.pathname === '/users' ? 'bg-cyan-500 shadow-[inset_2px_2px_4px_rgba(255,255,255,0.4),2px_2px_8px_rgba(0,0,0,0.1)]' : 'bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] group-hover:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] text-cyan-500'} ${isSidebarCollapsed ? 'mr-0' : 'mr-4'} `}>
+                                    <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${location.pathname === '/users' ? 'bg-cyan-500 shadow-[inset_2px_2px_4px_rgba(255,255,255,0.4),2px_2px_8px_rgba(0,0,0,0.1)]' : 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] group-hover:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] text-cyan-500'} ${isSidebarCollapsed ? 'mr-0' : 'mr-4'} `}>
                                         <UserCog className="h-5 w-5" aria-hidden="true" strokeWidth={location.pathname === '/users' ? 2.5 : 2} />
                                     </div>
                                     <span
@@ -161,9 +161,9 @@ export function Sidebar() {
                     <button
                         onClick={() => logout()}
                         title={isSidebarCollapsed ? "Keluar" : undefined}
-                        className={`group relative overflow-hidden flex w-full items-center rounded-full font-bold text-slate-500 bg-[#ecf0f3] hover:text-cyan-500 transition-all duration-300 ease-in-out shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] active:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] ${isSidebarCollapsed ? 'flex-col justify-center h-[52px] w-[52px] mx-auto p-0' : 'px-5 py-3.5 mx-2'}`}
+                        className={`group relative overflow-hidden flex w-full items-center rounded-full font-bold text-white bg-[#1e293b] hover:text-cyan-500 transition-all duration-300 ease-in-out shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155] active:shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] ${isSidebarCollapsed ? 'flex-col justify-center h-[52px] w-[52px] mx-auto p-0' : 'px-5 py-3.5 mx-2'}`}
                     >
-                        <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ecf0f3] transition-all duration-300 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] group-hover:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] text-cyan-500 group-hover:text-red-500 ${isSidebarCollapsed ? 'mr-0' : 'mr-4'} `}>
+                        <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1e293b] transition-all duration-300 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] group-hover:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] text-cyan-500 group-hover:text-red-500 ${isSidebarCollapsed ? 'mr-0' : 'mr-4'} `}>
                             <LogOut className="h-5 w-5" aria-hidden="true" strokeWidth={2.5} />
                         </div>
                         <span

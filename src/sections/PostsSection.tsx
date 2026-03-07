@@ -268,7 +268,7 @@ export function PostsSection() {
         const post = row.original;
         return (
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 shrink-0 rounded-[12px] bg-[#ecf0f3] shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] flex items-center justify-center overflow-hidden">
+            <div className="h-10 w-10 shrink-0 rounded-[12px] bg-[#1e293b] shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] flex items-center justify-center overflow-hidden">
               {post.images && post.images.length > 0 ? (
                 <img src={post.images[0]} alt="" className="h-full w-full object-cover rounded-[10px]" />
               ) : (
@@ -276,7 +276,7 @@ export function PostsSection() {
               )}
             </div>
             <div>
-              <p className="font-bold text-slate-700 line-clamp-1">{post.title}</p>
+              <p className="font-bold text-slate-200 line-clamp-1">{post.title}</p>
               <p className="text-xs font-semibold text-slate-400">/{post.slug}</p>
             </div>
           </div>
@@ -287,7 +287,7 @@ export function PostsSection() {
       accessorKey: 'category',
       header: 'Kategori',
       cell: ({ row }) => (
-        <Badge className={`border-none shadow-[2px_2px_5px_#d1d9e6,-2px_-2px_5px_#ffffff] hover:bg-[#ecf0f3] px-3 py-1 font-bold ${categoryColors[row.original.category]}`}>
+        <Badge className={`border-none shadow-[2px_2px_5px_#0f172a,-2px_-2px_5px_#334155] hover:bg-[#1e293b] px-3 py-1 font-bold ${categoryColors[row.original.category]}`}>
           {categoryLabels[row.original.category]}
         </Badge>
       ),
@@ -331,7 +331,7 @@ export function PostsSection() {
               variant="ghost"
               size="icon"
               onClick={() => handleEdit(post)}
-              className="h-10 w-10 rounded-full bg-[#ecf0f3] text-cyan-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"
+              className="h-10 w-10 rounded-full bg-[#1e293b] text-cyan-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"
             >
               <Pencil className="h-4 w-4" strokeWidth={2.5} />
             </Button>
@@ -339,7 +339,7 @@ export function PostsSection() {
               variant="ghost"
               size="icon"
               onClick={() => handleDelete(post)}
-              className="h-10 w-10 rounded-full bg-[#ecf0f3] text-red-500 hover:text-red-600 border-none shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all"
+              className="h-10 w-10 rounded-full bg-[#1e293b] text-red-500 hover:text-red-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"
             >
               <Trash2 className="h-4 w-4" strokeWidth={2.5} />
             </Button>
@@ -357,7 +357,7 @@ export function PostsSection() {
           <h2 className="text-2xl font-bold text-cyan-500 tracking-tight">Postingan</h2>
           <p className="text-slate-500 font-medium">Kelola berita, inovasi, dan karya siswa</p>
         </div>
-        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-cyan-500 text-white rounded-full px-6 h-12 shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] transition-all font-bold group">
+        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-full px-6 h-12 shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] transition-all font-bold group">
           <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" strokeWidth={2.5} />
           Tambah Postingan
         </Button>
@@ -371,7 +371,7 @@ export function PostsSection() {
             placeholder="Cari berdasarkan judul..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 h-12 bg-[#ecf0f3] border-none rounded-full text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_6px_6px_10px_#d1d9e6,inset_-6px_-6px_10px_#ffffff] font-medium transition-shadow"
+            className="w-full pl-14 h-12 bg-[#1e293b] border-none rounded-full text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_6px_6px_10px_#0f172a,inset_-6px_-6px_10px_#334155] font-medium transition-shadow"
           />
         </div>
       </div>
@@ -408,7 +408,7 @@ export function PostsSection() {
                 <FormItem>
                   <FormLabel>Judul</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan judul postingan" className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12" />
+                    <Input {...field} placeholder="Masukkan judul postingan" className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -421,7 +421,7 @@ export function PostsSection() {
                 <FormItem>
                   <FormLabel>Slug</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="auto-generated-slug" disabled className="bg-[#e8ecef] border-none rounded-2xl text-slate-500 focus-visible:ring-0 focus-visible:outline-none shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] font-medium px-4 h-12 cursor-not-allowed opacity-80" />
+                    <Input {...field} placeholder="auto-generated-slug" disabled className="bg-[#e8ecef] border-none rounded-2xl text-slate-500 focus-visible:ring-0 focus-visible:outline-none shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] font-medium px-4 h-12 cursor-not-allowed opacity-80" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -435,7 +435,7 @@ export function PostsSection() {
                   <FormLabel>Kategori</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus:ring-0 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium px-4 h-12">
+                      <SelectTrigger className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus:ring-0 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12">
                         <SelectValue placeholder="Pilih kategori" />
                       </SelectTrigger>
                     </FormControl>
@@ -485,7 +485,7 @@ export function PostsSection() {
                           <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-cyan-500 font-bold" />
                           <Input
                             placeholder="Ketik URL manual untuk ditambahkan & tekan tombol + di kanan..."
-                            className="w-full pl-12 h-12 bg-[#ecf0f3] border-none rounded-2xl text-slate-600 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] font-medium transition-shadow"
+                            className="w-full pl-12 h-12 bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium transition-shadow"
                             id="manual-url-input"
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') {
@@ -503,7 +503,7 @@ export function PostsSection() {
                         <Button
                           type="button"
                           variant="ghost"
-                          className="h-12 w-12 rounded-2xl border-none bg-[#ecf0f3] text-cyan-500 hover:text-cyan-600 shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:bg-[#ecf0f3] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]"
+                          className="h-12 w-12 rounded-2xl border-none bg-[#1e293b] text-cyan-500 hover:text-cyan-600 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:bg-[#1e293b] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155]"
                           onClick={() => {
                             const inputNode = document.getElementById('manual-url-input') as HTMLInputElement;
                             const val = inputNode?.value.trim();
@@ -531,7 +531,7 @@ export function PostsSection() {
                           variant="ghost"
                           onClick={() => fileInputRef.current?.click()}
                           disabled={isUploading}
-                          className="w-full h-12 rounded-2xl border-none bg-[#ecf0f3] text-cyan-500 hover:text-cyan-600 shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:bg-[#ecf0f3] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] font-bold"
+                          className="w-full h-12 rounded-2xl border-none bg-[#1e293b] text-cyan-500 hover:text-cyan-600 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:bg-[#1e293b] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] font-bold"
                         >
                           {isUploading ? 'Menunggu Proses...' : (
                             <><Upload className="h-5 w-5 mr-2" strokeWidth={2.5} /> Upload Multiple dari PC</>
@@ -566,9 +566,9 @@ export function PostsSection() {
               control={form.control}
               name="is_published"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-3xl bg-[#ecf0f3] p-6 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]">
+                <FormItem className="flex items-center justify-between rounded-3xl bg-[#1e293b] p-6 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]">
                   <div className="space-y-1">
-                    <FormLabel className="text-lg font-bold text-slate-600">Publikasikan</FormLabel>
+                    <FormLabel className="text-lg font-bold text-slate-300">Publikasikan</FormLabel>
                     <p className="text-sm font-medium text-slate-500">
                       Postingan akan terlihat di website publik
                     </p>
@@ -577,7 +577,7 @@ export function PostsSection() {
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="data-[state=checked]:bg-cyan-500 data-[state=unchecked]:bg-[#d1d9e6] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)]"
+                      className="data-[state=checked]:bg-cyan-500 data-[state=unchecked]:bg-[#0f172a] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)]"
                     />
                   </FormControl>
                 </FormItem>

@@ -41,7 +41,7 @@ function DashboardLayout({ children, title, subtitle }: {
   const { isSidebarCollapsed } = useLayoutStore();
 
   return (
-    <div className="min-h-screen bg-[#ecf0f3] text-slate-700 selection:bg-cyan-500/30 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#1e293b] text-slate-200 selection:bg-cyan-500/30 relative overflow-hidden font-sans">
       <Sidebar />
       <div className={`relative z-10 min-h-screen flex flex-col transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'lg:pl-[90px]' : 'lg:pl-[260px]'}`}>
         <Header title={title} subtitle={subtitle} />

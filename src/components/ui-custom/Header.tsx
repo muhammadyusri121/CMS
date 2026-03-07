@@ -21,14 +21,14 @@ export function Header({ title, subtitle: _subtitle }: HeaderProps) {
   const { toggleMobileMenu } = useLayoutStore();
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-[#ecf0f3] pt-4 pb-2 border-none">
+    <header className="sticky top-0 z-30 w-full bg-[#1e293b] pt-4 pb-2 border-none">
       <div className="flex h-16 items-center justify-between px-4 lg:px-8">
         {/* Left: Hamburger & Title */}
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden relative bg-[#ecf0f3] border-none text-slate-500 hover:text-cyan-500 shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all rounded-full h-10 w-10 overflow-hidden group"
+            className="lg:hidden relative bg-[#1e293b] border-none text-slate-500 hover:text-cyan-500 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all rounded-full h-10 w-10 overflow-hidden group"
             onClick={toggleMobileMenu}
           >
             <Menu className="h-5 w-5 relative z-10 font-bold" />
@@ -50,7 +50,7 @@ export function Header({ title, subtitle: _subtitle }: HeaderProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative bg-[#ecf0f3] border-none text-cyan-500 hover:text-cyan-600 shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] active:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all rounded-full h-12 w-12 overflow-visible"
+                className="relative bg-[#1e293b] border-none text-cyan-500 hover:text-cyan-600 shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155] active:shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] transition-all rounded-full h-12 w-12 overflow-visible"
               >
                 <Bell className="h-[22px] w-[22px] relative z-10 fill-cyan-500" />
                 <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 border-none text-white text-[10px] font-bold shadow-md rounded-full">
@@ -81,8 +81,8 @@ export function Header({ title, subtitle: _subtitle }: HeaderProps) {
           {/* User Profile */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-12 w-12 rounded-full p-0 border-none bg-[#ecf0f3] shadow-[6px_6px_12px_#d1d9e6,-6px_-6px_12px_#ffffff] active:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] transition-all ml-1">
-                <Avatar className="h-10 w-10 rounded-full bg-[#ecf0f3] shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]">
+              <Button variant="ghost" className="relative h-12 w-12 rounded-full p-0 border-none bg-[#1e293b] shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155] active:shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] transition-all ml-1">
+                <Avatar className="h-10 w-10 rounded-full bg-[#1e293b] shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155]">
                   <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100" className="rounded-full object-cover border-2 border-transparent" />
                   <AvatarFallback className="bg-cyan-500 text-white font-bold rounded-full">
                     AD

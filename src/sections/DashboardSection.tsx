@@ -53,18 +53,18 @@ export function DashboardSection() {
         {/* Cards Skeleton */}
         <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-40 rounded-[30px] bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] relative overflow-hidden flex flex-col justify-between p-6 items-center">
-              <div className="h-14 w-14 rounded-2xl bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]"></div>
-              <div className="h-10 w-full rounded-full bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] mt-auto"></div>
+            <div key={i} className="h-40 rounded-[30px] bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155] relative overflow-hidden flex flex-col justify-between p-6 items-center">
+              <div className="h-14 w-14 rounded-2xl bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]"></div>
+              <div className="h-10 w-full rounded-full bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] mt-auto"></div>
             </div>
           ))}
         </div>
 
         {/* Bottom Detailed Skeletons */}
         <div className="grid gap-5 grid-cols-1 xl:grid-cols-2">
-          <div className="h-80 rounded-[30px] bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] relative overflow-hidden">
+          <div className="h-80 rounded-[30px] bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155] relative overflow-hidden">
           </div>
-          <div className="h-80 rounded-[30px] bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] relative overflow-hidden">
+          <div className="h-80 rounded-[30px] bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155] relative overflow-hidden">
           </div>
         </div>
       </div>
@@ -96,7 +96,7 @@ export function DashboardSection() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 pb-6">
         <div className="space-y-1.5">
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-700 drop-shadow-sm">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-200 drop-shadow-sm">
             Overview Dashboard
           </h2>
           <p className="text-sm font-bold text-cyan-500 tracking-wide uppercase">
@@ -104,7 +104,7 @@ export function DashboardSection() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[#ecf0f3] border-none shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]">
+        <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[#1e293b] border-none shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]">
           <span className="relative flex h-2.5 w-2.5 ml-1">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)]"></span>
@@ -163,14 +163,14 @@ export function DashboardSection() {
       {/* Quick Info & System Status */}
       <div className="grid gap-8 grid-cols-1 xl:grid-cols-2">
         {/* Recent Activity */}
-        <div className="group relative rounded-[30px] bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] p-6 sm:p-8 flex flex-col h-full overflow-hidden">
+        <div className="group relative rounded-[30px] bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155] p-6 sm:p-8 flex flex-col h-full overflow-hidden">
           <div className="flex items-center justify-between mb-8 relative z-10">
             <div className="flex items-center gap-5">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#ecf0f3] text-cyan-500 transition-all duration-300 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#1e293b] text-cyan-500 transition-all duration-300 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]">
                 <Activity className="h-6 w-6 stroke-[2.5]" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-slate-700 tracking-wide">Aktivitas Terbaru</h3>
+                <h3 className="text-xl font-bold text-slate-200 tracking-wide">Aktivitas Terbaru</h3>
                 <p className="text-xs font-semibold text-cyan-500 tracking-wide mt-1 uppercase">LOG PERUBAHAN 24 JAM TERAKHIR</p>
               </div>
             </div>
@@ -185,13 +185,13 @@ export function DashboardSection() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="flex items-start sm:items-center justify-between py-4 px-5 rounded-[20px] bg-[#ecf0f3] hover:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] transition-all duration-300 cursor-pointer shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] group/item"
+                className="flex items-start sm:items-center justify-between py-4 px-5 rounded-[20px] bg-[#1e293b] hover:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all duration-300 cursor-pointer shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] group/item"
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ecf0f3] text-slate-400 group-hover/item:text-cyan-500 transition-all shadow-[inset_2px_2px_5px_#d1d9e6,inset_-2px_-2px_5px_#ffffff]">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1e293b] text-slate-400 group-hover/item:text-cyan-500 transition-all shadow-[inset_2px_2px_5px_#0f172a,inset_-2px_-2px_5px_#334155]">
                     <Clock className="h-4 w-4 stroke-[2.5]" />
                   </div>
-                  <span className="text-sm font-bold text-slate-600 group-hover/item:text-cyan-600 transition-colors">
+                  <span className="text-sm font-bold text-slate-300 group-hover/item:text-cyan-600 transition-colors">
                     {item.action}
                   </span>
                 </div>
@@ -204,14 +204,14 @@ export function DashboardSection() {
         </div>
 
         {/* System Status */}
-        <div className="group relative rounded-[30px] bg-[#ecf0f3] border-none shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] p-6 sm:p-8 flex flex-col h-full overflow-hidden">
+        <div className="group relative rounded-[30px] bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155] p-6 sm:p-8 flex flex-col h-full overflow-hidden">
           <div className="flex items-center justify-between mb-8 relative z-10">
             <div className="flex items-center gap-5">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#ecf0f3] text-cyan-500 transition-all duration-300 shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#1e293b] text-cyan-500 transition-all duration-300 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]">
                 <CheckCircle2 className="h-6 w-6 stroke-[2.5]" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-slate-700 tracking-wide">Status Layanan</h3>
+                <h3 className="text-xl font-bold text-slate-200 tracking-wide">Status Layanan</h3>
                 <p className="text-xs font-semibold text-cyan-500 tracking-wide mt-1 uppercase">KONDISI INTEGRASI & SISTEM JARINGAN</p>
               </div>
             </div>
@@ -226,11 +226,11 @@ export function DashboardSection() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between py-4 px-5 rounded-[20px] bg-[#ecf0f3] hover:shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] transition-colors group/item shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]"
+                className="flex items-center justify-between py-4 px-5 rounded-[20px] bg-[#1e293b] hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] transition-colors group/item shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]"
               >
                 <div className="flex items-center gap-4">
-                  <div className="h-3 w-3 rounded-full bg-[#ecf0f3] shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] group-hover/item:bg-cyan-400 group-hover/item:shadow-none transition-colors" />
-                  <span className="text-sm font-bold tracking-wide text-slate-600 group-hover/item:text-cyan-600 transition-colors">{item.name}</span>
+                  <div className="h-3 w-3 rounded-full bg-[#1e293b] shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] group-hover/item:bg-cyan-400 group-hover/item:shadow-none transition-colors" />
+                  <span className="text-sm font-bold tracking-wide text-slate-300 group-hover/item:text-cyan-600 transition-colors">{item.name}</span>
                 </div>
 
                 <span className={cn('text-[11px] font-bold tracking-wider px-4 py-2 rounded-full border-none', item.badgeCore, item.badgeBorder)}>

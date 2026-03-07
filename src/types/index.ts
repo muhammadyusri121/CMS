@@ -22,6 +22,7 @@ export interface EducationPersonnel {
   id: string;
   full_name: string;
   nip: string;
+  email?: string | null;
   position: string;
   image_url: string | null;
   sort_order: number;
@@ -44,7 +45,9 @@ export interface Post {
 export interface Graduation {
   nisn: string;
   student_name: string;
-  exam_number: string;
+  birthday?: string | null;
+  gender?: string | null;
+  class_name?: string | null;
   is_graduated: boolean;
   graduation_year: number;
   created_at: Date;

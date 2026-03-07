@@ -70,14 +70,14 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       {/* Table */}
-      <div className="rounded-3xl border-none bg-[#ecf0f3] shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff] p-2 overflow-hidden">
-        <div className="rounded-2xl overflow-hidden bg-[#ecf0f3]">
+      <div className="rounded-3xl border-none bg-[#1e293b] shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155] p-2 overflow-hidden">
+        <div className="rounded-2xl overflow-hidden bg-[#1e293b]">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
                   key={headerGroup.id}
-                  className="bg-[#ecf0f3] border-none shadow-[inset_0px_-2px_5px_rgba(0,0,0,0.05)] hover:bg-[#ecf0f3]"
+                  className="bg-[#1e293b] border-none shadow-[inset_0px_-2px_5px_rgba(0,0,0,0.05)] hover:bg-[#1e293b]"
                 >
                   {headerGroup.headers.map((header) => {
                     const isSortable = header.column.getCanSort();
@@ -138,8 +138,8 @@ export function DataTable<TData, TValue>({
                     key={row.id}
                     className={cn(
                       'transition-all duration-300 border-none',
-                      index % 2 === 0 ? 'bg-[#ecf0f3]' : 'bg-[#e8ecef]',
-                      'hover:bg-[#ecf0f3] hover:shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]'
+                      index % 2 === 0 ? 'bg-[#1e293b]' : 'bg-[#0f172a]/40',
+                      'hover:bg-[#1e293b] hover:shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]'
                     )}
                   >
                     {row.getVisibleCells().map((cell) => (
@@ -159,7 +159,7 @@ export function DataTable<TData, TValue>({
                     className="h-32 text-center"
                   >
                     <div className="flex flex-col items-center gap-3 py-8">
-                      <div className="h-16 w-16 rounded-full bg-[#ecf0f3] shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff] flex items-center justify-center">
+                      <div className="h-16 w-16 rounded-full bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] flex items-center justify-center">
                         <span className="text-3xl opacity-50 grayscale">📭</span>
                       </div>
                       <p className="text-slate-500 font-bold">Tidak ada data</p>
@@ -176,16 +176,16 @@ export function DataTable<TData, TValue>({
       {pageCount > 0 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 pt-2">
           <div className="text-sm text-slate-500 font-medium">
-            Menampilkan <span className="font-bold text-slate-700">{startItem}</span> -{' '}
-            <span className="font-bold text-slate-700">{endItem}</span> dari{' '}
-            <span className="font-bold text-slate-700">{totalItems}</span> data
+            Menampilkan <span className="font-bold text-slate-200">{startItem}</span> -{' '}
+            <span className="font-bold text-slate-200">{endItem}</span> dari{' '}
+            <span className="font-bold text-slate-200">{totalItems}</span> data
           </div>
 
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 rounded-full border-none bg-[#ecf0f3] text-slate-500 shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:text-cyan-500 hover:bg-[#ecf0f3] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] lg:flex hidden disabled:opacity-50 disabled:shadow-none"
+              className="h-10 w-10 rounded-full border-none bg-[#1e293b] text-slate-500 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:text-cyan-500 hover:bg-[#1e293b] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] lg:flex hidden disabled:opacity-50 disabled:shadow-none"
               onClick={() => onPageChange(0)}
               disabled={pageIndex === 0}
             >
@@ -194,7 +194,7 @@ export function DataTable<TData, TValue>({
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 rounded-full border-none bg-[#ecf0f3] text-slate-500 shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:text-cyan-500 hover:bg-[#ecf0f3] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] disabled:opacity-50 disabled:shadow-none"
+              className="h-10 w-10 rounded-full border-none bg-[#1e293b] text-slate-500 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:text-cyan-500 hover:bg-[#1e293b] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] disabled:opacity-50 disabled:shadow-none"
               onClick={() => onPageChange(pageIndex - 1)}
               disabled={pageIndex === 0}
             >
@@ -223,7 +223,7 @@ export function DataTable<TData, TValue>({
                       'h-10 w-10 text-[15px] font-bold rounded-full transition-all border-none',
                       pageIndex === pageNum
                         ? 'bg-cyan-500 text-white shadow-[inset_2px_2px_4px_rgba(255,255,255,0.4),2px_2px_8px_rgba(0,0,0,0.1)] hover:bg-cyan-500 hover:text-white'
-                        : 'bg-[#ecf0f3] text-slate-500 shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:text-cyan-500 hover:bg-[#ecf0f3] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff]'
+                        : 'bg-[#1e293b] text-slate-500 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:text-cyan-500 hover:bg-[#1e293b] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155]'
                     )}
                     onClick={() => onPageChange(pageNum)}
                   >
@@ -236,7 +236,7 @@ export function DataTable<TData, TValue>({
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 rounded-full border-none bg-[#ecf0f3] text-slate-500 shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:text-cyan-500 hover:bg-[#ecf0f3] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] disabled:opacity-50 disabled:shadow-none"
+              className="h-10 w-10 rounded-full border-none bg-[#1e293b] text-slate-500 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:text-cyan-500 hover:bg-[#1e293b] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] disabled:opacity-50 disabled:shadow-none"
               onClick={() => onPageChange(pageIndex + 1)}
               disabled={pageIndex >= pageCount - 1}
             >
@@ -245,7 +245,7 @@ export function DataTable<TData, TValue>({
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 rounded-full border-none bg-[#ecf0f3] text-slate-500 shadow-[4px_4px_8px_#d1d9e6,-4px_-4px_8px_#ffffff] hover:text-cyan-500 hover:bg-[#ecf0f3] active:shadow-[inset_2px_2px_4px_#d1d9e6,inset_-2px_-2px_4px_#ffffff] lg:flex hidden disabled:opacity-50 disabled:shadow-none"
+              className="h-10 w-10 rounded-full border-none bg-[#1e293b] text-slate-500 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:text-cyan-500 hover:bg-[#1e293b] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] lg:flex hidden disabled:opacity-50 disabled:shadow-none"
               onClick={() => onPageChange(pageCount - 1)}
               disabled={pageIndex >= pageCount - 1}
             >

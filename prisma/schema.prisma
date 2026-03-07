@@ -29,6 +29,7 @@ model EducationPersonnel {
   id         String   @id @default(cuid())
   full_name  String
   nip        String?  @unique
+  email      String?
   position   String
   image_url  String?
   sort_order Int      @default(0)
@@ -61,7 +62,9 @@ model Graduation {
   id              String   @id @default(cuid())
   nisn            String   @unique
   student_name    String
-  exam_number     String?  @unique
+  birthday        String?
+  gender          String?
+  class_name      String?
   is_graduated    Boolean  @default(false)
   graduation_year Int
   createdAt       DateTime @default(now())
