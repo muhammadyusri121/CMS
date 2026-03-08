@@ -226,13 +226,13 @@ export function DocumentsSection() {
         const doc = row.original;
         const Icon = documentTypeIcons[doc.doc_type];
         return (
-          <div className="flex items-center gap-3">
-            <div className={`h-10 w-10 shrink-0 rounded-[12px] bg-slate-50 border border-slate-100 flex items-center justify-center shadow-sm ${documentTypeColors[doc.doc_type].split(' ')[1]}`}>
-              <Icon className="h-5 w-5" strokeWidth={2.5} />
+          <div className="flex items-center gap-2">
+            <div className={`h-8 w-8 shrink-0 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center ${documentTypeColors[doc.doc_type].split(' ')[1]}`}>
+              <Icon className="h-4 w-4" strokeWidth={2} />
             </div>
-            <div>
-              <p className="font-extrabold text-slate-800 tracking-tight">{doc.file_name}</p>
-              <p className="text-[11px] font-semibold text-slate-400 line-clamp-1 mt-0.5">{doc.file_path}</p>
+            <div className="min-w-0">
+              <p className="font-medium text-slate-700 text-sm truncate">{doc.file_name}</p>
+              <p className="text-[10px] text-slate-400 truncate max-w-[180px] sm:max-w-[250px] mt-0.5">{doc.file_path}</p>
             </div>
           </div>
         );
@@ -242,7 +242,7 @@ export function DocumentsSection() {
       accessorKey: 'doc_type',
       header: 'Tipe Dokumen',
       cell: ({ row }) => (
-        <Badge className={`border border-slate-100 shadow-sm hover:bg-slate-100 px-3.5 py-1.5 font-bold ${documentTypeColors[row.original.doc_type].split(' ')[1]} bg-slate-50 text-[13px] tracking-tight`}>
+        <Badge className={`border-none px-2.5 py-1 text-[11px] font-semibold ${documentTypeColors[row.original.doc_type]}`}>
           {documentTypeLabels[row.original.doc_type]}
         </Badge>
       ),
@@ -254,7 +254,7 @@ export function DocumentsSection() {
         <Button
           variant="outline"
           size="sm"
-          className="rounded-xl border-slate-200 bg-white text-blue-500 hover:text-blue-600 hover:bg-blue-50 shadow-sm transition-all font-bold px-4"
+          className="rounded-lg border-slate-200 bg-white text-primary-500 hover:text-primary-600 hover:bg-primary-50 shadow-xs transition-colors font-medium px-3 text-xs h-8"
           onClick={() => {
             if (row.original.file_path) {
               window.open(row.original.file_path, '_blank');
@@ -263,7 +263,7 @@ export function DocumentsSection() {
             }
           }}
         >
-          <Download className="h-4 w-4 mr-2" strokeWidth={2.5} />
+          <Download className="h-3.5 w-3.5 mr-1.5" strokeWidth={2} />
           Unduh
         </Button>
       ),
@@ -279,17 +279,17 @@ export function DocumentsSection() {
               variant="outline"
               size="icon"
               onClick={() => handleEdit(doc)}
-              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-blue-500 hover:text-blue-600 border-slate-200 shadow-sm hover:bg-blue-50 transition-all"
+              className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-primary-600 hover:border-primary-200 border-slate-200 shadow-xs transition-colors"
             >
-              <Pencil className="h-4 w-4" strokeWidth={2.5} />
+              <Pencil className="h-3.5 w-3.5" strokeWidth={2} />
             </Button>
             <Button
               variant="outline"
               size="icon"
               onClick={() => handleDelete(doc)}
-              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-red-500 hover:text-red-600 border-slate-200 shadow-sm hover:bg-red-50 transition-all"
+              className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-red-500 hover:border-red-200 border-slate-200 shadow-xs transition-colors"
             >
-              <Trash2 className="h-4 w-4" strokeWidth={2.5} />
+              <Trash2 className="h-3.5 w-3.5" strokeWidth={2} />
             </Button>
           </div>
         );
@@ -300,26 +300,22 @@ export function DocumentsSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Dokumen Akademik</h2>
-          <p className="text-slate-500 font-semibold mt-1">Kelola dokumen, regulasi, dan jadwal akademik</p>
-        </div>
-        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full px-6 h-12 shadow-[0_8px_16px_rgba(59,130,246,0.3)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 transition-all font-bold group">
-          <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" strokeWidth={2.5} />
+      <div className="flex items-center justify-end">
+        <Button onClick={handleCreate} className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-4 h-9 sm:h-10 text-sm shadow-sm font-medium transition-colors w-full sm:w-auto">
+          <Plus className="h-4 w-4" strokeWidth={2} />
           Tambah Dokumen
         </Button>
       </div>
 
       {/* Search */}
       <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
             placeholder="Cari berdasarkan nama atau tipe dokumen..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 h-12 bg-white border border-slate-200 rounded-full text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all"
+            className="w-full pl-9 h-9 sm:h-10 text-sm bg-white border border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium transition-all"
           />
         </div>
       </div>
@@ -354,7 +350,7 @@ export function DocumentsSection() {
                 <FormItem>
                   <FormLabel>Nama File</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan nama file" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                    <Input {...field} placeholder="Masukkan nama file" className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -368,7 +364,7 @@ export function DocumentsSection() {
                   <FormLabel>Tipe Dokumen</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-white border border-slate-200 rounded-2xl text-slate-800 focus:ring-2 focus:ring-blue-100 shadow-sm font-semibold px-4 h-12">
+                      <SelectTrigger className="bg-white border border-slate-200 rounded-lg text-slate-800 focus:ring-2 focus:ring-primary-100 shadow-xs font-medium px-3 h-10">
                         <SelectValue placeholder="Pilih tipe dokumen" />
                       </SelectTrigger>
                     </FormControl>
@@ -392,7 +388,7 @@ export function DocumentsSection() {
                   <FormLabel>File / Dokumen</FormLabel>
                   <FormControl>
                     <div className="flex gap-2 items-center">
-                      <Input {...field} placeholder="https:// ... (URL File)" className="flex-1 bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                      <Input {...field} placeholder="https:// ... (URL File)" className="flex-1 bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
                       <input
                         type="file"
                         className="hidden"
@@ -405,10 +401,10 @@ export function DocumentsSection() {
                         variant="outline"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isUploading}
-                        className="h-12 rounded-2xl bg-white border-slate-200 text-blue-500 hover:text-blue-600 shadow-sm hover:bg-blue-50 px-6 font-bold"
+                        className="h-10 rounded-lg bg-white border-slate-200 text-primary-500 hover:text-primary-600 shadow-xs hover:bg-primary-50 px-4 font-medium text-sm"
                       >
-                        {isUploading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <UploadCloud className="h-5 w-5 mr-2" strokeWidth={2.5} />}
-                        {isUploading ? 'Unggah...' : 'Upload File'}
+                        {isUploading ? <Loader2 className="h-4 w-4 animate-spin mr-1.5" /> : <UploadCloud className="h-4 w-4 mr-1.5" strokeWidth={2} />}
+                        {isUploading ? 'Unggah...' : 'Upload'}
                       </Button>
                     </div>
                   </FormControl>

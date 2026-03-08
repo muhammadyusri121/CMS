@@ -30,12 +30,12 @@ export function ApiTestSection() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">API Test GET Data</h2>
-                <p className="text-slate-500 font-semibold mt-1">Halaman ini dibuat khusus untuk memverifikasi struktur data JSON yang dikembalikan oleh backend.</p>
+                <h2 className="text-lg sm:text-xl font-bold text-slate-800">API Test GET Data</h2>
+                <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">Halaman ini dibuat khusus untuk memverifikasi struktur data JSON yang dikembalikan oleh backend.</p>
             </div>
 
-            <div className="flex flex-wrap gap-3 p-6 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-sm">
-                <Button onClick={() => handleFetch(getPosts, 'Posts')} disabled={loading} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:-translate-y-0.5 shadow-[0_4px_8px_rgba(59,130,246,0.3)] hover:shadow-[0_8px_16px_rgba(59,130,246,0.4)] text-white rounded-xl transition-all font-bold">
+            <div className="flex flex-wrap gap-3 p-6 bg-slate-50 rounded-xl border border-slate-100 shadow-sm">
+                <Button onClick={() => handleFetch(getPosts, 'Posts')} disabled={loading} className="bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium shadow-sm">
                     Get Posts
                 </Button>
                 <Button onClick={() => handleFetch(getExtracurriculars, 'Extracurriculars')} disabled={loading} variant="outline" className="border-slate-200 text-blue-600 hover:bg-blue-50 rounded-xl transition-all shadow-sm font-bold bg-white">
@@ -58,9 +58,9 @@ export function ApiTestSection() {
                 </Button>
             </div>
 
-            <div className="bg-white border border-slate-100 rounded-[2rem] p-6 min-h-[400px] shadow-sm">
+            <div className="bg-white border border-slate-100 rounded-xl p-6 min-h-[400px] shadow-sm">
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-extrabold text-slate-800">Respons Raw JSON</h3>
+                    <h3 className="font-bold text-slate-800">Respons Raw JSON</h3>
                     <Button
                         variant="outline"
                         size="sm"
@@ -70,7 +70,7 @@ export function ApiTestSection() {
                         Clear
                     </Button>
                 </div>
-                <pre className="text-[13px] font-mono font-medium text-slate-600 overflow-auto max-h-[600px] custom-scrollbar bg-slate-50 border border-slate-100 p-6 rounded-2xl shadow-inner">
+                <pre className="text-[13px] font-mono font-medium text-slate-600 overflow-auto max-h-[600px] custom-scrollbar bg-slate-50 border border-slate-100 p-6 rounded-xl shadow-inner">
                     {data ? JSON.stringify(data, null, 2) : '// Tekan salah satu tombol di atas untuk melihat data yang Anda masukkan...'}
                 </pre>
             </div>

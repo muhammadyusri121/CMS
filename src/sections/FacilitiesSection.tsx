@@ -202,14 +202,14 @@ export function FacilitiesSection() {
         const facility = row.original;
         return (
           <div className="flex items-center gap-4">
-            <Avatar className="h-12 w-12 border border-slate-200 bg-white shadow-sm shrink-0">
+            <Avatar className="h-10 w-10 border border-slate-200 bg-white shrink-0">
               <AvatarImage src={facility.image_url || undefined} />
               <AvatarFallback className="bg-blue-50 text-blue-600 font-bold">
-                <Building2 className="h-5 w-5" strokeWidth={2.5} />
+                <Building2 className="h-5 w-5" strokeWidth={2} />
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-extrabold text-slate-800 text-[15px]">{facility.name}</p>
+              <p className="font-semibold text-slate-700 text-[15px]">{facility.name}</p>
             </div>
           </div>
         );
@@ -220,8 +220,8 @@ export function FacilitiesSection() {
       header: 'Jumlah',
       cell: ({ row }) => (
         <div className="flex items-center gap-2 font-bold">
-          <Package className="h-5 w-5 text-amber-500" strokeWidth={2.5} />
-          <Badge className="bg-slate-50 text-slate-700 border border-slate-100 shadow-sm hover:bg-slate-100 px-3 py-1 font-bold">
+          <Package className="h-5 w-5 text-amber-500" strokeWidth={2} />
+          <Badge className="bg-slate-100 text-slate-600 border-none px-2.5 py-1 text-[11px] font-semibold">
             {row.original.quantity} unit
           </Badge>
         </div>
@@ -238,17 +238,17 @@ export function FacilitiesSection() {
               variant="outline"
               size="icon"
               onClick={() => handleEdit(facility)}
-              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-blue-500 hover:text-blue-600 border-slate-200 shadow-sm hover:bg-blue-50 transition-all"
+              className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-primary-600 hover:border-primary-200 border-slate-200 shadow-xs transition-colors"
             >
-              <Pencil className="h-4 w-4" strokeWidth={2.5} />
+              <Pencil className="h-4 w-4" strokeWidth={2} />
             </Button>
             <Button
               variant="outline"
               size="icon"
               onClick={() => handleDelete(facility)}
-              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-red-500 hover:text-red-600 border-slate-200 shadow-sm hover:bg-red-50 transition-all"
+              className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-red-500 hover:border-red-200 border-slate-200 shadow-xs transition-colors"
             >
-              <Trash2 className="h-4 w-4" strokeWidth={2.5} />
+              <Trash2 className="h-4 w-4" strokeWidth={2} />
             </Button>
           </div>
         );
@@ -259,26 +259,22 @@ export function FacilitiesSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Fasilitas</h2>
-          <p className="text-slate-500 font-semibold mt-1">Kelola sarana dan prasarana sekolah</p>
-        </div>
-        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full px-6 h-12 shadow-[0_8px_16px_rgba(59,130,246,0.3)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 transition-all font-bold group">
-          <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" strokeWidth={2.5} />
+      <div className="flex items-center justify-end">
+        <Button onClick={handleCreate} className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-4 h-9 sm:h-10 text-sm shadow-sm font-medium transition-colors w-full sm:w-auto">
+          <Plus className="h-4 w-4" strokeWidth={2} />
           Tambah Fasilitas
         </Button>
       </div>
 
       {/* Search */}
       <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400 font-bold" />
           <Input
             placeholder="Cari berdasarkan nama fasilitas..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 h-12 bg-white border border-slate-200 rounded-full text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all"
+            className="w-full pl-9 h-9 sm:h-10 text-sm bg-white border border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium transition-all"
           />
         </div>
       </div>
@@ -313,7 +309,7 @@ export function FacilitiesSection() {
                 <FormItem>
                   <FormLabel>Nama Fasilitas</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan nama fasilitas" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                    <Input {...field} placeholder="Masukkan nama fasilitas" className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -331,7 +327,7 @@ export function FacilitiesSection() {
                       type="number"
                       onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                       placeholder="Masukkan jumlah"
-                      className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12"
+                      className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10"
                     />
                   </FormControl>
                   <FormMessage />
@@ -348,7 +344,7 @@ export function FacilitiesSection() {
                     <div className="flex gap-2 relative items-center">
                       <div className="relative flex-1">
                         <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
-                        <Input {...field} placeholder="https://example.com/image.jpg" className="w-full pl-12 h-12 bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all" />
+                        <Input {...field} placeholder="https://example.com/image.jpg" className="w-full pl-9 h-10 bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium" />
                       </div>
                       <input
                         type="file"
@@ -362,9 +358,9 @@ export function FacilitiesSection() {
                         variant="outline"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isUploading}
-                        className="h-12 w-12 rounded-2xl bg-white border-slate-200 text-blue-500 hover:text-blue-600 shadow-sm hover:bg-blue-50"
+                        className="h-12 w-12 rounded-lg bg-white border-slate-200 text-primary-500 hover:text-primary-600 shadow-xs hover:bg-primary-50"
                       >
-                        {isUploading ? '...' : <Upload className="h-5 w-5" strokeWidth={2.5} />}
+                        {isUploading ? '...' : <Upload className="h-5 w-5" strokeWidth={2} />}
                       </Button>
                     </div>
                   </FormControl>

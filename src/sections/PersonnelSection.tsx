@@ -200,9 +200,9 @@ export function PersonnelSection() {
 
   const filteredPersonnel = personnel.filter(
     (p) =>
-      p.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.nip.includes(searchQuery) ||
-      p.position.toLowerCase().includes(searchQuery.toLowerCase())
+      p.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.nip?.includes(searchQuery) ||
+      p.position?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const columns: ColumnDef<EducationPersonnel>[] = [
@@ -213,14 +213,14 @@ export function PersonnelSection() {
         const person = row.original;
         return (
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10 border border-slate-200 bg-white shadow-sm font-bold">
+            <Avatar className="h-9 w-9 border border-slate-200 bg-white">
               <AvatarImage src={person.image_url || undefined} className="rounded-full object-cover" />
-              <AvatarFallback className="bg-blue-50 text-blue-600 text-[11px] font-extrabold">
-                {person.full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+              <AvatarFallback className="bg-blue-50 text-blue-600 text-[11px] font-semibold">
+                {person.full_name ? person.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'PP'}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-extrabold tracking-tight text-slate-800">{person.full_name}</p>
+              <p className="font-semibold text-slate-700 text-sm">{person.full_name}</p>
               <p className="text-[11px] font-semibold text-slate-400 mt-0.5">NIP: {person.nip}</p>
               {person.email && <p className="text-[10px] font-bold text-blue-500 mt-1">{person.email}</p>}
             </div>
@@ -232,7 +232,7 @@ export function PersonnelSection() {
       accessorKey: 'position',
       header: 'Jabatan',
       cell: ({ row }) => (
-        <Badge variant="secondary" className="bg-slate-50 text-slate-600 border border-slate-100 shadow-sm hover:bg-slate-100 px-3.5 py-1.5 font-bold">
+        <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-none px-2.5 py-1 text-[11px] font-semibold">
           {row.original.position}
         </Badge>
       ),
@@ -241,7 +241,7 @@ export function PersonnelSection() {
       accessorKey: 'sort_order',
       header: 'Urutan',
       cell: ({ row }) => (
-        <span className="text-[13px] font-extrabold text-slate-500">{row.original.sort_order}</span>
+        <span className="text-xs font-medium text-slate-500">{row.original.sort_order}</span>
       ),
     },
     {
@@ -255,7 +255,7 @@ export function PersonnelSection() {
               variant="outline"
               size="icon"
               onClick={() => handleEdit(person)}
-              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-blue-500 hover:text-blue-600 border-slate-200 shadow-sm hover:bg-blue-50 transition-all"
+              className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-primary-600 hover:border-primary-200 border-slate-200 shadow-xs transition-colors"
             >
               <Pencil className="h-4 w-4" strokeWidth={2.5} />
             </Button>
@@ -263,7 +263,7 @@ export function PersonnelSection() {
               variant="outline"
               size="icon"
               onClick={() => handleDelete(person)}
-              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-red-500 hover:text-red-600 border-slate-200 shadow-sm hover:bg-red-50 transition-all"
+              className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-red-500 hover:border-red-200 border-slate-200 shadow-xs transition-colors"
             >
               <Trash2 className="h-4 w-4" strokeWidth={2.5} />
             </Button>
@@ -275,27 +275,23 @@ export function PersonnelSection() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Personel Pendidik</h2>
-          <p className="text-slate-500 font-semibold mt-1">Kelola data tenaga pendidik dan kependidikan</p>
-        </div>
-        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full px-6 h-12 shadow-[0_8px_16px_rgba(59,130,246,0.3)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 transition-all font-bold group">
-          <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" strokeWidth={2.5} />
+      {/* Header Actions */}
+      <div className="flex items-center justify-end">
+        <Button onClick={handleCreate} className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-4 h-9 sm:h-10 text-sm shadow-sm font-medium transition-colors w-full sm:w-auto">
+          <Plus className="h-4 w-4" strokeWidth={2} />
           Tambah Personel
         </Button>
       </div>
 
       {/* Search */}
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
+      <div className="flex items-center gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
-            placeholder="Cari berdasarkan nama, NIP, atau jabatan..."
+            placeholder="Cari nama, NIP, atau jabatan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 h-12 bg-white border border-slate-200 rounded-full text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all"
+            className="w-full pl-9 h-9 sm:h-10 text-sm bg-white border border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium"
           />
         </div>
       </div>
@@ -330,7 +326,7 @@ export function PersonnelSection() {
                 <FormItem>
                   <FormLabel>Nama Lengkap</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan nama lengkap" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                    <Input {...field} placeholder="Masukkan nama lengkap" className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -343,7 +339,7 @@ export function PersonnelSection() {
                 <FormItem>
                   <FormLabel>NIP</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan NIP" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                    <Input {...field} placeholder="Masukkan NIP" className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -356,7 +352,7 @@ export function PersonnelSection() {
                 <FormItem>
                   <FormLabel>Email (Opsional)</FormLabel>
                   <FormControl>
-                    <Input type="email" {...field} placeholder="contoh@sekolah.sch.id" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                    <Input type="email" {...field} placeholder="contoh@sekolah.sch.id" className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -369,7 +365,7 @@ export function PersonnelSection() {
                 <FormItem>
                   <FormLabel>Jabatan</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan jabatan" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                    <Input {...field} placeholder="Masukkan jabatan" className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -385,7 +381,7 @@ export function PersonnelSection() {
                     <div className="flex gap-2 relative">
                       <div className="relative flex-1">
                         <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
-                        <Input {...field} placeholder="https://example.com/image.jpg" className="w-full pl-12 h-12 bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all" />
+                        <Input {...field} placeholder="https://example.com/image.jpg" className="w-full pl-9 h-10 bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium" />
                       </div>
                       <input
                         type="file"
@@ -399,7 +395,7 @@ export function PersonnelSection() {
                         variant="outline"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isUploading}
-                        className="h-12 w-12 rounded-2xl bg-white border-slate-200 text-blue-500 hover:text-blue-600 shadow-sm hover:bg-blue-50"
+                        className="h-10 w-10 rounded-lg bg-white border-slate-200 text-primary-500 hover:text-primary-600 shadow-xs hover:bg-primary-50"
                       >
                         {isUploading ? '...' : <Upload className="h-5 w-5" strokeWidth={2.5} />}
                       </Button>
@@ -421,7 +417,7 @@ export function PersonnelSection() {
                       type="number"
                       onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                       placeholder="Urutan tampilan"
-                      className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12"
+                      className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10"
                     />
                   </FormControl>
                   <FormMessage />

@@ -1,5 +1,4 @@
 import type { LucideIcon } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface StatsCardProps {
@@ -17,29 +16,19 @@ interface StatsCardProps {
 
 const variantStyles = {
   default: {
-    card: 'bg-white border hover:border-blue-100 border-slate-100 shadow-[0_15px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]',
-    icon: 'bg-slate-50 text-slate-500',
-    hover: '',
+    icon: 'bg-slate-100 text-slate-500',
   },
   gold: {
-    card: 'bg-white border hover:border-amber-100 border-slate-100 shadow-[0_15px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]',
-    icon: 'bg-amber-50 text-amber-500',
-    hover: '',
+    icon: 'bg-amber-50 text-amber-600',
   },
   blue: {
-    card: 'bg-white border hover:border-blue-100 border-slate-100 shadow-[0_15px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]',
-    icon: 'bg-blue-50 text-blue-500',
-    hover: '',
+    icon: 'bg-blue-50 text-blue-600',
   },
   green: {
-    card: 'bg-white border hover:border-emerald-100 border-slate-100 shadow-[0_15px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]',
-    icon: 'bg-emerald-50 text-emerald-500',
-    hover: '',
+    icon: 'bg-emerald-50 text-emerald-600',
   },
   purple: {
-    card: 'bg-white border hover:border-purple-100 border-slate-100 shadow-[0_15px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]',
-    icon: 'bg-purple-50 text-purple-500',
-    hover: '',
+    icon: 'bg-purple-50 text-purple-600',
   },
 };
 
@@ -55,46 +44,42 @@ export function StatsCard({
   const styles = variantStyles[variant];
 
   return (
-    <Card
+    <div
       className={cn(
-        'group relative overflow-hidden transition-all duration-300 rounded-[30px] cursor-pointer',
-        styles.card,
-        styles.hover,
+        'group bg-white border border-slate-200/60 rounded-xl shadow-card hover:shadow-card-hover transition-all duration-200 cursor-default',
         className
       )}
     >
-      <CardContent className="p-6 relative z-10 flex flex-col items-center justify-between text-center h-full min-h-[220px]">
+      <div className="p-4 sm:p-5 flex flex-col justify-between h-full min-h-[100px] sm:min-h-[120px]">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wide">
+            {title}
+          </h3>
+          {trend && (
+            <span className={cn('text-[11px] font-semibold shrink-0', trend.isPositive ? 'text-emerald-600' : 'text-red-500')}>
+              {trend.isPositive ? '↑' : '↓'} {trend.isPositive ? '+' : ''}{trend.value}%
+            </span>
+          )}
+        </div>
 
-        <div className="flex flex-col items-center w-full">
-          <div className="flex w-full items-center justify-between mb-2">
-            <h3 className="text-sm font-semibold text-slate-500 tracking-wide">
-              {title}
-            </h3>
-            {trend && (
-              <span className={cn('text-[13px] font-bold', trend.isPositive ? 'text-lime-500' : 'text-red-500')}>
-                {trend.isPositive ? '↗' : '↘'} {trend.isPositive ? '+' : ''}{trend.value}%
-              </span>
+        <div className="flex items-end justify-between mt-auto">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">{value}</span>
+            {description && (
+              <span className="text-[10px] sm:text-[11px] font-medium text-slate-400 leading-tight mt-0.5">{description}</span>
             )}
           </div>
 
-          <div className="flex items-center gap-4 w-full justify-between mt-3">
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-4xl font-extrabold text-slate-800 tracking-[-0.04em]">{value}</span>
-              <span className="text-[11px] font-medium text-slate-400 capitalize">{description}</span>
-            </div>
-
-            <div
-              className={cn(
-                'flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110',
-                styles.icon
-              )}
-            >
-              <Icon className="h-8 w-8 stroke-[2]" />
-            </div>
+          <div
+            className={cn(
+              'flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg transition-transform duration-200 group-hover:scale-105',
+              styles.icon
+            )}
+          >
+            <Icon className="h-4 w-4 sm:h-5 sm:w-5 stroke-[1.8]" />
           </div>
         </div>
-
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -234,7 +234,7 @@ export function ExtracurricularSection() {
         const extra = row.original;
         return (
           <div className="flex items-center gap-4">
-            <div className="h-12 w-12 shrink-0 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center shadow-sm overflow-hidden">
+            <div className="h-10 w-10 shrink-0 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden">
               {extra.thumbnail ? (
                 <img src={extra.thumbnail} alt="" className="h-full w-full object-cover" />
               ) : (
@@ -242,7 +242,7 @@ export function ExtracurricularSection() {
               )}
             </div>
             <div className="flex flex-col">
-              <p className="font-extrabold text-slate-800 line-clamp-1 text-[15px] hover:text-blue-600 transition-colors cursor-pointer">{extra.title}</p>
+              <p className="font-semibold text-slate-700 line-clamp-1 text-[15px] hover:text-blue-600 transition-colors cursor-pointer">{extra.title}</p>
               <p className="text-[11px] font-semibold text-slate-400 mt-0.5">/{extra.slug}</p>
             </div>
           </div>
@@ -254,8 +254,8 @@ export function ExtracurricularSection() {
       header: 'Nama Ekskul',
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <Trophy className="h-4 w-4 text-orange-500" strokeWidth={2.5} />
-          <span className="font-extrabold text-slate-700">{row.original.ekskul_name.replace(/_/g, ' ')}</span>
+          <Trophy className="h-4 w-4 text-orange-500" strokeWidth={2} />
+          <span className="font-semibold text-slate-700 text-sm">{row.original.ekskul_name.replace(/_/g, ' ')}</span>
         </div>
       ),
     },
@@ -266,12 +266,12 @@ export function ExtracurricularSection() {
         <div className="flex items-center gap-2 font-bold">
           {row.original.is_published ? (
             <>
-              <Eye className="h-4 w-4 text-emerald-500" strokeWidth={2.5} />
+              <Eye className="h-4 w-4 text-emerald-500" strokeWidth={2} />
               <span className="text-sm text-emerald-600">Dipublikasikan</span>
             </>
           ) : (
             <>
-              <EyeOff className="h-4 w-4 text-slate-300" strokeWidth={2.5} />
+              <EyeOff className="h-4 w-4 text-slate-300" strokeWidth={2} />
               <span className="text-sm text-slate-400">Draft</span>
             </>
           )}
@@ -282,7 +282,7 @@ export function ExtracurricularSection() {
       accessorKey: 'created_at',
       header: 'Dibuat',
       cell: ({ row }) => (
-        <span className="text-[13px] font-bold text-slate-500">
+        <span className="text-[13px] font-medium text-slate-500">
           {format(new Date(row.original.created_at), 'dd MMM yyyy', { locale: id })}
         </span>
       ),
@@ -298,17 +298,17 @@ export function ExtracurricularSection() {
               variant="outline"
               size="icon"
               onClick={() => handleEdit(extra)}
-              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-blue-500 hover:text-blue-600 border-slate-200 shadow-sm hover:bg-blue-50 transition-all"
+              className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-primary-600 hover:border-primary-200 border-slate-200 shadow-xs transition-colors"
             >
-              <Pencil className="h-4 w-4" strokeWidth={2.5} />
+              <Pencil className="h-4 w-4" strokeWidth={2} />
             </Button>
             <Button
               variant="outline"
               size="icon"
               onClick={() => handleDelete(extra)}
-              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-red-500 hover:text-red-600 border-slate-200 shadow-sm hover:bg-red-50 transition-all"
+              className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-red-500 hover:border-red-200 border-slate-200 shadow-xs transition-colors"
             >
-              <Trash2 className="h-4 w-4" strokeWidth={2.5} />
+              <Trash2 className="h-4 w-4" strokeWidth={2} />
             </Button>
           </div>
         );
@@ -319,26 +319,22 @@ export function ExtracurricularSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Ekstrakurikuler</h2>
-          <p className="text-slate-500 font-semibold mt-1">Kelola artikel kegiatan siswa ekstrakurikuler</p>
-        </div>
-        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full px-6 h-12 shadow-[0_8px_16px_rgba(59,130,246,0.3)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 transition-all font-bold group">
-          <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" strokeWidth={2.5} />
+      <div className="flex items-center justify-end">
+        <Button onClick={handleCreate} className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-4 h-9 sm:h-10 text-sm shadow-sm font-medium transition-colors w-full sm:w-auto">
+          <Plus className="h-4 w-4" strokeWidth={2} />
           Tambah Artikel Ekskul
         </Button>
       </div>
 
       {/* Search */}
       <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400 font-bold" />
           <Input
             placeholder="Cari judul artikel atau nama ekskul..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 h-12 bg-white border border-slate-200 rounded-full text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all"
+            className="w-full pl-9 h-9 sm:h-10 text-sm bg-white border border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium transition-all"
           />
         </div>
       </div>
@@ -375,7 +371,7 @@ export function ExtracurricularSection() {
                 <FormItem>
                   <FormLabel>Judul Artikel</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan judul artikel" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                    <Input {...field} placeholder="Masukkan judul artikel" className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -389,11 +385,11 @@ export function ExtracurricularSection() {
                   <FormLabel>Nama Ekstrakurikuler</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 font-semibold px-4 h-12">
+                      <SelectTrigger className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 font-medium px-3 h-10">
                         <SelectValue placeholder="Pilih Ekstrakurikuler..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="rounded-2xl border-slate-200 shadow-xl bg-white/95 backdrop-blur-md">
+                    <SelectContent className="rounded-lg border-slate-200 shadow-dropdown bg-white">
                       {EKSKUL_OPTIONS.map((opt) => (
                         <SelectItem key={opt} value={opt} className="font-semibold text-slate-700 hover:text-blue-600 focus:bg-blue-50 cursor-pointer py-3 rounded-xl">
                           {opt.replace(/_/g, ' ')}
@@ -415,7 +411,7 @@ export function ExtracurricularSection() {
                     <div className="flex gap-2 relative items-center">
                       <div className="relative flex-1">
                         <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
-                        <Input {...field} placeholder="https://example.com/image.jpg" className="w-full pl-12 h-12 bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all" />
+                        <Input {...field} placeholder="https://example.com/image.jpg" className="w-full pl-9 h-10 bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium" />
                       </div>
                       <input
                         type="file"
@@ -429,9 +425,9 @@ export function ExtracurricularSection() {
                         variant="outline"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isUploading}
-                        className="h-12 w-12 rounded-2xl bg-white border-slate-200 text-blue-500 hover:text-blue-600 shadow-sm hover:bg-blue-50"
+                        className="h-12 w-12 rounded-lg bg-white border-slate-200 text-primary-500 hover:text-primary-600 shadow-xs hover:bg-primary-50"
                       >
-                        {isUploading ? '...' : <Upload className="h-5 w-5" strokeWidth={2.5} />}
+                        {isUploading ? '...' : <Upload className="h-5 w-5" strokeWidth={2} />}
                       </Button>
                     </div>
                   </FormControl>
@@ -461,9 +457,9 @@ export function ExtracurricularSection() {
               control={form.control}
               name="is_published"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-3xl bg-slate-50 border border-slate-100 p-6 shadow-sm">
+                <FormItem className="flex items-center justify-between rounded-xl bg-slate-50 border border-slate-100 p-4 shadow-xs">
                   <div className="space-y-1">
-                    <FormLabel className="text-lg font-bold text-slate-800">Publikasikan</FormLabel>
+                    <FormLabel className="text-lg font-semibold text-slate-700">Publikasikan</FormLabel>
                     <p className="text-sm font-medium text-slate-500">
                       Artikel akan terlihat di halaman ekstrakurikuler
                     </p>
@@ -472,7 +468,7 @@ export function ExtracurricularSection() {
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-slate-200 shadow-sm"
+                      className="data-[state=checked]:bg-primary-500 data-[state=unchecked]:bg-slate-200"
                     />
                   </FormControl>
                 </FormItem>

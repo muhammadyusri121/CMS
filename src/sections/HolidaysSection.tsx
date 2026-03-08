@@ -97,7 +97,7 @@ export function HolidaysSection() {
   };
 
   const filteredHolidays = holidays.filter(
-    (h) => h.description.toLowerCase().includes(holidaySearchQuery.toLowerCase())
+    (h) => h.description?.toLowerCase().includes(holidaySearchQuery.toLowerCase())
   );
 
   const holidayColumns: ColumnDef<any>[] = [
@@ -105,16 +105,19 @@ export function HolidaysSection() {
       accessorKey: 'date',
       header: 'Tanggal',
       cell: ({ row }) => {
-        const dateStr = new Date(row.original.date).toLocaleDateString('id-ID', {
-          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
-        return <span className="font-extrabold text-slate-700">{dateStr}</span>;
+        const dateObj = row.original.date ? new Date(row.original.date) : null;
+        const dateStr = dateObj && !isNaN(dateObj.getTime())
+          ? dateObj.toLocaleDateString('id-ID', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+          })
+          : '-';
+        return <span className="font-medium text-slate-700">{dateStr}</span>;
       },
     },
     {
       accessorKey: 'description',
       header: 'Perayaan / Keterangan',
-      cell: ({ row }) => <span className="font-extrabold text-slate-800">{row.original.description}</span>,
+      cell: ({ row }) => <span className="font-medium text-slate-700">{row.original.description}</span>,
     },
     {
       id: 'actions',
@@ -124,9 +127,9 @@ export function HolidaysSection() {
           variant="outline"
           size="icon"
           onClick={() => handleDeleteHoliday(row.original)}
-          className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-red-500 hover:text-red-600 border-slate-200 shadow-sm hover:bg-red-50 transition-all"
+          className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-red-500 hover:border-red-200 border-slate-200 shadow-xs hover:bg-red-50 transition-colors"
         >
-          <Trash2 className="h-4 w-4" strokeWidth={2.5} />
+          <Trash2 className="h-3.5 w-3.5" strokeWidth={2} />
         </Button>
       ),
     },
@@ -134,12 +137,8 @@ export function HolidaysSection() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex items-center justify-end">
         <div>
-          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Kalender Akademik (Libur & Perayaan)</h2>
-          <p className="text-slate-500 font-semibold mt-1">Kelola jadwal hari libur akademik dengan mengunggah format Excel</p>
-        </div>
-        <div className="flex items-center gap-2">
           <input
             type="file"
             className="hidden"
@@ -149,23 +148,23 @@ export function HolidaysSection() {
           />
           <Button
             onClick={() => holidayInputRef.current?.click()}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full px-6 h-12 shadow-[0_8px_16px_rgba(59,130,246,0.3)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 transition-all font-bold"
+            className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-4 h-9 sm:h-10 text-sm shadow-sm font-medium transition-colors w-full sm:w-auto"
             disabled={isUploadingHoliday}
           >
-            {isUploadingHoliday ? <Loader2 className="h-5 w-5 animate-spin" /> : <UploadCloud className="h-5 w-5" strokeWidth={2.5} />}
-            {isUploadingHoliday ? 'Memproses...' : 'Upload Excel Kalender'}
+            {isUploadingHoliday ? <Loader2 className="h-4 w-4 animate-spin" /> : <UploadCloud className="h-4 w-4" strokeWidth={2} />}
+            {isUploadingHoliday ? 'Memproses...' : 'Upload Excel'}
           </Button>
         </div>
       </div>
 
-      <div className="flex items-center gap-4 mb-6">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
+      <div className="flex items-center gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
             placeholder="Cari perayaan atau libur..."
             value={holidaySearchQuery}
             onChange={(e) => setHolidaySearchQuery(e.target.value)}
-            className="w-full pl-14 h-12 bg-white border border-slate-200 rounded-full text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all"
+            className="w-full pl-9 h-9 sm:h-10 text-sm bg-white border border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium"
           />
         </div>
       </div>

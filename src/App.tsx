@@ -42,27 +42,18 @@ function DashboardLayout({ children, title, subtitle }: {
   const { isSidebarCollapsed } = useLayoutStore();
 
   return (
-    <div className="h-screen bg-[#020617] text-slate-800 selection:bg-cyan-500/30 relative overflow-hidden font-sans">
-      {/* Deep Navy to Purple/Red Gradient Background */}
-      <div className="absolute inset-0 bg-[#0f172a] z-0">
-        <div className="absolute top-0 left-0 right-0 h-[600px] bg-gradient-to-br from-indigo-900/50 via-purple-900/30 to-rose-900/20 opacity-80 blur-3xl pointer-events-none" />
-        <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-[#1e1b4b]/60 to-transparent pointer-events-none" />
-      </div>
-
-      {/* Main Glass Workspace */}
-      <div className="relative z-10 h-screen p-4 lg:p-6 flex gap-6">
+    <div className="h-screen bg-slate-50 text-slate-800 selection:bg-primary-500/20 relative overflow-hidden font-sans">
+      <div className="relative h-screen flex">
         <Sidebar />
 
-        {/* Main Content Area (Glass Container overlaying gradient) */}
-        <div className={`flex-1 flex flex-col transition-all duration-300 ease-in-out relative ${isSidebarCollapsed ? 'lg:ml-[90px]' : 'lg:ml-[280px]'}`}>
-          <div className="bg-white/95 backdrop-blur-3xl rounded-[40px] shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-white/20 h-full overflow-hidden flex flex-col relative w-full mb-2">
-            <Header title={title} subtitle={subtitle} />
-            <main className="flex-1 p-6 lg:p-10 overflow-x-hidden overflow-y-auto custom-scrollbar">
-              <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {children}
-              </div>
-            </main>
-          </div>
+        {/* Main Content Area */}
+        <div className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-[250px]'}`}>
+          <Header title={title} subtitle={subtitle} />
+          <main className="flex-1 p-4 sm:p-5 lg:p-6 overflow-x-hidden overflow-y-auto">
+            <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
+              {children}
+            </div>
+          </main>
         </div>
       </div>
     </div>

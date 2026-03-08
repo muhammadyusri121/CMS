@@ -31,34 +31,34 @@ export function DeleteDialog({
 }: DeleteDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="max-w-md border-none bg-white sm:rounded-[2rem] rounded-3xl shadow-[0_25px_50px_rgba(0,0,0,0.15)] p-6">
+      <AlertDialogContent className="max-w-md w-[95vw] border border-slate-200 bg-white rounded-xl sm:rounded-2xl shadow-dialog p-4 sm:p-6">
         <AlertDialogHeader>
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[20px] bg-red-50 text-red-500">
-              <AlertTriangle className="h-6 w-6" />
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-500">
+              <AlertTriangle className="h-5 w-5" />
             </div>
             <div>
-              <AlertDialogTitle className="text-xl font-extrabold text-slate-800">
+              <AlertDialogTitle className="text-lg font-bold text-slate-800">
                 {title}
               </AlertDialogTitle>
             </div>
           </div>
-          <AlertDialogDescription className="text-slate-500 mt-2 font-medium">
+          <AlertDialogDescription className="text-slate-500 mt-2 text-sm">
             {description}
             {itemName && (
-              <span className="font-extrabold text-slate-800 block mt-1">
+              <span className="font-semibold text-slate-700 block mt-1">
                 &quot;{itemName}&quot;
               </span>
             )}
-            <span className="block mt-2 text-sm text-red-500 font-bold">
+            <span className="block mt-2 text-xs text-red-500 font-medium">
               Tindakan ini tidak dapat dibatalkan.
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="gap-2 mt-4">
+        <AlertDialogFooter className="gap-2 sm:gap-2.5 flex-col sm:flex-row w-full mt-3">
           <AlertDialogCancel
             disabled={isDeleting}
-            className="rounded-full bg-white text-slate-600 shadow-sm border-slate-200 hover:text-slate-800 hover:bg-slate-50 font-bold px-6 h-12 mt-0"
+            className="w-full sm:w-auto rounded-lg bg-white text-slate-600 border-slate-200 hover:bg-slate-50 font-medium px-4 sm:px-5 h-9 sm:h-10 mt-0"
           >
             Batal
           </AlertDialogCancel>
@@ -68,10 +68,10 @@ export function DeleteDialog({
               onConfirm();
             }}
             disabled={isDeleting}
-            className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-rose-600 text-white rounded-full px-8 h-12 shadow-[0_8px_16px_rgba(239,68,68,0.3)] hover:shadow-[0_12px_24px_rgba(239,68,68,0.4)] hover:-translate-y-0.5 transition-all font-bold border-none"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white rounded-lg px-5 sm:px-6 h-9 sm:h-10 shadow-sm font-medium transition-colors border-none"
           >
             {isDeleting && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
             )}
             Hapus
           </AlertDialogAction>

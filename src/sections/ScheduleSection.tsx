@@ -79,7 +79,7 @@ export function ScheduleSection() {
 
     useEffect(() => {
         loadData();
-    }, [search]); // Adding search dependency to reload on search
+    }, [search]);
 
     useEffect(() => {
         const fetchPersonnel = async () => {
@@ -189,7 +189,6 @@ export function ScheduleSection() {
             toast.error('Terjadi kesalahan saat mengunggah');
         } finally {
             setIsUploading(false);
-            // reset file input
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -201,7 +200,7 @@ export function ScheduleSection() {
             accessorKey: 'day_of_week',
             header: 'Hari',
             cell: ({ row }) => (
-                <span className="font-extrabold text-blue-600 tracking-wide text-[15px]">
+                <span className="font-semibold text-primary-600 text-sm">
                     {row.original.day_of_week}
                 </span>
             ),
@@ -210,7 +209,7 @@ export function ScheduleSection() {
             accessorKey: 'class_name',
             header: 'Kelas',
             cell: ({ row }) => (
-                <span className="font-bold text-slate-800 tracking-tight text-[15px] bg-slate-100 px-3 py-1 rounded-xl">
+                <span className="font-medium text-slate-700 text-sm bg-slate-100 px-2 py-0.5 rounded-md">
                     {row.original.class_name}
                 </span>
             ),
@@ -219,49 +218,46 @@ export function ScheduleSection() {
             accessorKey: 'subject',
             header: 'Mata Pelajaran',
             cell: ({ row }) => (
-                <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 flex items-center justify-center rounded-2xl bg-indigo-50 text-indigo-500 shrink-0">
-                        <BookOpen className="h-5 w-5" />
+                <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-500 shrink-0">
+                        <BookOpen className="h-4 w-4" />
                     </div>
-                    <div className="flex flex-col">
-                        <span className="font-extrabold text-slate-800 text-[15px]">
-                            {row.original.subject}
-                        </span>
-                    </div>
+                    <span className="font-medium text-slate-700 text-sm">
+                        {row.original.subject}
+                    </span>
                 </div>
             ),
         },
         {
             accessorKey: 'time',
-            header: 'Waktu / Jam Ke',
+            header: 'Waktu',
             cell: ({ row }) => (
                 <div className="flex flex-col">
-                    <div className="flex items-center gap-2 mb-1">
-                        <Clock className="w-4 h-4 text-emerald-500" />
-                        <span className="font-bold text-slate-700 text-[15px]">{row.original.time}</span>
+                    <div className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-emerald-500" />
+                        <span className="font-medium text-slate-700 text-sm">{row.original.time}</span>
                     </div>
-                    <span className="text-[13px] font-bold text-slate-400">Jam ke-{row.original.period}</span>
+                    <span className="text-[11px] text-slate-400 mt-0.5">Jam ke-{row.original.period}</span>
                 </div>
             ),
         },
         {
             accessorKey: 'teacher',
-            header: 'Guru Pengajar',
+            header: 'Guru',
             cell: ({ row }) => {
                 const teacher = row.original.teacher;
                 return (
                     <div className="flex flex-col">
                         {teacher ? (
                             <>
-                                <span className="font-bold text-slate-800 text-[15px] flex items-center gap-2">
-                                    <UserCheck className="w-4 h-4 text-blue-500" /> {teacher.full_name}
+                                <span className="font-medium text-slate-700 text-sm flex items-center gap-1.5">
+                                    <UserCheck className="w-3.5 h-3.5 text-primary-500" /> {teacher.full_name}
                                 </span>
-                                <span className="text-[12px] font-semibold text-slate-400 mt-0.5">NIP: {teacher.nip || '-'}</span>
+                                <span className="text-[11px] text-slate-400 mt-0.5">NIP: {teacher.nip || '-'}</span>
                             </>
                         ) : (
-                            <span className="text-[14px] font-medium text-slate-400 italic flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-slate-300"></span>
-                                Belum ada (NIP: {row.original.teacher_nip || 'Tidak diset'})
+                            <span className="text-xs text-slate-400 italic">
+                                Belum diset
                             </span>
                         )}
                     </div>
@@ -270,24 +266,25 @@ export function ScheduleSection() {
         },
         {
             id: 'actions',
+            header: 'Aksi',
             cell: ({ row }) => (
-                <div className="flex justify-end gap-2 pr-4">
+                <div className="flex items-center gap-1.5">
                     <button
                         onClick={() => handleEdit(row.original)}
-                        className="flex items-center justify-center h-10 w-10 rounded-2xl bg-white border border-slate-200 text-slate-500 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50 transition-all shadow-sm"
+                        className="flex items-center justify-center h-8 w-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-primary-600 hover:border-primary-200 transition-colors shadow-xs"
                         title="Edit"
                     >
-                        <Edit className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                        <Edit className="h-3.5 w-3.5" strokeWidth={2} />
                     </button>
                     <button
                         onClick={() => {
                             setSelectedItem(row.original);
                             setIsDeleteDialogOpen(true);
                         }}
-                        className="flex items-center justify-center h-10 w-10 rounded-2xl bg-white border border-slate-200 text-slate-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm"
+                        className="flex items-center justify-center h-8 w-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 transition-colors shadow-xs"
                         title="Hapus"
                     >
-                        <Trash2 className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                        <Trash2 className="h-3.5 w-3.5" strokeWidth={2} />
                     </button>
                 </div>
             ),
@@ -295,46 +292,39 @@ export function ScheduleSection() {
     ];
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Jadwal Pelajaran</h2>
-                    <p className="text-slate-500 font-semibold mt-1">Atur jadwal pelajaran sekolah untuk semua kelas</p>
-                </div>
-
-                <div className="flex items-center gap-3">
-                    <Button
-                        onClick={() => setIsUploadDialogOpen(true)}
-                        variant="outline"
-                        className="flex items-center gap-2 rounded-full px-6 h-12 font-bold text-slate-700 bg-white border-slate-200 hover:bg-slate-50 hover:text-blue-600 transition-all shadow-sm"
-                    >
-                        <UploadCloud className="h-5 w-5" strokeWidth={2.5} />
-                        Upload Excel
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            setSelectedItem(null);
-                            form.reset();
-                            setIsDialogOpen(true);
-                        }}
-                        className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full px-6 h-12 shadow-[0_8px_16px_rgba(59,130,246,0.3)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 transition-all font-bold group"
-                    >
-                        <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" strokeWidth={2.5} />
-                        Tambah Jadwal
-                    </Button>
-                </div>
+        <div className="space-y-4">
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
+                <Button
+                    onClick={() => setIsUploadDialogOpen(true)}
+                    variant="outline"
+                    className="flex items-center justify-center gap-2 rounded-lg px-4 h-9 sm:h-10 text-sm font-medium text-slate-600 bg-white border-slate-200 hover:bg-slate-50 hover:text-primary-600 transition-colors shadow-xs w-full sm:w-auto"
+                >
+                    <UploadCloud className="h-4 w-4" strokeWidth={2} />
+                    Upload Excel
+                </Button>
+                <Button
+                    onClick={() => {
+                        setSelectedItem(null);
+                        form.reset();
+                        setIsDialogOpen(true);
+                    }}
+                    className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-4 h-9 sm:h-10 text-sm shadow-sm font-medium transition-colors w-full sm:w-auto"
+                >
+                    <Plus className="h-4 w-4" strokeWidth={2} />
+                    Tambah Jadwal
+                </Button>
             </div>
 
             {/* Search */}
-            <div className="flex items-center gap-4">
-                <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
+            <div className="flex items-center gap-3">
+                <div className="relative flex-1 max-w-sm">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
                         placeholder="Cari kelas, NIP, atau mapel..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-14 h-12 bg-white border border-slate-200 rounded-full text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all"
+                        className="w-full pl-9 h-9 sm:h-10 text-sm bg-white border border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium"
                     />
                 </div>
             </div>
@@ -359,30 +349,30 @@ export function ScheduleSection() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 isSubmitting={isUploading}
             >
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2 col-span-2">
-                        <label className="text-[13px] font-bold text-slate-700">Mata Pelajaran</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5 sm:col-span-2">
+                        <label className="text-xs font-medium text-slate-600">Mata Pelajaran</label>
                         <input
                             {...form.register("subject")}
-                            className="w-full flex h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-[15px] font-bold text-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-500 disabled:opacity-50"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-100 focus-visible:border-primary-400"
                             placeholder="Cth: Matematika"
                         />
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-[13px] font-bold text-slate-700">Kelas</label>
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-medium text-slate-600">Kelas</label>
                         <input
                             {...form.register("class_name")}
-                            className="w-full flex h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-[15px] font-bold text-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-100 focus-visible:border-primary-400"
                             placeholder="Cth: X IPA 1"
                         />
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-[13px] font-bold text-slate-700">Hari</label>
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-medium text-slate-600">Hari</label>
                         <select
                             {...form.register("day_of_week")}
-                            className="w-full flex h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-[15px] font-bold text-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-100 focus-visible:border-primary-400"
                         >
                             <option value="Senin">Senin</option>
                             <option value="Selasa">Selasa</option>
@@ -393,49 +383,49 @@ export function ScheduleSection() {
                         </select>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-[13px] font-bold text-slate-700">Jam Ke-</label>
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-medium text-slate-600">Jam Ke-</label>
                         <input
                             {...form.register("period")}
-                            className="w-full flex h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-[15px] font-bold text-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-100 focus-visible:border-primary-400"
                             placeholder="Cth: 1-2"
                         />
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-[13px] font-bold text-slate-700">Waktu / Jam</label>
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-medium text-slate-600">Waktu / Jam</label>
                         <input
                             {...form.register("time")}
-                            className="w-full flex h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-[15px] font-bold text-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-100 focus-visible:border-primary-400"
                             placeholder="Cth: 07:00 - 08:30"
                         />
                     </div>
 
-                    <div className="space-y-2 col-span-2 mt-2 relative" ref={dropdownRef}>
-                        <label className="text-[13px] font-bold text-slate-700">Guru Pengajar (Opsional)</label>
+                    <div className="space-y-1.5 sm:col-span-2 relative" ref={dropdownRef}>
+                        <label className="text-xs font-medium text-slate-600">Guru Pengajar (Opsional)</label>
                         <div
                             onClick={() => setIsTeacherDropdownOpen(!isTeacherDropdownOpen)}
-                            className="w-full flex items-center justify-between h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-[15px] font-bold text-slate-800 cursor-pointer overflow-hidden transition-all hover:bg-slate-100/70"
+                            className="w-full flex items-center justify-between h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 cursor-pointer overflow-hidden transition-all hover:bg-slate-50"
                         >
                             <span className="truncate">
                                 {form.watch("teacher_nip")
                                     ? (() => {
                                         const t = personnelList.find(p => p.nip === form.watch("teacher_nip"));
-                                        return t ? `${t.full_name} (NIP: ${t.nip})` : `NIP Tertaut: ${form.watch("teacher_nip")}`;
+                                        return t ? `${t.full_name} (NIP: ${t.nip})` : `NIP: ${form.watch("teacher_nip")}`;
                                     })()
                                     : "Pilih Guru Pengajar..."
                                 }
                             </span>
-                            <ChevronDown className={`w-5 h-5 text-slate-400 shrink-0 transition-transform ${isTeacherDropdownOpen ? 'rotate-180' : ''}`} />
+                            <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform ${isTeacherDropdownOpen ? 'rotate-180' : ''}`} />
                         </div>
 
                         {isTeacherDropdownOpen && (
-                            <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl border border-slate-200 shadow-[0_15px_40px_rgba(0,0,0,0.12)] overflow-hidden animate-in zoom-in-95 duration-200">
-                                <div className="p-3 border-b border-slate-100 bg-slate-50/50">
+                            <div className="absolute z-50 w-full mt-1 bg-white rounded-lg border border-slate-200 shadow-dropdown overflow-hidden">
+                                <div className="p-2 border-b border-slate-100 bg-slate-50/50">
                                     <div className="relative">
-                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
                                         <input
-                                            className="w-full xl pl-9 pr-4 h-10 rounded-xl bg-white border border-slate-200 text-[14px] font-semibold text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:text-slate-400"
+                                            className="w-full pl-8 pr-3 h-9 rounded-md bg-white border border-slate-200 text-sm font-medium text-slate-800 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all placeholder:text-slate-400"
                                             placeholder="Cari nama guru atau NIP..."
                                             value={teacherSearchQuery}
                                             onChange={(e) => setTeacherSearchQuery(e.target.value)}
@@ -443,22 +433,22 @@ export function ScheduleSection() {
                                         />
                                     </div>
                                 </div>
-                                <div className="max-h-60 overflow-y-auto custom-scrollbar">
+                                <div className="max-h-48 overflow-y-auto custom-scrollbar">
                                     <div
-                                        className="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-50 transition-colors"
+                                        className="px-3 py-2 hover:bg-slate-50 cursor-pointer border-b border-slate-50 transition-colors"
                                         onClick={() => {
                                             form.setValue("teacher_nip", "");
                                             setIsTeacherDropdownOpen(false);
                                         }}
                                     >
-                                        <span className="text-[14px] font-bold text-slate-400 italic">Tidak Diset / Kosongkan</span>
+                                        <span className="text-xs font-medium text-slate-400 italic">Kosongkan</span>
                                     </div>
                                     {personnelList.filter(p =>
                                         p.full_name.toLowerCase().includes(teacherSearchQuery.toLowerCase()) ||
                                         (p.nip && p.nip.includes(teacherSearchQuery))
                                     ).length === 0 ? (
-                                        <div className="px-4 py-8 text-center">
-                                            <p className="text-[14px] font-medium text-slate-400">Guru tidak ditemukan.</p>
+                                        <div className="px-3 py-6 text-center">
+                                            <p className="text-xs text-slate-400">Guru tidak ditemukan.</p>
                                         </div>
                                     ) : (
                                         personnelList.filter(p =>
@@ -467,22 +457,22 @@ export function ScheduleSection() {
                                         ).map(p => (
                                             <div
                                                 key={p.nip || p.id}
-                                                className={`px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-50 transition-colors flex items-center justify-between ${form.watch("teacher_nip") === p.nip ? 'bg-blue-50/50' : ''}`}
+                                                className={`px-3 py-2 hover:bg-slate-50 cursor-pointer border-b border-slate-50 transition-colors flex items-center justify-between ${form.watch("teacher_nip") === p.nip ? 'bg-primary-50/50' : ''}`}
                                                 onClick={() => {
                                                     if (p.nip) {
                                                         form.setValue("teacher_nip", p.nip);
                                                     } else {
-                                                        toast.info("Guru ini belum memiliki NIP yang tersimpan di Master Data.");
+                                                        toast.info("Guru ini belum memiliki NIP.");
                                                     }
                                                     setIsTeacherDropdownOpen(false);
                                                 }}
                                             >
                                                 <div className="flex flex-col">
-                                                    <div className="font-extrabold text-slate-800 text-[14.5px]">{p.full_name}</div>
-                                                    <div className="text-[12px] font-semibold text-slate-500 mt-0.5">{p.nip ? `NIP: ${p.nip}` : 'Belum Ada NIP'}</div>
+                                                    <div className="font-medium text-slate-700 text-sm">{p.full_name}</div>
+                                                    <div className="text-[11px] text-slate-400 mt-0.5">{p.nip ? `NIP: ${p.nip}` : 'Belum Ada NIP'}</div>
                                                 </div>
                                                 {form.watch("teacher_nip") === p.nip && (
-                                                    <UserCheck className="w-5 h-5 text-blue-500 mr-2" />
+                                                    <UserCheck className="w-4 h-4 text-primary-500 mr-1" />
                                                 )}
                                             </div>
                                         ))
@@ -490,8 +480,8 @@ export function ScheduleSection() {
                                 </div>
                             </div>
                         )}
-                        <p className="text-[12.5px] font-semibold text-slate-500 pl-1 mt-1.5 flex items-center gap-1.5 opacity-90">
-                            <BookOpen className="w-3.5 h-3.5 text-blue-500" /> Profil tertaut otomatis dengan Master Personel Pendidik.
+                        <p className="text-[11px] text-slate-400 pl-0.5 mt-1 flex items-center gap-1">
+                            <BookOpen className="w-3 h-3 text-primary-400" /> Tertaut otomatis dengan Master Personel.
                         </p>
                     </div>
                 </div>
@@ -501,18 +491,18 @@ export function ScheduleSection() {
             {isUploadDialogOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsUploadDialogOpen(false)} />
-                    <div className="relative w-full max-w-lg rounded-[32px] bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.15)] animate-in zoom-in-95 duration-200 border border-slate-100">
+                    <div className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-dialog border border-slate-100">
 
-                        <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 text-blue-500 border border-blue-100 shadow-sm">
-                            <FileSpreadsheet className="w-8 h-8" strokeWidth={2.5} />
+                        <div className="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center mb-4 text-primary-500">
+                            <FileSpreadsheet className="w-6 h-6" strokeWidth={2} />
                         </div>
 
-                        <h3 className="text-2xl font-extrabold text-slate-800 tracking-tight mb-2">Upload File Excel</h3>
-                        <p className="text-slate-500 font-medium text-[15px] mb-6 leading-relaxed">
-                            Gunakan format Excel standar dengan kolom: <b className="text-slate-700">Nama Kelas, Jam Ke, Jam, Mata Pelajaran, NIP Guru Pengajar, Hari</b>. Pastikan NIP sesuai dengan direktori guru agar relasi terbaca sistem.
+                        <h3 className="text-lg font-semibold text-slate-700 mb-1">Upload File Excel</h3>
+                        <p className="text-slate-500 text-sm mb-4 leading-relaxed">
+                            Format Excel: <b className="text-slate-700">Nama Kelas, Jam Ke, Jam, Mata Pelajaran, NIP Guru, Hari</b>.
                         </p>
 
-                        <div className="border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-colors rounded-[24px] p-8 text-center cursor-pointer relative">
+                        <div className="border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-colors rounded-xl p-6 text-center cursor-pointer relative">
                             <input
                                 type="file"
                                 accept=".xlsx,.xls"
@@ -522,19 +512,19 @@ export function ScheduleSection() {
                                 disabled={isUploading}
                             />
                             <div className="flex flex-col items-center">
-                                <UploadCloud className={`w-12 h-12 mb-4 ${isUploading ? 'text-blue-500 animate-bounce' : 'text-slate-400'}`} strokeWidth={2} />
-                                <h4 className="text-lg font-bold text-slate-700 mb-1">
-                                    {isUploading ? 'Sedang mengunggah...' : 'Klik atau Tarik File Excel ke sini'}
+                                <UploadCloud className={`w-8 h-8 mb-3 ${isUploading ? 'text-primary-500 animate-bounce' : 'text-slate-400'}`} strokeWidth={2} />
+                                <h4 className="text-sm font-semibold text-slate-700 mb-1">
+                                    {isUploading ? 'Sedang mengunggah...' : 'Klik atau Tarik File ke sini'}
                                 </h4>
-                                <p className="text-[13px] font-medium text-slate-400">Mendukung format .xlsx dan .xls</p>
+                                <p className="text-[11px] text-slate-400">Format .xlsx dan .xls</p>
                             </div>
                         </div>
 
-                        <div className="mt-8 flex justify-end">
+                        <div className="mt-4 flex justify-end">
                             <button
                                 type="button"
                                 onClick={() => setIsUploadDialogOpen(false)}
-                                className="px-6 py-3 text-[14px] font-bold tracking-wide text-slate-500 hover:text-slate-700 hover:bg-slate-50 rounded-full transition-all"
+                                className="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-50 rounded-lg transition-colors"
                                 disabled={isUploading}
                             >
                                 Batal

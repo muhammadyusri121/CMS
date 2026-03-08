@@ -53,5 +53,22 @@ export const uploadMiddleware = multer({
     storage: multer.memoryStorage(),
     limits: {
         fileSize: 5 * 1024 * 1024 // Batasan ukuran file (contoh: maksimal 5MB)
+    },
+    fileFilter: (req, file, cb) => {
+        // Lapisan Keamanan (File Filter) - Mencegah server dijadikan hosting file berbahaya seperti HTML (XSS), EXE, atau script JS
+        const allowedMimeTypes = [
+            'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
+            'application/pdf', 'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
+            'application/vnd.ms-excel', // XLS
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // XLSX
+        ];
+
+        // Jika tipe MIME file termasuk dalam daftar yang diizinkan (allowlist)
+        if (allowedMimeTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error(`Tipe file tidak diizinkan: ${file.mimetype}. Hanya menerima format gambar dan dokumen standar.`));
+        }
     }
 });

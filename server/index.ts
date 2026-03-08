@@ -16,8 +16,23 @@ const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'heworqcv89y47ry34bcti4ycit438obvi74b57li6v534v13vy54y56';
 
+app.disable('x-powered-by'); // Keamanan: Menyembunyikan bahwa server ini berjalan dengan ExpressJS
+app.use((req, res, next) => {
+    // Keamanan: Security Headers Native tanpa perlu install Helmet
+    res.setHeader('X-Content-Type-Options', 'nosniff'); // Cegah celah MIMESniffing (bisa upload file .jpg isinya text/html JS -> dieksekusi client)
+    res.setHeader('X-Frame-Options', 'DENY'); // Cegah Clickjacking attack
+    res.setHeader('X-XSS-Protection', '1; mode=block'); // Pelindung kuno browser terhadap Reflected XSS
+    res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:;");
+    next();
+});
+
 app.use(cors());
 app.use(express.json());
+
+if (!process.env.JWT_SECRET) {
+    console.error("FATAL ERROR: JWT_SECRET wajib diatur di file .env untuk keamanan Aplikasi!");
+    process.exit(1);
+}
 
 // Fungsi bantuan untuk menyamakan format balasan (respons) API
 const handleSuccess = (res: Response, data: any, message?: string) => res.json({ success: true, data, message });
@@ -59,7 +74,13 @@ import { minioClient, BUCKET_NAME, uploadMiddleware, initBucket } from './minio'
 // Otomatis membuat wadah penyimpanan (Bucket) saat server pertama menyala
 initBucket();
 
-app.post('/api/upload', requireAuth, uploadMiddleware.single('file'), async (req, res) => {
+app.post('/api/upload', requireAuth, (req, res, next) => {
+    uploadMiddleware.single('file')(req, res, (err: any) => {
+        // Jika ada peringatan multer (Ditolak karena beda format MIME / terlalu besar sizenya)
+        if (err) return res.status(400).json({ success: false, error: err.message });
+        next();
+    });
+}, async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ success: false, error: "Tidak ada file yang diunggah" });
 
@@ -199,7 +220,7 @@ app.delete('/api/users/:id', requireAuth, requireAdmin, async (req, res) => {
 });
 
 // --- Manajemen Tenaga Pendidik (Guru & Karyawan) ---
-app.get('/api/education-personnel', async (req, res) => {
+app.get('/api/education-personnel', requireAuth, async (req, res) => {
     try {
         const personnel = await prisma.educationPersonnel.findMany({
             orderBy: { sort_order: 'asc' },
@@ -239,7 +260,7 @@ app.delete('/api/education-personnel/:id', requireAuth, async (req, res) => {
 });
 
 // --- Manajemen Artikel dan Berita ---
-app.get('/api/posts', async (req, res) => {
+app.get('/api/posts', requireAuth, async (req, res) => {
     try {
         const page = parseInt(req.query.page as string || '1');
         const limit = parseInt(req.query.limit as string || '10');
@@ -325,7 +346,7 @@ app.delete('/api/posts/:id', requireAuth, async (req, res) => {
 });
 
 // --- Manajemen Data Kelulusan Siswa ---
-app.get('/api/graduations', async (req, res) => {
+app.get('/api/graduations', requireAuth, async (req, res) => {
     try {
         const page = parseInt(req.query.page as string || '1');
         const limit = parseInt(req.query.limit as string || '10');
@@ -388,7 +409,7 @@ app.delete('/api/graduations/:nisn', requireAuth, async (req, res) => {
 });
 
 // --- Manajemen Dokumen dan Peraturan Akademik ---
-app.get('/api/academic-documents', async (req, res) => {
+app.get('/api/academic-documents', requireAuth, async (req, res) => {
     try {
         const documents = await prisma.academicDocument.findMany();
         const formatted = documents.map(d => ({ ...d, created_at: d.createdAt, updated_at: d.createdAt }));
@@ -433,7 +454,7 @@ const generateUniqueEkskulSlug = async (title: string) => {
     return slug;
 }
 
-app.get('/api/extracurriculars', async (req, res) => {
+app.get('/api/extracurriculars', requireAuth, async (req, res) => {
     try {
         const page = parseInt(req.query.page as string || '1');
         const limit = parseInt(req.query.limit as string || '10');
@@ -504,7 +525,7 @@ app.delete('/api/extracurriculars/:id', requireAuth, async (req, res) => {
 });
 
 // --- Manajemen Fasilitas dan Sarana Prasarana Sekolah ---
-app.get('/api/facilities', async (req, res) => {
+app.get('/api/facilities', requireAuth, async (req, res) => {
     try {
         const items = await prisma.facility.findMany();
         const formatted = items.map(d => ({ ...d, created_at: d.createdAt, updated_at: d.createdAt }));
@@ -538,7 +559,7 @@ app.delete('/api/facilities/:id', requireAuth, async (req, res) => {
 });
 
 // --- Manajemen Kalender / Hari Libur (Holidays) ---
-app.get('/api/holidays', async (req, res) => {
+app.get('/api/holidays', requireAuth, async (req, res) => {
     try {
         const holidays = await prisma.holiday.findMany({
             orderBy: { date: 'asc' }
@@ -548,7 +569,12 @@ app.get('/api/holidays', async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.post('/api/holidays/upload', requireAuth, uploadMiddleware.single('file'), async (req, res) => {
+app.post('/api/holidays/upload', requireAuth, (req, res, next) => {
+    uploadMiddleware.single('file')(req, res, (err: any) => {
+        if (err) return res.status(400).json({ success: false, error: err.message });
+        next();
+    });
+}, async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ success: false, error: "Tidak ada file yang diunggah" });
 
@@ -606,7 +632,7 @@ app.delete('/api/holidays/:id', requireAuth, async (req, res) => {
 });
 
 // --- Manajemen Jadwal Pelajaran (School Schedule) ---
-app.get('/api/school-schedule', async (req, res) => {
+app.get('/api/school-schedule', requireAuth, async (req, res) => {
     try {
         const page = parseInt(req.query.page as string || '1');
         const limit = parseInt(req.query.limit as string || '10');
@@ -688,7 +714,12 @@ app.delete('/api/school-schedule/:id', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.post('/api/school-schedule/upload', requireAuth, uploadMiddleware.single('file'), async (req, res) => {
+app.post('/api/school-schedule/upload', requireAuth, (req, res, next) => {
+    uploadMiddleware.single('file')(req, res, (err: any) => {
+        if (err) return res.status(400).json({ success: false, error: err.message });
+        next();
+    });
+}, async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ success: false, error: "Tidak ada file yang diunggah" });
 
