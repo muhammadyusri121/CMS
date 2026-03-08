@@ -17,35 +17,37 @@ interface StatsCardProps {
 
 const variantStyles = {
   default: {
-    card: 'bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155]',
-    icon: 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] text-cyan-500',
-    hover: 'hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]',
+    card: 'bg-white border hover:border-blue-100 border-slate-100 shadow-[0_15px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]',
+    icon: 'bg-slate-50 text-slate-500',
+    hover: '',
   },
   gold: {
-    card: 'bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155]',
-    icon: 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] text-cyan-500',
-    hover: 'hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]',
+    card: 'bg-white border hover:border-amber-100 border-slate-100 shadow-[0_15px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]',
+    icon: 'bg-amber-50 text-amber-500',
+    hover: '',
   },
   blue: {
-    card: 'bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155]',
-    icon: 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] text-cyan-500',
-    hover: 'hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]',
+    card: 'bg-white border hover:border-blue-100 border-slate-100 shadow-[0_15px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]',
+    icon: 'bg-blue-50 text-blue-500',
+    hover: '',
   },
   green: {
-    card: 'bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155]',
-    icon: 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] text-cyan-500',
-    hover: 'hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]',
+    card: 'bg-white border hover:border-emerald-100 border-slate-100 shadow-[0_15px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]',
+    icon: 'bg-emerald-50 text-emerald-500',
+    hover: '',
   },
   purple: {
-    card: 'bg-[#1e293b] border-none shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155]',
-    icon: 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] text-cyan-500',
-    hover: 'hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]',
+    card: 'bg-white border hover:border-purple-100 border-slate-100 shadow-[0_15px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]',
+    icon: 'bg-purple-50 text-purple-500',
+    hover: '',
   },
 };
 
 export function StatsCard({
   title,
   value,
+  description,
+  trend,
   icon: Icon,
   variant = 'default',
   className,
@@ -64,23 +66,31 @@ export function StatsCard({
       <CardContent className="p-6 relative z-10 flex flex-col items-center justify-between text-center h-full min-h-[220px]">
 
         <div className="flex flex-col items-center w-full">
-          <div
-            className={cn(
-              'flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-[20px] transition-all duration-300 mb-4 group-hover:scale-95 group-hover:shadow-[inset_6px_6px_12px_#0f172a,inset_-6px_-6px_12px_#334155]',
-              styles.icon
+          <div className="flex w-full items-center justify-between mb-2">
+            <h3 className="text-sm font-semibold text-slate-500 tracking-wide">
+              {title}
+            </h3>
+            {trend && (
+              <span className={cn('text-[13px] font-bold', trend.isPositive ? 'text-lime-500' : 'text-red-500')}>
+                {trend.isPositive ? '↗' : '↘'} {trend.isPositive ? '+' : ''}{trend.value}%
+              </span>
             )}
-          >
-            <Icon className="h-7 w-7 transition-all stroke-[2.5]" />
           </div>
 
-          <p className="text-[13px] font-semibold text-slate-500 tracking-wide mb-6">
-            {title}
-          </p>
-        </div>
+          <div className="flex items-center gap-4 w-full justify-between mt-3">
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-4xl font-extrabold text-slate-800 tracking-[-0.04em]">{value}</span>
+              <span className="text-[11px] font-medium text-slate-400 capitalize">{description}</span>
+            </div>
 
-        <div className="w-full mt-auto">
-          <div className="w-full h-[45px] flex items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-bold text-xl shadow-[4px_4px_10px_#0f172a,-4px_-4px_10px_#334155,inset_2px_2px_4px_rgba(255,255,255,0.4)] group-hover:scale-[1.02] transition-transform">
-            {value}
+            <div
+              className={cn(
+                'flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110',
+                styles.icon
+              )}
+            >
+              <Icon className="h-8 w-8 stroke-[2]" />
+            </div>
           </div>
         </div>
 

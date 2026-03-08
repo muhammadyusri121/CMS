@@ -6,7 +6,8 @@ import {
     getExtracurriculars,
     getEducationPersonnel,
     getFacilities,
-    getAcademicDocuments
+    getAcademicDocuments,
+    getHolidays
 } from '@/actions';
 
 export function ApiTestSection() {
@@ -29,44 +30,47 @@ export function ApiTestSection() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-2xl font-bold text-slate-50">API Test GET Data</h2>
-                <p className="text-slate-500">Halaman ini dibuat khusus untuk memverifikasi struktur data JSON yang dikembalikan oleh backend.</p>
+                <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">API Test GET Data</h2>
+                <p className="text-slate-500 font-semibold mt-1">Halaman ini dibuat khusus untuk memverifikasi struktur data JSON yang dikembalikan oleh backend.</p>
             </div>
 
-            <div className="flex flex-wrap gap-3 p-4 bg-slate-900/50 rounded-xl border border-slate-800">
-                <Button onClick={() => handleFetch(getPosts, 'Posts')} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <div className="flex flex-wrap gap-3 p-6 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-sm">
+                <Button onClick={() => handleFetch(getPosts, 'Posts')} disabled={loading} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:-translate-y-0.5 shadow-[0_4px_8px_rgba(59,130,246,0.3)] hover:shadow-[0_8px_16px_rgba(59,130,246,0.4)] text-white rounded-xl transition-all font-bold">
                     Get Posts
                 </Button>
-                <Button onClick={() => handleFetch(getExtracurriculars, 'Extracurriculars')} disabled={loading} variant="outline" className="border-blue-800 text-blue-400 hover:bg-blue-900/30">
+                <Button onClick={() => handleFetch(getExtracurriculars, 'Extracurriculars')} disabled={loading} variant="outline" className="border-slate-200 text-blue-600 hover:bg-blue-50 rounded-xl transition-all shadow-sm font-bold bg-white">
                     Get Extracurriculars
                 </Button>
-                <Button onClick={() => handleFetch(getFacilities, 'Facilities')} disabled={loading} variant="outline" className="border-emerald-800 text-emerald-400 hover:bg-emerald-900/30">
+                <Button onClick={() => handleFetch(getFacilities, 'Facilities')} disabled={loading} variant="outline" className="border-slate-200 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all shadow-sm font-bold bg-white">
                     Get Facilities
                 </Button>
-                <Button onClick={() => handleFetch(getEducationPersonnel, 'Personnel')} disabled={loading} variant="outline" className="border-amber-800 text-amber-400 hover:bg-amber-900/30">
+                <Button onClick={() => handleFetch(getEducationPersonnel, 'Personnel')} disabled={loading} variant="outline" className="border-slate-200 text-amber-600 hover:bg-amber-50 rounded-xl transition-all shadow-sm font-bold bg-white">
                     Get Personnel
                 </Button>
-                <Button onClick={() => handleFetch(getAcademicDocuments, 'Documents')} disabled={loading} variant="outline" className="border-purple-800 text-purple-400 hover:bg-purple-900/30">
+                <Button onClick={() => handleFetch(getAcademicDocuments, 'Documents')} disabled={loading} variant="outline" className="border-slate-200 text-purple-600 hover:bg-purple-50 rounded-xl transition-all shadow-sm font-bold bg-white">
                     Get Documents
                 </Button>
-                <Button onClick={() => handleFetch(getGraduations, 'Graduations')} disabled={loading} variant="outline" className="border-rose-800 text-rose-400 hover:bg-rose-900/30">
+                <Button onClick={() => handleFetch(getGraduations, 'Graduations')} disabled={loading} variant="outline" className="border-slate-200 text-rose-600 hover:bg-rose-50 rounded-xl transition-all shadow-sm font-bold bg-white">
                     Get Graduations
+                </Button>
+                <Button onClick={() => handleFetch(getHolidays, 'Holidays')} disabled={loading} variant="outline" className="border-slate-200 text-orange-600 hover:bg-orange-50 rounded-xl transition-all shadow-sm font-bold bg-white">
+                    Get Holidays
                 </Button>
             </div>
 
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 min-h-[400px]">
+            <div className="bg-white border border-slate-100 rounded-[2rem] p-6 min-h-[400px] shadow-sm">
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-semibold text-slate-300">Respons Raw JSON</h3>
+                    <h3 className="font-extrabold text-slate-800">Respons Raw JSON</h3>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={() => setData(null)}
-                        className="h-8 text-slate-400 hover:text-white"
+                        className="h-8 text-slate-500 hover:text-slate-800 rounded-xl shadow-sm border-slate-200 font-bold"
                     >
                         Clear
                     </Button>
                 </div>
-                <pre className="text-sm font-mono text-emerald-400 overflow-auto max-h-[600px] custom-scrollbar bg-[#0f172a] p-4 rounded-lg">
+                <pre className="text-[13px] font-mono font-medium text-slate-600 overflow-auto max-h-[600px] custom-scrollbar bg-slate-50 border border-slate-100 p-6 rounded-2xl shadow-inner">
                     {data ? JSON.stringify(data, null, 2) : '// Tekan salah satu tombol di atas untuk melihat data yang Anda masukkan...'}
                 </pre>
             </div>

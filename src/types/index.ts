@@ -1,11 +1,16 @@
 // Database Models Types
 
 export const PostCategory = {
-  NEWS: 'NEWS',
-  STUDENT_WORK: 'STUDENT_WORK',
-  DOUBLE_TRACK: 'DOUBLE_TRACK',
+  SUPERVISI_GURU: 'SUPERVISI_GURU',
+  ASAS: 'ASAS',
+  ASAJ: 'ASAJ',
+  TKA: 'TKA',
+  KARYA_SISWA: 'KARYA_SISWA',
   HUMAS: 'HUMAS',
-  OSIS: 'OSIS',
+  KOMITE: 'KOMITE',
+  KEMITRAAN: 'KEMITRAAN',
+  DOUBLE_TRACK: 'DOUBLE_TRACK',
+  OSIS_MPK: 'OSIS_MPK',
 } as const;
 
 export type PostCategory = typeof PostCategory[keyof typeof PostCategory];

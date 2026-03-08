@@ -81,25 +81,25 @@ export function UsersSection() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-cyan-500 tracking-tight">Kelola Pengelola Utama (Admin)</h1>
-                <Button onClick={fetchUsers} variant="ghost" size="sm" className="rounded-full bg-[#1e293b] text-cyan-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all font-bold px-4 h-10"><RefreshCw className="mr-2 h-4 w-4" strokeWidth={2.5} />Refresh</Button>
+                <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Kelola Pengelola Utama (Admin)</h1>
+                <Button onClick={fetchUsers} variant="outline" size="sm" className="rounded-xl border-slate-200 bg-white text-slate-500 hover:text-blue-600 hover:border-blue-200 shadow-sm transition-all font-bold px-4 h-10"><RefreshCw className="mr-2 h-4 w-4" strokeWidth={2.5} />Refresh</Button>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-                <div className="bg-[#1e293b] border-none rounded-3xl p-6 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]">
-                    <h2 className="text-xl font-bold text-cyan-600 mb-6">Daftar Pengelola</h2>
+                <div className="bg-slate-50 border border-slate-100 rounded-[2rem] p-6 shadow-sm">
+                    <h2 className="text-xl font-extrabold text-slate-800 mb-6">Daftar Pengelola</h2>
                     {loading ? <p>Loading...</p> : (
                         <ul className="space-y-3">
                             {users.map(u => (
-                                <li key={u.id} className="flex items-center justify-between p-4 border-none rounded-2xl shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all duration-300">
+                                <li key={u.id} className="flex items-center justify-between p-4 border border-slate-100 rounded-2xl bg-white shadow-sm hover:border-blue-100 transition-all duration-300">
                                     <div>
-                                        <p className="font-bold text-slate-200">{u.name}</p>
-                                        <p className="text-xs font-bold text-slate-400">{u.email} &bull; {u.role}</p>
+                                        <p className="font-extrabold text-slate-800">{u.name}</p>
+                                        <p className="text-[11px] font-bold text-slate-400">{u.email} &bull; {u.role}</p>
                                     </div>
                                     {u.id !== currentUser?.id && currentUser?.role === 'ADMIN' && (
                                         <div className="flex gap-2">
-                                            <Button variant="ghost" size="icon" onClick={() => handleEdit(u)} className="h-10 w-10 flex-shrink-0 rounded-full bg-[#1e293b] text-cyan-500 hover:text-cyan-600 border-none shadow-[2px_2px_5px_#0f172a,-2px_-2px_5px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"><Edit className="h-4 w-4" strokeWidth={2.5} /></Button>
-                                            <Button variant="ghost" size="icon" onClick={() => handleDelete(u.id)} className="h-10 w-10 flex-shrink-0 rounded-full bg-[#1e293b] text-red-500 hover:text-red-600 border-none shadow-[2px_2px_5px_#0f172a,-2px_-2px_5px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"><Trash2 className="h-4 w-4" strokeWidth={2.5} /></Button>
+                                            <Button variant="outline" size="icon" onClick={() => handleEdit(u)} className="h-10 w-10 flex-shrink-0 rounded-xl bg-white text-blue-500 hover:text-blue-600 hover:bg-blue-50 border-slate-200 shadow-sm transition-all"><Edit className="h-4 w-4" strokeWidth={2.5} /></Button>
+                                            <Button variant="outline" size="icon" onClick={() => handleDelete(u.id)} className="h-10 w-10 flex-shrink-0 rounded-xl bg-white text-red-500 hover:text-red-600 hover:bg-red-50 border-slate-200 shadow-sm transition-all"><Trash2 className="h-4 w-4" strokeWidth={2.5} /></Button>
                                         </div>
                                     )}
                                 </li>
@@ -109,24 +109,24 @@ export function UsersSection() {
                 </div>
 
                 {/* Form */}
-                <div className="bg-[#1e293b] border-none rounded-3xl p-6 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]">
-                    <h2 className="text-xl font-bold text-cyan-600 mb-6">{isEditing ? 'Edit Pengelola' : 'Tambah Pengelola Baru'}</h2>
+                <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm">
+                    <h2 className="text-xl font-extrabold text-slate-800 mb-6">{isEditing ? 'Edit Pengelola' : 'Tambah Pengelola Baru'}</h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <Input name="name" placeholder="Nama Lengkap" value={formData.name} onChange={handleChange} required className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12" />
-                        <Input name="email" type="email" placeholder="Email Login" value={formData.email} onChange={handleChange} required className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12" />
-                        <Input name="password" type="password" placeholder={isEditing ? "(Kosongkan jika tidak ingin ubah password)" : "Password Baru"} value={formData.password} onChange={handleChange} required={!isEditing} className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12" />
-                        <select name="role" value={formData.role} onChange={handleChange} className="h-12 w-full rounded-2xl border-none bg-[#1e293b] px-4 py-2 text-slate-300 focus-visible:outline-none focus-visible:ring-0 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium cursor-pointer">
+                        <Input name="name" placeholder="Nama Lengkap" value={formData.name} onChange={handleChange} required className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                        <Input name="email" type="email" placeholder="Email Login" value={formData.email} onChange={handleChange} required className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                        <Input name="password" type="password" placeholder={isEditing ? "(Kosongkan jika tidak ingin ubah password)" : "Password Baru"} value={formData.password} onChange={handleChange} required={!isEditing} className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
+                        <select name="role" value={formData.role} onChange={handleChange} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 py-2 text-slate-800 focus-visible:outline-none focus:ring-2 focus:ring-blue-100 shadow-sm font-semibold cursor-pointer">
                             <option value="ADMIN">ADMIN (Super User)</option>
                             <option value="EDITOR">EDITOR (Ubah Konten)</option>
                             <option value="AUTHOR">AUTHOR (Tulis Konten)</option>
                         </select>
                         <div className="flex gap-4 mt-6">
-                            <Button type="submit" disabled={loading} className="flex-1 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-full h-12 shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] font-bold transition-all border-none text-base">
+                            <Button type="submit" disabled={loading} className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full h-12 shadow-[0_8px_16px_rgba(59,130,246,0.3)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 font-bold transition-all border-none text-base">
                                 {isEditing ? <Edit className="mr-2 h-5 w-5" strokeWidth={2.5} /> : <Plus className="mr-2 h-5 w-5" strokeWidth={2.5} />}
                                 {isEditing ? 'Simpan Data' : 'Tambahkan'}
                             </Button>
                             {isEditing && (
-                                <Button type="button" variant="ghost" onClick={() => { setIsEditing(false); setFormData({ id: '', name: '', email: '', password: '', role: 'EDITOR' }) }} className="rounded-full bg-[#1e293b] text-slate-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all h-12 px-6 font-bold text-base">Batal</Button>
+                                <Button type="button" variant="outline" onClick={() => { setIsEditing(false); setFormData({ id: '', name: '', email: '', password: '', role: 'EDITOR' }) }} className="rounded-full bg-white text-slate-600 hover:text-slate-800 border-slate-200 shadow-sm font-bold text-base transition-all h-12 px-6">Batal</Button>
                             )}
                         </div>
                     </form>

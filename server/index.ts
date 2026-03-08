@@ -605,6 +605,135 @@ app.delete('/api/holidays/:id', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
+// --- Manajemen Jadwal Pelajaran (School Schedule) ---
+app.get('/api/school-schedule', async (req, res) => {
+    try {
+        const page = parseInt(req.query.page as string || '1');
+        const limit = parseInt(req.query.limit as string || '10');
+        const search = req.query.search as string;
+
+        const where: any = search ? {
+            OR: [
+                { class_name: { contains: search, mode: 'insensitive' } },
+                { subject: { contains: search, mode: 'insensitive' } },
+                { teacher_nip: { contains: search, mode: 'insensitive' } }
+            ]
+        } : {};
+
+        const [total, items] = await Promise.all([
+            prisma.schoolSchedule.count({ where }),
+            prisma.schoolSchedule.findMany({
+                where,
+                skip: (page - 1) * limit,
+                take: limit,
+                orderBy: [
+                    { day_of_week: 'asc' },
+                    { period: 'asc' }
+                ],
+                include: { teacher: true }
+            })
+        ]);
+
+        handleSuccess(res, {
+            data: items,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        });
+    } catch (error) { handleError(res, error); }
+});
+
+app.post('/api/school-schedule', requireAuth, async (req, res) => {
+    try {
+        const { class_name, period, time, subject, day_of_week, teacher_nip } = req.body;
+
+        let validNip = null;
+        if (teacher_nip) {
+            const checkNip = await prisma.educationPersonnel.findUnique({ where: { nip: teacher_nip } });
+            if (checkNip) validNip = teacher_nip;
+        }
+
+        const item = await prisma.schoolSchedule.create({
+            data: { class_name, period, time, subject, day_of_week, teacher_nip: validNip }
+        });
+        handleSuccess(res, item, 'Jadwal berhasil ditambahkan');
+    } catch (error) { handleError(res, error); }
+});
+
+app.put('/api/school-schedule/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params as { id: string };
+        const { class_name, period, time, subject, day_of_week, teacher_nip } = req.body;
+
+        let validNip = null;
+        if (teacher_nip) {
+            const checkNip = await prisma.educationPersonnel.findUnique({ where: { nip: teacher_nip } });
+            if (checkNip) validNip = teacher_nip;
+        }
+
+        const item = await prisma.schoolSchedule.update({
+            where: { id },
+            data: { class_name, period, time, subject, day_of_week, teacher_nip: validNip }
+        });
+        handleSuccess(res, item, 'Jadwal berhasil diperbarui');
+    } catch (error) { handleError(res, error); }
+});
+
+app.delete('/api/school-schedule/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params as { id: string };
+        await prisma.schoolSchedule.delete({ where: { id } });
+        handleSuccess(res, null, 'Jadwal berhasil dihapus');
+    } catch (error) { handleError(res, error); }
+});
+
+app.post('/api/school-schedule/upload', requireAuth, uploadMiddleware.single('file'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ success: false, error: "Tidak ada file yang diunggah" });
+
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const data: any[] = xlsx.utils.sheet_to_json(sheet);
+
+        const allPersonnel = await prisma.educationPersonnel.findMany({ select: { nip: true } });
+        const nipSet = new Set(allPersonnel.filter(p => p.nip).map(p => p.nip));
+
+        const insertData = data
+            .map(row => {
+                const class_name = row['Nama Kelas']?.toString() || row['Kelas']?.toString();
+                const period = row['Jam Ke']?.toString();
+                const time = row['Jam']?.toString() || row['Waktu']?.toString();
+                const subject = row['Mata Pelajaran']?.toString();
+                const teacher_nip_raw = row['NIP Guru Pengajar']?.toString() || row['NIP']?.toString();
+                const day_of_week = row['Hari']?.toString();
+
+                if (!class_name || !period || !time || !subject || !day_of_week) return null;
+
+                const validNip = (teacher_nip_raw && nipSet.has(teacher_nip_raw)) ? teacher_nip_raw : null;
+
+                return {
+                    class_name,
+                    period,
+                    time,
+                    subject,
+                    day_of_week,
+                    teacher_nip: validNip
+                };
+            })
+            .filter((row): row is Exclude<typeof row, null> => row !== null);
+
+        if (insertData.length === 0) {
+            return res.status(400).json({ success: false, error: "Format Excel tidak valid. Pastikan kolom: Nama Kelas, Jam Ke, Jam, Mata Pelajaran, NIP Guru Pengajar, Hari" });
+        }
+
+        await prisma.schoolSchedule.createMany({ data: insertData });
+
+        handleSuccess(res, { count: insertData.length }, `${insertData.length} jadwal berhasil ditambahkan`);
+    } catch (error) { console.error("Error process excel", error); handleError(res, error); }
+});
+
 // --- Statistik Ringkasan Untuk Dashboard CMS ---
 app.get('/api/dashboard-stats', requireAuth, async (req, res) => {
     try {

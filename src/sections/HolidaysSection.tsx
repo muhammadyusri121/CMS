@@ -108,23 +108,23 @@ export function HolidaysSection() {
         const dateStr = new Date(row.original.date).toLocaleDateString('id-ID', {
           weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
-        return <span className="font-bold text-slate-200">{dateStr}</span>;
+        return <span className="font-extrabold text-slate-700">{dateStr}</span>;
       },
     },
     {
       accessorKey: 'description',
       header: 'Perayaan / Keterangan',
-      cell: ({ row }) => <span className="font-bold text-slate-200">{row.original.description}</span>,
+      cell: ({ row }) => <span className="font-extrabold text-slate-800">{row.original.description}</span>,
     },
     {
       id: 'actions',
       header: 'Kelola',
       cell: ({ row }) => (
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
           onClick={() => handleDeleteHoliday(row.original)}
-          className="h-10 w-10 rounded-full bg-[#1e293b] text-red-500 hover:text-red-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"
+          className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-red-500 hover:text-red-600 border-slate-200 shadow-sm hover:bg-red-50 transition-all"
         >
           <Trash2 className="h-4 w-4" strokeWidth={2.5} />
         </Button>
@@ -136,8 +136,8 @@ export function HolidaysSection() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-cyan-500 tracking-tight">Kalender Akademik (Libur & Perayaan)</h2>
-          <p className="text-slate-500 font-medium">Kelola jadwal hari libur akademik dengan mengunggah format Excel</p>
+          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Kalender Akademik (Libur & Perayaan)</h2>
+          <p className="text-slate-500 font-semibold mt-1">Kelola jadwal hari libur akademik dengan mengunggah format Excel</p>
         </div>
         <div className="flex items-center gap-2">
           <input
@@ -149,7 +149,7 @@ export function HolidaysSection() {
           />
           <Button
             onClick={() => holidayInputRef.current?.click()}
-            className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-full px-6 h-12 shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] transition-all font-bold"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full px-6 h-12 shadow-[0_8px_16px_rgba(59,130,246,0.3)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 transition-all font-bold"
             disabled={isUploadingHoliday}
           >
             {isUploadingHoliday ? <Loader2 className="h-5 w-5 animate-spin" /> : <UploadCloud className="h-5 w-5" strokeWidth={2.5} />}
@@ -160,12 +160,12 @@ export function HolidaysSection() {
 
       <div className="flex items-center gap-4 mb-6">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-cyan-500 font-bold" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
           <Input
             placeholder="Cari perayaan atau libur..."
             value={holidaySearchQuery}
             onChange={(e) => setHolidaySearchQuery(e.target.value)}
-            className="w-full pl-14 h-12 bg-[#1e293b] border-none rounded-full text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_6px_6px_10px_#0f172a,inset_-6px_-6px_10px_#334155] font-medium transition-shadow"
+            className="w-full pl-14 h-12 bg-white border border-slate-200 rounded-full text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all"
           />
         </div>
       </div>

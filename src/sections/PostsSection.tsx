@@ -42,19 +42,29 @@ import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
 const categoryLabels: Record<PostCategory, string> = {
-  [PostCategory.NEWS]: 'Berita',
-  [PostCategory.STUDENT_WORK]: 'Karya Siswa',
+  [PostCategory.SUPERVISI_GURU]: 'Supervisi Guru',
+  [PostCategory.ASAS]: 'ASAS',
+  [PostCategory.ASAJ]: 'ASAJ',
+  [PostCategory.TKA]: 'TKA',
+  [PostCategory.KARYA_SISWA]: 'Karya Siswa',
+  [PostCategory.HUMAS]: 'Humas',
+  [PostCategory.KOMITE]: 'Komite',
+  [PostCategory.KEMITRAAN]: 'Kemitraan',
   [PostCategory.DOUBLE_TRACK]: 'Double Track',
-  [PostCategory.HUMAS]: 'HUMAS',
-  [PostCategory.OSIS]: 'OSIS',
+  [PostCategory.OSIS_MPK]: 'OSIS MPK',
 };
 
 const categoryColors: Record<PostCategory, string> = {
-  [PostCategory.NEWS]: 'bg-blue-100 text-blue-700',
-  [PostCategory.STUDENT_WORK]: 'bg-emerald-100 text-emerald-700',
-  [PostCategory.DOUBLE_TRACK]: 'bg-blue-100 text-blue-700',
+  [PostCategory.SUPERVISI_GURU]: 'bg-blue-100 text-blue-700',
+  [PostCategory.ASAS]: 'bg-purple-100 text-purple-700',
+  [PostCategory.ASAJ]: 'bg-purple-100 text-purple-700',
+  [PostCategory.TKA]: 'bg-yellow-100 text-yellow-700',
+  [PostCategory.KARYA_SISWA]: 'bg-emerald-100 text-emerald-700',
   [PostCategory.HUMAS]: 'bg-pink-100 text-pink-700',
-  [PostCategory.OSIS]: 'bg-indigo-100 text-indigo-700',
+  [PostCategory.KOMITE]: 'bg-orange-100 text-orange-700',
+  [PostCategory.KEMITRAAN]: 'bg-teal-100 text-teal-700',
+  [PostCategory.DOUBLE_TRACK]: 'bg-indigo-100 text-indigo-700',
+  [PostCategory.OSIS_MPK]: 'bg-red-100 text-red-700',
 };
 
 export function PostsSection() {
@@ -128,7 +138,7 @@ export function PostsSection() {
       title: '',
       slug: '',
       content: '',
-      category: PostCategory.NEWS,
+      category: PostCategory.SUPERVISI_GURU,
       images: [],
       is_published: false,
     },
@@ -176,7 +186,7 @@ export function PostsSection() {
       title: '',
       slug: '',
       content: '',
-      category: PostCategory.NEWS,
+      category: PostCategory.SUPERVISI_GURU,
       images: [],
       is_published: false,
     });
@@ -267,17 +277,17 @@ export function PostsSection() {
       cell: ({ row }) => {
         const post = row.original;
         return (
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 shrink-0 rounded-[12px] bg-[#1e293b] shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] flex items-center justify-center overflow-hidden">
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 shrink-0 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm">
               {post.images && post.images.length > 0 ? (
-                <img src={post.images[0]} alt="" className="h-full w-full object-cover rounded-[10px]" />
+                <img src={post.images[0]} alt="" className="h-full w-full object-cover" />
               ) : (
-                <ImageIcon className="h-5 w-5 text-cyan-500" />
+                <ImageIcon className="h-5 w-5 text-slate-300" />
               )}
             </div>
-            <div>
-              <p className="font-bold text-slate-200 line-clamp-1">{post.title}</p>
-              <p className="text-xs font-semibold text-slate-400">/{post.slug}</p>
+            <div className="flex flex-col">
+              <p className="font-extrabold text-slate-800 line-clamp-1 text-[15px] hover:text-blue-600 transition-colors cursor-pointer">{post.title}</p>
+              <p className="text-[11px] font-semibold text-slate-400 mt-0.5">/{post.slug}</p>
             </div>
           </div>
         );
@@ -287,7 +297,7 @@ export function PostsSection() {
       accessorKey: 'category',
       header: 'Kategori',
       cell: ({ row }) => (
-        <Badge className={`border-none shadow-[2px_2px_5px_#0f172a,-2px_-2px_5px_#334155] hover:bg-[#1e293b] px-3 py-1 font-bold ${categoryColors[row.original.category]}`}>
+        <Badge className={`border-none px-3.5 py-1.5 font-bold shadow-sm ${categoryColors[row.original.category]}`}>
           {categoryLabels[row.original.category]}
         </Badge>
       ),
@@ -299,13 +309,13 @@ export function PostsSection() {
         <div className="flex items-center gap-2 font-bold">
           {row.original.is_published ? (
             <>
-              <Eye className="h-4 w-4 text-cyan-500" strokeWidth={2.5} />
-              <span className="text-sm text-cyan-600">Dipublikasikan</span>
+              <Eye className="h-4 w-4 text-emerald-500" strokeWidth={2.5} />
+              <span className="text-sm text-emerald-600">Dipublikasikan</span>
             </>
           ) : (
             <>
-              <EyeOff className="h-4 w-4 text-slate-400" strokeWidth={2.5} />
-              <span className="text-sm text-slate-500">Draft</span>
+              <EyeOff className="h-4 w-4 text-slate-300" strokeWidth={2.5} />
+              <span className="text-sm text-slate-400" >Draft</span>
             </>
           )}
         </div>
@@ -315,7 +325,7 @@ export function PostsSection() {
       accessorKey: 'created_at',
       header: 'Dibuat',
       cell: ({ row }) => (
-        <span className="text-sm font-bold text-slate-400">
+        <span className="text-[13px] font-bold text-slate-500">
           {format(new Date(row.original.created_at), 'dd MMM yyyy', { locale: id })}
         </span>
       ),
@@ -328,18 +338,18 @@ export function PostsSection() {
         return (
           <div className="flex items-center gap-2">
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
               onClick={() => handleEdit(post)}
-              className="h-10 w-10 rounded-full bg-[#1e293b] text-cyan-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"
+              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-blue-500 hover:text-blue-600 border-slate-200 shadow-sm hover:bg-blue-50 transition-all"
             >
               <Pencil className="h-4 w-4" strokeWidth={2.5} />
             </Button>
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
               onClick={() => handleDelete(post)}
-              className="h-10 w-10 rounded-full bg-[#1e293b] text-red-500 hover:text-red-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"
+              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-red-500 hover:text-red-600 border-slate-200 shadow-sm hover:bg-red-50 transition-all"
             >
               <Trash2 className="h-4 w-4" strokeWidth={2.5} />
             </Button>
@@ -354,10 +364,10 @@ export function PostsSection() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-cyan-500 tracking-tight">Postingan</h2>
-          <p className="text-slate-500 font-medium">Kelola berita, inovasi, dan karya siswa</p>
+          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Postingan</h2>
+          <p className="text-slate-500 font-semibold mt-1">Kelola berita, inovasi, dan karya siswa</p>
         </div>
-        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-full px-6 h-12 shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] transition-all font-bold group">
+        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full px-6 h-12 shadow-[0_8px_16px_rgba(59,130,246,0.3)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 transition-all font-bold group">
           <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" strokeWidth={2.5} />
           Tambah Postingan
         </Button>
@@ -366,12 +376,12 @@ export function PostsSection() {
       {/* Search */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-cyan-500 font-bold" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
           <Input
             placeholder="Cari berdasarkan judul..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 h-12 bg-[#1e293b] border-none rounded-full text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_6px_6px_10px_#0f172a,inset_-6px_-6px_10px_#334155] font-medium transition-shadow"
+            className="w-full pl-14 h-12 bg-white border border-slate-200 rounded-full text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all"
           />
         </div>
       </div>
@@ -408,7 +418,7 @@ export function PostsSection() {
                 <FormItem>
                   <FormLabel>Judul</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan judul postingan" className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12" />
+                    <Input {...field} placeholder="Masukkan judul postingan" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -421,7 +431,7 @@ export function PostsSection() {
                 <FormItem>
                   <FormLabel>Slug</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="auto-generated-slug" disabled className="bg-[#e8ecef] border-none rounded-2xl text-slate-500 focus-visible:ring-0 focus-visible:outline-none shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] font-medium px-4 h-12 cursor-not-allowed opacity-80" />
+                    <Input {...field} placeholder="auto-generated-slug" disabled className="bg-slate-50 border-slate-200 rounded-2xl text-slate-500 shadow-sm font-medium px-4 h-12 cursor-not-allowed opacity-80" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -435,7 +445,7 @@ export function PostsSection() {
                   <FormLabel>Kategori</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus:ring-0 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12">
+                      <SelectTrigger className="bg-white border-slate-200 rounded-2xl text-slate-800 focus:ring-2 focus:ring-blue-100 shadow-sm font-semibold px-4 h-12">
                         <SelectValue placeholder="Pilih kategori" />
                       </SelectTrigger>
                     </FormControl>
@@ -460,9 +470,9 @@ export function PostsSection() {
                   <FormControl>
                     <div className="space-y-4">
                       {field.value && field.value.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-3">
                           {field.value.map((url, idx) => (
-                            <div key={idx} className="relative h-20 w-20 rounded-md overflow-hidden bg-slate-800 flex items-center justify-center group border border-slate-700">
+                            <div key={idx} className="relative h-24 w-24 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center group border border-slate-200 shadow-sm">
                               <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
                               <button
                                 type="button"
@@ -471,9 +481,9 @@ export function PostsSection() {
                                   newVals.splice(idx, 1);
                                   field.onChange(newVals);
                                 }}
-                                className="absolute inset-0 bg-red-900/50 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity flex cursor-pointer text-white"
+                                className="absolute inset-0 bg-red-500/80 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity flex cursor-pointer text-white"
                               >
-                                <Trash2 className="h-5 w-5 text-white" />
+                                <Trash2 className="h-6 w-6 text-white" />
                               </button>
                             </div>
                           ))}
@@ -482,10 +492,10 @@ export function PostsSection() {
 
                       <div className="flex gap-2">
                         <div className="relative flex-1">
-                          <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-cyan-500 font-bold" />
+                          <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
                           <Input
                             placeholder="Ketik URL manual untuk ditambahkan & tekan tombol + di kanan..."
-                            className="w-full pl-12 h-12 bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium transition-shadow"
+                            className="w-full pl-12 h-12 bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all"
                             id="manual-url-input"
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') {
@@ -502,8 +512,8 @@ export function PostsSection() {
                         </div>
                         <Button
                           type="button"
-                          variant="ghost"
-                          className="h-12 w-12 rounded-2xl border-none bg-[#1e293b] text-cyan-500 hover:text-cyan-600 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:bg-[#1e293b] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155]"
+                          variant="outline"
+                          className="h-12 w-12 rounded-2xl bg-white border-slate-200 text-blue-500 hover:text-blue-600 shadow-sm hover:bg-blue-50"
                           onClick={() => {
                             const inputNode = document.getElementById('manual-url-input') as HTMLInputElement;
                             const val = inputNode?.value.trim();
@@ -528,10 +538,10 @@ export function PostsSection() {
                         />
                         <Button
                           type="button"
-                          variant="ghost"
+                          variant="outline"
                           onClick={() => fileInputRef.current?.click()}
                           disabled={isUploading}
-                          className="w-full h-12 rounded-2xl border-none bg-[#1e293b] text-cyan-500 hover:text-cyan-600 shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] hover:bg-[#1e293b] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] font-bold"
+                          className="w-full h-12 rounded-2xl bg-white border-slate-200 text-blue-500 hover:text-blue-600 shadow-sm hover:bg-blue-50 font-bold"
                         >
                           {isUploading ? 'Menunggu Proses...' : (
                             <><Upload className="h-5 w-5 mr-2" strokeWidth={2.5} /> Upload Multiple dari PC</>
@@ -566,9 +576,9 @@ export function PostsSection() {
               control={form.control}
               name="is_published"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-3xl bg-[#1e293b] p-6 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]">
+                <FormItem className="flex items-center justify-between rounded-3xl bg-slate-50 border border-slate-100 p-6 shadow-sm">
                   <div className="space-y-1">
-                    <FormLabel className="text-lg font-bold text-slate-300">Publikasikan</FormLabel>
+                    <FormLabel className="text-lg font-bold text-slate-800">Publikasikan</FormLabel>
                     <p className="text-sm font-medium text-slate-500">
                       Postingan akan terlihat di website publik
                     </p>
@@ -577,7 +587,7 @@ export function PostsSection() {
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="data-[state=checked]:bg-cyan-500 data-[state=unchecked]:bg-[#0f172a] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)]"
+                      className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-slate-200 shadow-sm"
                     />
                   </FormControl>
                 </FormItem>

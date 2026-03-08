@@ -88,5 +88,15 @@ export const createPost = async (v: any): Promise<any> => fetchApi('/posts', { m
 export const updatePost = async (id: any, v: any): Promise<any> => fetchApi(`/posts/${id}`, { method: 'PUT', body: JSON.stringify(v) });
 export const deletePost = async (id: any): Promise<any> => fetchApi(`/posts/${id}`, { method: 'DELETE' });
 
+export const getSchedules = async (v?: any): Promise<any> => {
+    let url = `/school-schedule?page=${v?.page || 1}&limit=${v?.limit || 10}&sortBy=${v?.sortBy || 'createdAt'}&sortOrder=${v?.sortOrder || 'desc'}`;
+    if (v?.search) url += `&search=${v.search}`;
+    return fetchApi(url);
+};
+export const createSchedule = async (v: any): Promise<any> => fetchApi('/school-schedule', { method: 'POST', body: JSON.stringify(v) });
+export const updateSchedule = async (id: any, v: any): Promise<any> => fetchApi(`/school-schedule/${id}`, { method: 'PUT', body: JSON.stringify(v) });
+export const deleteSchedule = async (id: any): Promise<any> => fetchApi(`/school-schedule/${id}`, { method: 'DELETE' });
+export const uploadSchedules = async (formData: FormData): Promise<any> => fetchApi('/school-schedule/upload', { method: 'POST', body: formData });
+
 // Auth
 export const login = async (data: any): Promise<any> => fetchApi('/auth/login', { method: 'POST', body: JSON.stringify(data) });

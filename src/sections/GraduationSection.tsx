@@ -178,11 +178,11 @@ export function GraduationSection() {
       accessorKey: 'nisn',
       header: 'NISN',
       cell: ({ row }) => (
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-[#1e293b] flex items-center justify-center shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155]">
-            <GraduationCap className="h-4 w-4 text-cyan-500" strokeWidth={2.5} />
+        <div className="flex items-center gap-4">
+          <div className="h-10 w-10 shrink-0 rounded-[12px] bg-slate-50 border border-slate-100 flex items-center justify-center shadow-sm">
+            <GraduationCap className="h-5 w-5 text-blue-500" strokeWidth={2.5} />
           </div>
-          <span className="font-mono font-bold text-slate-200">{row.original.nisn}</span>
+          <span className="font-mono font-extrabold text-slate-800 tracking-tight text-[15px]">{row.original.nisn}</span>
         </div>
       ),
     },
@@ -190,28 +190,28 @@ export function GraduationSection() {
       accessorKey: 'student_name',
       header: 'Nama Siswa',
       cell: ({ row }) => (
-        <span className="font-bold text-slate-200">{row.original.student_name}</span>
+        <span className="font-extrabold text-slate-800 text-[15px]">{row.original.student_name}</span>
       ),
     },
     {
       accessorKey: 'class_name',
       header: 'Kelas',
       cell: ({ row }) => (
-        <span className="font-bold text-slate-400">{row.original.class_name || '-'}</span>
+        <span className="font-semibold text-slate-500">{row.original.class_name || '-'}</span>
       ),
     },
     {
       accessorKey: 'gender',
       header: 'L/P',
       cell: ({ row }) => (
-        <span className="font-bold text-slate-400">{row.original.gender || '-'}</span>
+        <span className="font-semibold text-slate-500">{row.original.gender || '-'}</span>
       ),
     },
     {
       accessorKey: 'birthday',
       header: 'Tanggal Lahir',
       cell: ({ row }) => (
-        <span className="font-bold text-slate-400">{row.original.birthday || '-'}</span>
+        <span className="font-semibold text-slate-500">{row.original.birthday || '-'}</span>
       ),
     },
     {
@@ -222,14 +222,14 @@ export function GraduationSection() {
           {row.original.is_graduated ? (
             <>
               <CheckCircle2 className="h-5 w-5 text-emerald-500" strokeWidth={2.5} />
-              <Badge className="bg-[#1e293b] text-emerald-600 border-none shadow-[2px_2px_5px_#0f172a,-2px_-2px_5px_#334155] hover:bg-[#1e293b] px-3 py-1 font-bold">
+              <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-sm hover:bg-emerald-100 px-3 py-1 font-bold">
                 Lulus
               </Badge>
             </>
           ) : (
             <>
               <XCircle className="h-5 w-5 text-red-500" strokeWidth={2.5} />
-              <Badge className="bg-[#1e293b] text-red-600 border-none shadow-[2px_2px_5px_#0f172a,-2px_-2px_5px_#334155] hover:bg-[#1e293b] px-3 py-1 font-bold">
+              <Badge className="bg-red-50 text-red-700 border border-red-100 shadow-sm hover:bg-red-100 px-3 py-1 font-bold">
                 Tidak Lulus
               </Badge>
             </>
@@ -241,7 +241,7 @@ export function GraduationSection() {
       accessorKey: 'graduation_year',
       header: 'Tahun Kelulusan',
       cell: ({ row }) => (
-        <span className="text-sm font-bold text-slate-400">{row.original.graduation_year}</span>
+        <span className="text-[15px] font-extrabold text-slate-800">{row.original.graduation_year}</span>
       ),
     },
     {
@@ -252,18 +252,18 @@ export function GraduationSection() {
         return (
           <div className="flex items-center gap-2">
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
               onClick={() => handleEdit(grad)}
-              className="h-10 w-10 rounded-full bg-[#1e293b] text-cyan-500 hover:text-cyan-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"
+              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-blue-500 hover:text-blue-600 border-slate-200 shadow-sm hover:bg-blue-50 transition-all"
             >
               <Pencil className="h-4 w-4" strokeWidth={2.5} />
             </Button>
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
               onClick={() => handleDelete(grad)}
-              className="h-10 w-10 rounded-full bg-[#1e293b] text-red-500 hover:text-red-600 border-none shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] transition-all"
+              className="h-9 w-9 xl:h-10 xl:w-10 rounded-xl bg-white text-red-500 hover:text-red-600 border-slate-200 shadow-sm hover:bg-red-50 transition-all"
             >
               <Trash2 className="h-4 w-4" strokeWidth={2.5} />
             </Button>
@@ -278,22 +278,22 @@ export function GraduationSection() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-cyan-500 tracking-tight">Data Kelulusan</h2>
-          <p className="text-slate-500 font-medium">Kelola data kelulusan siswa</p>
+          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Data Kelulusan</h2>
+          <p className="text-slate-500 font-semibold mt-1">Kelola data kelulusan siswa</p>
         </div>
-        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-full px-6 h-12 shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155] hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1)] active:shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)] transition-all font-bold group">
+        <Button onClick={handleCreate} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full px-6 h-12 shadow-[0_8px_16px_rgba(59,130,246,0.3)] hover:shadow-[0_12px_24px_rgba(59,130,246,0.4)] hover:-translate-y-0.5 transition-all font-bold group">
           <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" strokeWidth={2.5} />
           Tambah Data
         </Button>
       </div>
 
       {/* NISN Search */}
-      <div className="bg-[#1e293b] border-none rounded-3xl p-6 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]">
-        <label className="text-sm font-bold text-cyan-600 mb-3 block">
+      <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm">
+        <label className="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-3 block">
           Pencarian Berdasarkan NISN
         </label>
         <div className="relative max-w-md">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-cyan-500 font-bold" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 font-bold" />
           <Input
             placeholder="Masukkan NISN untuk mencari..."
             value={nisnSearch}
@@ -301,10 +301,10 @@ export function GraduationSection() {
               setNisnSearch(e.target.value);
               setPageIndex(0);
             }}
-            className="w-full pl-14 h-12 bg-[#1e293b] border-none rounded-full text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[8px_8px_16px_#0f172a,-8px_-8px_16px_#334155] focus:shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium transition-shadow"
+            className="w-full pl-14 h-12 bg-white border border-slate-200 rounded-full text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold transition-all"
           />
         </div>
-        <p className="text-xs font-semibold text-slate-400 mt-3">
+        <p className="text-xs font-medium text-slate-400 mt-3">
           Masukkan NISN untuk mencari data kelulusan siswa tertentu
         </p>
       </div>
@@ -345,7 +345,7 @@ export function GraduationSection() {
                       {...field}
                       placeholder="Masukkan NISN (10-20 digit)"
                       disabled={!!selectedGraduation}
-                      className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] disabled:opacity-70 disabled:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] font-medium px-4 h-12"
+                      className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12 disabled:opacity-50 disabled:bg-slate-50"
                     />
                   </FormControl>
                   <FormMessage />
@@ -359,7 +359,7 @@ export function GraduationSection() {
                 <FormItem>
                   <FormLabel>Nama Siswa</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan nama lengkap siswa" className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12" />
+                    <Input {...field} placeholder="Masukkan nama lengkap siswa" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -372,7 +372,7 @@ export function GraduationSection() {
                 <FormItem>
                   <FormLabel>Kelas</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Cth: XII MIPA 1" className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12" />
+                    <Input {...field} placeholder="Cth: XII MIPA 1" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -385,7 +385,7 @@ export function GraduationSection() {
                 <FormItem>
                   <FormLabel>Jenis Kelamin</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="L / P" className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12" />
+                    <Input {...field} placeholder="L / P" className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -398,7 +398,7 @@ export function GraduationSection() {
                 <FormItem>
                   <FormLabel>Tanggal Lahir</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12" />
+                    <Input type="date" {...field} className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -416,7 +416,7 @@ export function GraduationSection() {
                       type="number"
                       onChange={(e) => field.onChange(parseInt(e.target.value) || new Date().getFullYear())}
                       placeholder="Masukkan tahun kelulusan"
-                      className="bg-[#1e293b] border-none rounded-2xl text-slate-300 focus-visible:ring-0 focus-visible:outline-none placeholder:text-slate-400 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] font-medium px-4 h-12"
+                      className="bg-white border-slate-200 rounded-2xl text-slate-800 focus-visible:ring-2 focus-visible:ring-blue-100 placeholder:text-slate-400 shadow-sm font-semibold px-4 h-12"
                     />
                   </FormControl>
                   <FormMessage />
@@ -427,10 +427,10 @@ export function GraduationSection() {
               control={form.control}
               name="is_graduated"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-3xl bg-[#1e293b] p-6 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155]">
+                <FormItem className="flex items-center justify-between rounded-3xl bg-slate-50 border border-slate-100 p-6 shadow-sm">
                   <div className="space-y-1">
-                    <FormLabel className="text-lg font-bold text-slate-300">Status Kelulusan</FormLabel>
-                    <p className="text-sm font-medium text-slate-500">
+                    <FormLabel className="text-lg font-extrabold text-slate-800">Status Kelulusan</FormLabel>
+                    <p className="text-[13px] font-medium text-slate-500">
                       Tentukan apakah siswa dinyatakan lulus
                     </p>
                   </div>
@@ -438,7 +438,7 @@ export function GraduationSection() {
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-[#0f172a] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1)]"
+                      className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 shadow-sm"
                     />
                   </FormControl>
                 </FormItem>

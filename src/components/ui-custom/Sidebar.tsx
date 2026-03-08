@@ -11,9 +11,9 @@ import {
     LogOut,
     ChevronLeft,
     ChevronRight,
-    Hexagon,
     Database,
-    Calendar
+    Calendar,
+    Clock
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/authStore';
 import { useLayoutStore } from '@/lib/layoutStore';
@@ -24,6 +24,7 @@ const navigation = [
     { name: 'Postingan', href: '/posts', icon: FileText },
     { name: 'Data Kelulusan', href: '/graduation', icon: GraduationCap },
     { name: 'Dokumen Akademik', href: '/documents', icon: Files },
+    { name: 'Jadwal Pelajaran', href: '/schedule', icon: Clock },
     { name: 'Kalender Libur', href: '/holidays', icon: Calendar },
     { name: 'Ekstrakurikuler', href: '/extracurricular', icon: Activity },
     { name: 'Fasilitas', href: '/facilities', icon: Building },
@@ -52,41 +53,36 @@ export function Sidebar() {
             )}
 
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-[#1e293b] border-none transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0 shadow-[15px_0_30px_rgba(209,217,230,0.8)]' : '-translate-x-full lg:translate-x-0'
-                    } ${isSidebarCollapsed ? 'lg:w-[90px] w-[280px]' : 'w-[280px]'
+                className={`fixed lg:absolute inset-y-0 left-0 z-50 flex flex-col bg-white border border-slate-200 transition-all duration-300 ease-in-out lg:rounded-[36px] lg:my-0 lg:ml-0 lg:h-[calc(100vh-3rem)] shadow-[0_15px_40px_rgba(0,0,0,0.12)] ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+                    } ${isSidebarCollapsed ? 'w-[90px]' : 'w-[260px]'
                     }`}
             >
                 {/* Toggle Button for Desktop */}
                 <button
                     onClick={toggleSidebar}
-                    className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 h-8 w-8 items-center justify-center rounded-full bg-[#1e293b] border-none text-cyan-500 hover:text-cyan-600 transition-all z-50 shadow-[2px_2px_5px_#0f172a,-2px_-2px_5px_#334155] active:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155]"
+                    className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 h-8 w-8 items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 hover:text-cyan-500 transition-all z-50 shadow-md hover:shadow-lg"
                     aria-label="Toggle Sidebar"
                 >
-                    {isSidebarCollapsed ? <ChevronRight size={16} strokeWidth={3} /> : <ChevronLeft size={16} strokeWidth={3} />}
+                    {isSidebarCollapsed ? <ChevronRight size={16} strokeWidth={2.5} /> : <ChevronLeft size={16} strokeWidth={2.5} />}
                 </button>
 
                 {/* 1️⃣ Logo Section */}
-                <div className={`flex h-32 shrink-0 items-center transition-all duration-300 ${isSidebarCollapsed ? 'justify-center lg:px-0 px-8' : 'px-8'}`}>
-                    <div className="flex items-center gap-4">
-                        <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-[20px] bg-[#1e293b] shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155]">
-                            <Hexagon className="h-7 w-7 text-cyan-500 relative z-10" fill="currentColor" strokeWidth={1} />
+                <div className={`flex h-28 shrink-0 items-center transition-all duration-300 ${isSidebarCollapsed ? 'justify-center px-0' : 'px-8'}`}>
+                    <div className="flex items-center gap-3">
+                        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-gradient-to-tr from-cyan-500 to-indigo-500 shadow-lg shadow-cyan-500/30">
+                            <span className="text-white font-black text-xl mix-blend-overlay">M</span>
                         </div>
                         {!isSidebarCollapsed && (
-                            <div className="flex flex-col flex-nowrap overflow-hidden whitespace-nowrap lg:block hidden">
-                                <span className="text-[26px] font-black text-cyan-500 drop-shadow-sm tracking-tight pr-4">C M S</span>
-                            </div>
-                        )}
-                        {isSidebarCollapsed ? null : (
-                            <div className="flex flex-col flex-nowrap overflow-hidden whitespace-nowrap lg:hidden">
-                                <span className="text-[26px] font-black text-cyan-500 drop-shadow-sm tracking-tight pr-4">C M S</span>
+                            <div className="flex flex-col flex-nowrap overflow-hidden whitespace-nowrap">
+                                <span className="text-[22px] font-black text-slate-800 tracking-tight">Bidibet.</span>
                             </div>
                         )}
                     </div>
                 </div>
 
                 {/* Navigation Menu */}
-                <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden custom-scrollbar px-5 py-4">
-                    <nav className="flex-1 space-y-3">
+                <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden custom-scrollbar px-4 py-2">
+                    <nav className="flex-1 space-y-1.5">
                         {navigation.map((item) => {
                             const isActive = location.pathname === item.href;
                             const Icon = item.icon;
@@ -97,17 +93,12 @@ export function Sidebar() {
                                     to={item.href}
                                     onClick={() => { if (window.innerWidth < 1024) closeMobileMenu(); }}
                                     title={isSidebarCollapsed ? item.name : undefined}
-                                    className={`group relative flex items-center overflow-visible rounded-full font-bold transition-all duration-300 ease-in-out ${isActive
-                                        ? 'text-white shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155]'
-                                        : 'text-white hover:text-cyan-500 shadow-[2px_2px_4px_transparent,-2px_-2px_4px_transparent] hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]'
-                                        } ${isSidebarCollapsed ? 'flex-col justify-center h-[52px] w-[52px] mx-auto p-0' : 'px-5 py-3.5 mx-2'}`}
+                                    className={`group relative flex items-center rounded-2xl font-semibold transition-all duration-200 ease-in-out ${isActive
+                                        ? 'text-cyan-600 bg-cyan-50/80 shadow-sm border border-cyan-100/50'
+                                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50 border border-transparent'
+                                        } ${isSidebarCollapsed ? 'flex-col justify-center h-12 w-12 mx-auto p-0 mb-2' : 'px-4 py-3'}`}
                                 >
-                                    {isActive ? (
-                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-[28px]" />
-                                    ) : (
-                                        <div className="absolute inset-0 bg-[#1e293b] rounded-[28px] opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-300" />
-                                    )}
-                                    <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${isActive ? 'bg-cyan-500 shadow-[inset_2px_2px_4px_rgba(255,255,255,0.4),2px_2px_8px_rgba(0,0,0,0.1)]' : 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] group-hover:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] text-cyan-500'} ${isSidebarCollapsed ? 'mr-0' : 'mr-4'} `}>
+                                    <div className={`relative z-10 flex shrink-0 items-center justify-center transition-all duration-200 ${isActive ? 'text-cyan-600' : 'text-slate-400 group-hover:text-cyan-500'} ${isSidebarCollapsed ? 'mr-0' : 'mr-3'}`}>
                                         <Icon className="h-5 w-5" aria-hidden="true" strokeWidth={isActive ? 2.5 : 2} />
                                     </div>
                                     <span
@@ -122,8 +113,9 @@ export function Sidebar() {
 
                         {isAdmin && (
                             <>
-                                <div className={`overflow-hidden transition-all duration-300 ease-in-out pt-6 ${isSidebarCollapsed ? 'lg:h-0 lg:opacity-0 lg:mb-0 lg:mt-0 mt-6 mb-2 h-auto opacity-100' : 'mt-2 mb-2 h-auto opacity-100'}`}>
-                                    <h3 className="px-5 text-[11px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap pb-2">
+                                <div className={`overflow-hidden transition-all duration-300 ease-in-out pt-4 pb-2 ${isSidebarCollapsed ? 'h-0 opacity-0 hidden' : 'h-auto opacity-100'}`}>
+                                    <div className="h-px w-full bg-slate-100 mb-4" />
+                                    <h3 className="px-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">
                                         Admin Settings
                                     </h3>
                                 </div>
@@ -131,17 +123,12 @@ export function Sidebar() {
                                     to="/users"
                                     onClick={() => { if (window.innerWidth < 1024) closeMobileMenu(); }}
                                     title={isSidebarCollapsed ? "Pengelola Sistem" : undefined}
-                                    className={`group relative flex items-center overflow-visible rounded-full font-bold transition-all duration-300 ease-in-out ${location.pathname === '/users'
-                                        ? 'text-white shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155]'
-                                        : 'text-white hover:text-cyan-500 shadow-[2px_2px_4px_transparent,-2px_-2px_4px_transparent] hover:shadow-[4px_4px_8px_#0f172a,-4px_-4px_8px_#334155]'
-                                        } ${isSidebarCollapsed ? 'flex-col justify-center h-[52px] w-[52px] mx-auto p-0' : 'px-5 py-3.5 mx-2'}`}
+                                    className={`group relative flex items-center rounded-2xl font-semibold transition-all duration-200 ease-in-out ${location.pathname === '/users'
+                                        ? 'text-cyan-600 bg-cyan-50/80 shadow-sm border border-cyan-100/50'
+                                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50 border border-transparent'
+                                        } ${isSidebarCollapsed ? 'flex-col justify-center h-12 w-12 mx-auto p-0 mt-4' : 'px-4 py-3'}`}
                                 >
-                                    {location.pathname === '/users' ? (
-                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-[28px]" />
-                                    ) : (
-                                        <div className="absolute inset-0 bg-[#1e293b] rounded-[28px] opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 transition-all duration-300" />
-                                    )}
-                                    <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${location.pathname === '/users' ? 'bg-cyan-500 shadow-[inset_2px_2px_4px_rgba(255,255,255,0.4),2px_2px_8px_rgba(0,0,0,0.1)]' : 'bg-[#1e293b] shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] group-hover:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] text-cyan-500'} ${isSidebarCollapsed ? 'mr-0' : 'mr-4'} `}>
+                                    <div className={`relative z-10 flex shrink-0 items-center justify-center transition-all duration-200 ${location.pathname === '/users' ? 'text-cyan-600' : 'text-slate-400 group-hover:text-cyan-500'} ${isSidebarCollapsed ? 'mr-0' : 'mr-3'}`}>
                                         <UserCog className="h-5 w-5" aria-hidden="true" strokeWidth={location.pathname === '/users' ? 2.5 : 2} />
                                     </div>
                                     <span
@@ -156,23 +143,32 @@ export function Sidebar() {
                     </nav>
                 </div>
 
-                {/* Bottom Section (Logout) */}
-                <div className="shrink-0 p-6 pt-0">
-                    <button
-                        onClick={() => logout()}
-                        title={isSidebarCollapsed ? "Keluar" : undefined}
-                        className={`group relative overflow-hidden flex w-full items-center rounded-full font-bold text-white bg-[#1e293b] hover:text-cyan-500 transition-all duration-300 ease-in-out shadow-[6px_6px_12px_#0f172a,-6px_-6px_12px_#334155] active:shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] ${isSidebarCollapsed ? 'flex-col justify-center h-[52px] w-[52px] mx-auto p-0' : 'px-5 py-3.5 mx-2'}`}
-                    >
-                        <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1e293b] transition-all duration-300 shadow-[inset_4px_4px_8px_#0f172a,inset_-4px_-4px_8px_#334155] group-hover:shadow-[inset_2px_2px_4px_#0f172a,inset_-2px_-2px_4px_#334155] text-cyan-500 group-hover:text-red-500 ${isSidebarCollapsed ? 'mr-0' : 'mr-4'} `}>
-                            <LogOut className="h-5 w-5" aria-hidden="true" strokeWidth={2.5} />
+                {/* Bottom Section (Profile & Logout Layer) */}
+                <div className={`shrink-0 p-4 transition-all duration-300 ${isSidebarCollapsed ? 'pb-6' : 'pb-6'}`}>
+                    <div className={`bg-slate-50 rounded-[24px] border border-slate-100 transition-all duration-300 ease-in-out flex items-center ${isSidebarCollapsed ? 'p-2 flex-col gap-3 justify-center' : 'p-3 pr-4'}`}>
+                        {/* Avatar */}
+                        <div className="flex-shrink-0 relative">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100" alt="Avatar" className="h-[46px] w-[46px] rounded-[16px] object-cover shadow-sm" />
+                            <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 bg-green-500 border-2 border-white rounded-full"></div>
                         </div>
-                        <span
-                            className={`relative z-10 overflow-hidden whitespace-nowrap text-[14px] tracking-wide transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'w-0 opacity-0 hidden' : 'w-full opacity-100'
-                                }`}
+
+                        {/* Details */}
+                        {!isSidebarCollapsed && (
+                            <div className="ml-3 flex-1 flex flex-col justify-center overflow-hidden">
+                                <span className="text-[14px] font-bold text-slate-800 truncate">Sebastian M.</span>
+                                <span className="text-[11px] font-medium text-slate-500 truncate">Senior Admin</span>
+                            </div>
+                        )}
+
+                        {/* Logout Icon Button */}
+                        <button
+                            onClick={() => logout()}
+                            title="Keluar"
+                            className={`flex items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm text-slate-400 hover:text-red-500 hover:border-red-100 hover:bg-red-50 transition-all duration-200 ${isSidebarCollapsed ? 'h-[46px] w-[46px]' : 'h-10 w-10 ml-2'}`}
                         >
-                            Keluar
-                        </span>
-                    </button>
+                            <LogOut className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                        </button>
+                    </div>
                 </div>
             </aside>
         </>

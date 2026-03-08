@@ -12,6 +12,7 @@ import { FacilitiesSection } from '@/sections/FacilitiesSection';
 import { LoginSection } from '@/sections/LoginSection';
 import { UsersSection } from '@/sections/UsersSection';
 import { HolidaysSection } from '@/sections/HolidaysSection';
+import { ScheduleSection } from '@/sections/ScheduleSection';
 import { ApiTestSection } from '@/sections/ApiTestSection';
 import { useAuthStore } from '@/lib/authStore';
 import { useLayoutStore } from '@/lib/layoutStore';
@@ -41,15 +42,28 @@ function DashboardLayout({ children, title, subtitle }: {
   const { isSidebarCollapsed } = useLayoutStore();
 
   return (
-    <div className="min-h-screen bg-[#1e293b] text-slate-200 selection:bg-cyan-500/30 relative overflow-hidden font-sans">
-      <Sidebar />
-      <div className={`relative z-10 min-h-screen flex flex-col transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'lg:pl-[90px]' : 'lg:pl-[260px]'}`}>
-        <Header title={title} subtitle={subtitle} />
-        <main className="flex-1 p-4 lg:p-8 overflow-x-hidden">
-          <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {children}
+    <div className="h-screen bg-[#020617] text-slate-800 selection:bg-cyan-500/30 relative overflow-hidden font-sans">
+      {/* Deep Navy to Purple/Red Gradient Background */}
+      <div className="absolute inset-0 bg-[#0f172a] z-0">
+        <div className="absolute top-0 left-0 right-0 h-[600px] bg-gradient-to-br from-indigo-900/50 via-purple-900/30 to-rose-900/20 opacity-80 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-[#1e1b4b]/60 to-transparent pointer-events-none" />
+      </div>
+
+      {/* Main Glass Workspace */}
+      <div className="relative z-10 h-screen p-4 lg:p-6 flex gap-6">
+        <Sidebar />
+
+        {/* Main Content Area (Glass Container overlaying gradient) */}
+        <div className={`flex-1 flex flex-col transition-all duration-300 ease-in-out relative ${isSidebarCollapsed ? 'lg:ml-[90px]' : 'lg:ml-[280px]'}`}>
+          <div className="bg-white/95 backdrop-blur-3xl rounded-[40px] shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-white/20 h-full overflow-hidden flex flex-col relative w-full mb-2">
+            <Header title={title} subtitle={subtitle} />
+            <main className="flex-1 p-6 lg:p-10 overflow-x-hidden overflow-y-auto custom-scrollbar">
+              <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {children}
+              </div>
+            </main>
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );
@@ -100,6 +114,14 @@ function HolidaysPage() {
   return (
     <DashboardLayout title="Kalender Libur" subtitle="Kelola kalender dan perayaan">
       <HolidaysSection />
+    </DashboardLayout>
+  );
+}
+
+function SchedulePage() {
+  return (
+    <DashboardLayout title="Jadwal Pelajaran" subtitle="Kelola jadwal pelajaran sekolah">
+      <ScheduleSection />
     </DashboardLayout>
   );
 }
@@ -159,6 +181,7 @@ function App() {
         <Route path="/graduation" element={<ProtectedRoute><GraduationPage /></ProtectedRoute>} />
         <Route path="/documents" element={<ProtectedRoute><DocumentsPage /></ProtectedRoute>} />
         <Route path="/holidays" element={<ProtectedRoute><HolidaysPage /></ProtectedRoute>} />
+        <Route path="/schedule" element={<ProtectedRoute><SchedulePage /></ProtectedRoute>} />
         <Route path="/extracurricular" element={<ProtectedRoute><ExtracurricularPage /></ProtectedRoute>} />
         <Route path="/facilities" element={<ProtectedRoute><FacilitiesPage /></ProtectedRoute>} />
         <Route path="/test-api" element={<ProtectedRoute><ApiTestPage /></ProtectedRoute>} />

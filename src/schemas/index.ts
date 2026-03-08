@@ -51,11 +51,25 @@ export const academicDocumentSchema = z.object({
 
 export type AcademicDocumentFormData = z.infer<typeof academicDocumentSchema>;
 
+export const EKSKUL_OPTIONS = [
+  'Pramuka',
+  'Paskibraka',
+  'Sains_Club',
+  'Basket',
+  'Voli',
+  'Seni_Tari',
+  'Paduan_Suara',
+  'PMR',
+  'Jurnalistik'
+] as const;
+
 // Extracurricular Schema
 export const extracurricularSchema = z.object({
   title: z.string().min(1, 'Judul wajib diisi').max(200, 'Judul maksimal 200 karakter'),
   content: z.string().min(1, 'Konten wajib diisi'),
-  ekskul_name: z.string().min(1, 'Nama ekstrakurikuler wajib diisi').max(100, 'Nama maksimal 100 karakter'),
+  ekskul_name: z.enum(EKSKUL_OPTIONS, {
+    message: 'Pilihan tidak valid'
+  }),
   thumbnail: z.string().optional().or(z.literal('')),
   is_published: z.boolean(),
 });
