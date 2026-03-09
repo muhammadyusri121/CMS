@@ -7,13 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// --- Modul: Authentication (CMS) ---
-enum Role {
-  ADMIN
-  EDITOR
-  AUTHOR
-}
-
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -25,32 +18,95 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-// --- Modul: Profile & Personnel (GTK) ---
 model EducationPersonnel {
-  id         String   @id @default(cuid())
+  id         String           @id @default(cuid())
   full_name  String
-  nip        String?  @unique
+  nip        String?          @unique
   email      String?
   position   String
   image_url  String?
-  sort_order Int      @default(0)
-  createdAt  DateTime @default(now())
-
-  // Relations
+  sort_order Int              @default(0)
+  createdAt  DateTime         @default(now())
   schedules  SchoolSchedule[]
 }
 
-// --- Modul: Articles & Content (Innovation, News, Student Work, etc.) ---
 model Post {
   id           String       @id @default(cuid())
   title        String
   slug         String       @unique
-  content      String       @db.Text
+  content      String
   category     PostCategory
-  images       String[] // Gambar galeri / slider (banyak gambar)
+  images       String[]
   is_published Boolean      @default(false)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+}
+
+model Graduation {
+  id              String   @id @default(cuid())
+  nisn            String   @unique
+  student_name    String
+  birthday        String?
+  gender          String?
+  class_name      String?
+  is_graduated    Boolean  @default(false)
+  graduation_year Int
+  createdAt       DateTime @default(now())
+}
+
+model AcademicDocument {
+  id        String   @id @default(cuid())
+  file_name String
+  file_path String
+  doc_type  DocType
+  createdAt DateTime @default(now())
+}
+
+model Extracurricular {
+  id           String     @id @default(cuid())
+  title        String
+  slug         String     @unique
+  ekskul_name  EkskulName
+  content      String
+  thumbnail    String?
+  is_published Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Facility {
+  id        String   @id @default(cuid())
+  name      String
+  quantity  Int      @default(1)
+  image_url String?
+  createdAt DateTime @default(now())
+}
+
+model Holiday {
+  id          String   @id @default(cuid())
+  date        DateTime
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SchoolSchedule {
+  id          String              @id @default(cuid())
+  class_name  String
+  period      String
+  time        String
+  subject     String
+  day_of_week String
+  teacher_nip String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  teacher     EducationPersonnel? @relation(fields: [teacher_nip], references: [nip])
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  AUTHOR
 }
 
 enum PostCategory {
@@ -66,45 +122,10 @@ enum PostCategory {
   OSIS_MPK
 }
 
-// --- Modul: Graduation (Search Feature) ---
-model Graduation {
-  id              String   @id @default(cuid())
-  nisn            String   @unique
-  student_name    String
-  birthday        String?
-  gender          String?
-  class_name      String?
-  is_graduated    Boolean  @default(false)
-  graduation_year Int
-  createdAt       DateTime @default(now())
-}
-
-// --- Modul: Academic Documents (Files) ---
-model AcademicDocument {
-  id        String   @id @default(cuid())
-  file_name String
-  file_path String
-  doc_type  DocType
-  createdAt DateTime @default(now())
-}
-
 enum DocType {
   REGULATION
   SCHEDULE
   TEACHING_MATERIAL
-}
-
-// --- Modul: Extracurricular (Articles) ---
-model Extracurricular {
-  id           String   @id @default(cuid())
-  title        String
-  slug         String   @unique
-  ekskul_name  EkskulName
-  content      String   @db.Text
-  thumbnail    String?
-  is_published Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 }
 
 enum EkskulName {
@@ -117,36 +138,4 @@ enum EkskulName {
   Paduan_Suara
   PMR
   Jurnalistik
-}
-
-// --- Modul: Facilities (Sarpras) ---
-model Facility {
-  id        String   @id @default(cuid())
-  name      String
-  quantity  Int      @default(1)
-  image_url String?
-  createdAt DateTime @default(now())
-}
-
-// --- Modul: Calendar (Holidays) ---
-model Holiday {
-  id          String   @id @default(cuid())
-  date        DateTime // Tanggal perayaan
-  description String   // Nama perayaan/libur
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-// --- Modul: Jadwal Pelajaran (School Schedule) ---
-model SchoolSchedule {
-  id          String   @id @default(cuid())
-  class_name  String
-  period      String
-  time        String
-  subject     String
-  day_of_week String
-  teacher_nip String?
-  teacher     EducationPersonnel? @relation(fields: [teacher_nip], references: [nip], onDelete: SetNull)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }

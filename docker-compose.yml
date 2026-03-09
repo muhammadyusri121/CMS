@@ -1,30 +1,15 @@
-version: '3.8'
-
 services:
   cms-app:
     build: .
     container_name: smanka-cms-app
     restart: always
     environment:
-      # Load file env dari komputer utama VPS Anda
       - PORT=3000
     env_file:
       - .env
-    expose:
-      - "3000" # Hanya buka di jaringan dalam, Nginx yg handle publik
+    ports:
+      - "127.0.0.1:3001:3000" # Map ke port 3001 di Host
     volumes:
       - ./prisma:/app/prisma
 
-  # Nginx Service sebagai Reverse Proxy & Pengatur Subdomain HTTPS
-  nginx:
-    image: nginx:alpine
-    container_name: smanka-cms-nginx
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/cms.conf
-      - /etc/letsencrypt:/etc/letsencrypt # Jika nanti dipasang SSL CertBot
-    depends_on:
-      - cms-app
+# HAPUS ATAU KOMENTAR SERVICE NGINX DI SINI
