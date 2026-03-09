@@ -24,7 +24,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx.conf:/etc/nginx/conf.d/cms.conf
       - /etc/letsencrypt:/etc/letsencrypt # Jika nanti dipasang SSL CertBot
     depends_on:
       - cms-app
