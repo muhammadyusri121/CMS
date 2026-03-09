@@ -11,13 +11,13 @@ import { useAuthStore } from '@/lib/authStore';
 import { login } from '@/actions';
 
 const loginSchema = z.object({
-    email: z.string().email('Email tidak valid'),
+    email: z.string().min(3, 'Email atau NIP wajib diisi'),
     password: z.string().min(6, 'Password minimal 6 karakter'),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
 
-export function LoginSection() {
+export function Login() {
     const navigate = useNavigate();
     const location = useLocation();
     const { setAuth } = useAuthStore();
@@ -90,7 +90,7 @@ export function LoginSection() {
                                 <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
                                     <div>
                                         <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1.5 cursor-pointer">
-                                            Email Address
+                                            Email / NIP
                                         </label>
                                         <div className="relative group">
                                             <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
@@ -99,11 +99,11 @@ export function LoginSection() {
                                             </div>
                                             <Input
                                                 id="email"
-                                                type="email"
+                                                type="text"
                                                 autoComplete="email"
                                                 {...form.register('email')}
                                                 className={`pl-10 relative z-10 bg-slate-900/50 border border-white/10 rounded-xl shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)] backdrop-blur-xl text-slate-200 placeholder-slate-500 transition-all duration-300 h-11 ${form.formState.errors.email ? 'border-red-500 focus-visible:ring-1 focus-visible:ring-red-500/50' : 'focus-visible:ring-1 focus-visible:ring-blue-500/50 focus-visible:border-blue-500/50'}`}
-                                                placeholder="admin@sman1ketapang.sch.id"
+                                                placeholder="admin@sman1... / 198001..."
                                             />
                                         </div>
                                         {form.formState.errors.email && (

@@ -13,7 +13,7 @@ import {
 import { toast } from 'sonner';
 import type { ColumnDef } from '@tanstack/react-table';
 
-export function HolidaysSection() {
+export function Holidays() {
   const holidayInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingHoliday, setIsUploadingHoliday] = useState(false);
   const [holidays, setHolidays] = useState<any[]>([]);

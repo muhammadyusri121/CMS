@@ -14,7 +14,7 @@ const roleBadgeStyles: Record<string, string> = {
     AUTHOR: 'bg-emerald-50 text-emerald-700 border-emerald-200',
 };
 
-export function UsersSection() {
+export function Users() {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -23,7 +23,7 @@ export function UsersSection() {
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
     const [selectedUserName, setSelectedUserName] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formData, setFormData] = useState({ id: '', name: '', email: '', password: '', role: 'EDITOR' });
+    const [formData, setFormData] = useState({ id: '', name: '', email: '', password: '', role: 'EDITOR', nip: '' });
     const currentUser = useAuthStore(state => state.user);
 
     const fetchUsers = async () => {
@@ -68,7 +68,7 @@ export function UsersSection() {
                 } else toast.error(res.error || 'Gagal membuat pengguna');
             }
             setIsEditing(false);
-            setFormData({ id: '', name: '', email: '', password: '', role: 'EDITOR' });
+            setFormData({ id: '', name: '', email: '', password: '', role: 'EDITOR', nip: '' });
         } catch {
             toast.error('Terjadi kesalahan');
         } finally {
@@ -78,13 +78,13 @@ export function UsersSection() {
 
     const handleCreate = () => {
         setIsEditing(false);
-        setFormData({ id: '', name: '', email: '', password: '', role: 'EDITOR' });
+        setFormData({ id: '', name: '', email: '', password: '', role: 'EDITOR', nip: '' });
         setIsFormOpen(true);
     };
 
     const handleEdit = (user: any) => {
         setIsEditing(true);
-        setFormData({ id: user.id, name: user.name, email: user.email, password: '', role: user.role });
+        setFormData({ id: user.id, name: user.name, email: user.email, password: '', role: user.role, nip: user.nip || '' });
         setIsFormOpen(true);
     };
 
@@ -146,7 +146,7 @@ export function UsersSection() {
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-sm font-semibold text-slate-700 truncate">{u.name}</p>
-                                        <p className="text-[11px] text-slate-400 truncate">{u.email}</p>
+                                        <p className="text-[11px] text-slate-400 truncate">{u.email} {u.nip ? `• NIP: ${u.nip}` : ''}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0 ml-3">
@@ -176,7 +176,6 @@ export function UsersSection() {
                 open={isFormOpen}
                 onOpenChange={setIsFormOpen}
                 title={isEditing ? 'Edit Pengelola' : 'Tambah Pengelola Baru'}
-                description={isEditing ? 'Perbarui data pengelola' : 'Buat akun pengelola baru'}
                 onSubmit={handleSubmit}
                 isSubmitting={isSubmitting}
                 submitLabel={isEditing ? 'Simpan' : 'Tambahkan'}
@@ -189,6 +188,10 @@ export function UsersSection() {
                     <div className="space-y-1.5">
                         <label className="text-sm font-medium text-slate-700">Email Login</label>
                         <Input name="email" type="email" placeholder="Email Login" value={formData.email} onChange={handleChange} required className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
+                    </div>
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-medium text-slate-700">NIP (Opsional)</label>
+                        <Input name="nip" type="text" placeholder="Masukkan NIP jika ada" value={formData.nip} onChange={handleChange} className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
                     </div>
                     <div className="space-y-1.5">
                         <label className="text-sm font-medium text-slate-700">Password</label>

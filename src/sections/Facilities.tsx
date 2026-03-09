@@ -30,7 +30,7 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/lib/authStore';
 import type { ColumnDef } from '@tanstack/react-table';
 
-export function FacilitiesSection() {
+export function Facilities() {
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -267,9 +267,9 @@ export function FacilitiesSection() {
       </div>
 
       {/* Search */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400 font-bold" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" strokeWidth={2} />
           <Input
             placeholder="Cari berdasarkan nama fasilitas..."
             value={searchQuery}
@@ -296,7 +296,6 @@ export function FacilitiesSection() {
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
         title={selectedFacility ? 'Edit Fasilitas' : 'Tambah Fasilitas'}
-        description={selectedFacility ? 'Perbarui data fasilitas' : 'Tambahkan fasilitas baru'}
         onSubmit={form.handleSubmit(onSubmit)}
         isSubmitting={isSubmitting}
       >

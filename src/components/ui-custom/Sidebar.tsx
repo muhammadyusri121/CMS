@@ -37,9 +37,6 @@ export function Sidebar() {
     const { user, logout } = useAuthStore();
 
     const isAdmin = user?.role === 'ADMIN';
-    const userInitials = user?.name
-        ? user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
-        : 'AD';
 
     return (
         <>
@@ -52,7 +49,7 @@ export function Sidebar() {
             )}
 
             <aside
-                className={`fixed lg:absolute inset-y-0 left-0 z-50 flex flex-col bg-white border-r border-slate-200 transition-all duration-300 ease-in-out lg:rounded-2xl lg:border lg:my-3 lg:ml-3 lg:h-[calc(100vh-1.5rem)] shadow-card ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+                className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-white border-r border-slate-200 transition-all duration-300 ease-in-out h-screen shadow-card ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
                     } ${isSidebarCollapsed ? 'w-[72px]' : 'w-[250px]'
                     }`}
             >
@@ -94,8 +91,8 @@ export function Sidebar() {
                                     onClick={() => { if (window.innerWidth < 1024) closeMobileMenu(); }}
                                     title={isSidebarCollapsed ? item.name : undefined}
                                     className={`group relative flex items-center rounded-lg font-medium transition-all duration-150 text-[13px] ${isActive
-                                            ? 'text-primary-700 bg-primary-50 border border-primary-100'
-                                            : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50 border border-transparent'
+                                        ? 'text-primary-700 bg-primary-50 border border-primary-100'
+                                        : 'text-black hover:text-primary-600 hover:bg-slate-50 border border-transparent'
                                         } ${isSidebarCollapsed ? 'flex-col justify-center h-10 w-10 mx-auto p-0 mb-1' : 'px-3 py-2'
                                         }`}
                                 >
@@ -126,8 +123,8 @@ export function Sidebar() {
                                     onClick={() => { if (window.innerWidth < 1024) closeMobileMenu(); }}
                                     title={isSidebarCollapsed ? "Pengelola Sistem" : undefined}
                                     className={`group relative flex items-center rounded-lg font-medium transition-all duration-150 text-[13px] ${location.pathname === '/users'
-                                            ? 'text-primary-700 bg-primary-50 border border-primary-100'
-                                            : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50 border border-transparent'
+                                        ? 'text-primary-700 bg-primary-50 border border-primary-100'
+                                        : 'text-black hover:text-primary-600 hover:bg-slate-50 border border-transparent'
                                         } ${isSidebarCollapsed ? 'flex-col justify-center h-10 w-10 mx-auto p-0 mt-2' : 'px-3 py-2'
                                         }`}
                                 >
@@ -144,39 +141,21 @@ export function Sidebar() {
                                 </Link>
                             </>
                         )}
-                    </nav>
-                </div>
 
-                {/* Bottom Section (Profile & Logout) */}
-                <div className={`shrink-0 p-3 border-t border-slate-100`}>
-                    <div className={`bg-slate-50 rounded-xl transition-all duration-300 ease-in-out flex items-center ${isSidebarCollapsed ? 'p-2 flex-col gap-2 justify-center' : 'p-2.5'
-                        }`}>
-                        {/* Avatar */}
-                        <div className="flex-shrink-0 relative">
-                            <div className="h-9 w-9 rounded-lg bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-bold">
-                                {userInitials}
-                            </div>
-                            <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 bg-emerald-500 border-2 border-white rounded-full"></div>
+                        {/* Bottom Section (Logout Only) */}
+                        <div className="mt-8 pt-3 border-t border-slate-100">
+                            {/* Prominent Logout Button */}
+                            <button
+                                onClick={() => logout()}
+                                className={`group flex w-full items-center justify-center gap-2 rounded-xl border border-red-100 bg-red-50 text-red-600 hover:bg-red-500 hover:text-white transition-all duration-200 font-semibold text-[13px] ${isSidebarCollapsed ? 'p-2.5' : 'py-2.5 px-3'
+                                    }`}
+                                title="Keluar"
+                            >
+                                <LogOut className="h-[18px] w-[18px] group-hover:-translate-x-0.5 transition-transform" strokeWidth={2.5} />
+                                {!isSidebarCollapsed && <span>Keluar Sistem</span>}
+                            </button>
                         </div>
-
-                        {/* Details */}
-                        {!isSidebarCollapsed && (
-                            <div className="ml-2.5 flex-1 flex flex-col justify-center overflow-hidden">
-                                <span className="text-[13px] font-semibold text-slate-700 truncate">{user?.name || 'Admin'}</span>
-                                <span className="text-[10px] font-medium text-slate-400 truncate capitalize">{user?.role?.toLowerCase() || 'user'}</span>
-                            </div>
-                        )}
-
-                        {/* Logout Button */}
-                        <button
-                            onClick={() => logout()}
-                            title="Keluar"
-                            className={`flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors duration-150 ${isSidebarCollapsed ? 'h-9 w-9' : 'h-8 w-8 ml-1.5'
-                                }`}
-                        >
-                            <LogOut className="h-[15px] w-[15px]" strokeWidth={2} />
-                        </button>
-                    </div>
+                    </nav>
                 </div>
             </aside>
         </>

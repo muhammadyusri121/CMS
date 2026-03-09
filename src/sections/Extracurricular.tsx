@@ -39,7 +39,7 @@ import type { ColumnDef, SortingState } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
-export function ExtracurricularSection() {
+export function Extracurricular() {
   const [extracurriculars, setExtracurriculars] = useState<Extracurricular[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -327,9 +327,9 @@ export function ExtracurricularSection() {
       </div>
 
       {/* Search */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400 font-bold" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" strokeWidth={2} />
           <Input
             placeholder="Cari judul artikel atau nama ekskul..."
             value={searchQuery}
@@ -358,7 +358,6 @@ export function ExtracurricularSection() {
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
         title={selectedExtracurricular ? 'Edit Artikel Ekskul' : 'Tambah Artikel Ekskul'}
-        description={selectedExtracurricular ? 'Perbarui data artikel ekstrakurikuler' : 'Tambahkan artikel baru untuk ekstrakurikuler'}
         onSubmit={form.handleSubmit(onSubmit)}
         isSubmitting={isSubmitting}
       >
@@ -377,30 +376,51 @@ export function ExtracurricularSection() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="ekskul_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nama Ekstrakurikuler</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 font-medium px-3 h-10">
-                        <SelectValue placeholder="Pilih Ekstrakurikuler..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="rounded-lg border-slate-200 shadow-dropdown bg-white">
-                      {EKSKUL_OPTIONS.map((opt) => (
-                        <SelectItem key={opt} value={opt} className="font-semibold text-slate-700 hover:text-blue-600 focus:bg-blue-50 cursor-pointer py-3 rounded-xl">
-                          {opt.replace(/_/g, ' ')}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="ekskul_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nama Ekstrakurikuler</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 font-medium px-3 h-10">
+                          <SelectValue placeholder="Pilih Ekstrakurikuler..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="rounded-lg border-slate-200 shadow-dropdown bg-white">
+                        {EKSKUL_OPTIONS.map((opt) => (
+                          <SelectItem key={opt} value={opt} className="font-semibold text-slate-700 hover:text-blue-600 focus:bg-blue-50 cursor-pointer py-3 rounded-xl">
+                            {opt.replace(/_/g, ' ')}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="is_published"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status Publikasi</FormLabel>
+                    <div className="flex items-center justify-between rounded-lg bg-slate-50 border border-slate-200 px-4 h-10 shadow-xs">
+                      <span className="text-sm font-medium text-slate-600">Tampilkan ke publik</span>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="data-[state=checked]:bg-primary-500 data-[state=unchecked]:bg-slate-200"
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="thumbnail"
@@ -453,27 +473,7 @@ export function ExtracurricularSection() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="is_published"
-              render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-xl bg-slate-50 border border-slate-100 p-4 shadow-xs">
-                  <div className="space-y-1">
-                    <FormLabel className="text-lg font-semibold text-slate-700">Publikasikan</FormLabel>
-                    <p className="text-sm font-medium text-slate-500">
-                      Artikel akan terlihat di halaman ekstrakurikuler
-                    </p>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      className="data-[state=checked]:bg-primary-500 data-[state=unchecked]:bg-slate-200"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+
           </div>
         </Form>
       </FormDialog>

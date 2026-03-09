@@ -10,7 +10,7 @@ import {
     getHolidays
 } from '@/actions';
 
-export function ApiTestSection() {
+export function ApiTest() {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(false);
 

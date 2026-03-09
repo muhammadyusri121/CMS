@@ -13,6 +13,7 @@ export default defineConfig({
     },
   },
   server: {
+    host: true, // Listen on all local IPs
     proxy: {
       '/api': {
         target: 'http://localhost:3000',

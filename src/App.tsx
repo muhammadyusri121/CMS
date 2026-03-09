@@ -2,18 +2,18 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { Toaster } from 'sonner';
 import { Sidebar } from '@/components/ui-custom/Sidebar';
 import { Header } from '@/components/ui-custom/Header';
-import { DashboardSection } from '@/sections/DashboardSection';
-import { PersonnelSection } from '@/sections/PersonnelSection';
-import { PostsSection } from '@/sections/PostsSection';
-import { GraduationSection } from '@/sections/GraduationSection';
-import { DocumentsSection } from '@/sections/DocumentsSection';
-import { ExtracurricularSection } from '@/sections/ExtracurricularSection';
-import { FacilitiesSection } from '@/sections/FacilitiesSection';
-import { LoginSection } from '@/sections/LoginSection';
-import { UsersSection } from '@/sections/UsersSection';
-import { HolidaysSection } from '@/sections/HolidaysSection';
-import { ScheduleSection } from '@/sections/ScheduleSection';
-import { ApiTestSection } from '@/sections/ApiTestSection';
+import { Dashboard } from '@/sections/Dashboard';
+import { Personnel } from '@/sections/Personnel';
+import { Posts } from '@/sections/Posts';
+import { Graduation } from '@/sections/Graduation';
+import { Documents } from '@/sections/Documents';
+import { Extracurricular } from '@/sections/Extracurricular';
+import { Facilities } from '@/sections/Facilities';
+import { Login } from '@/sections/Login';
+import { Users } from '@/sections/Users';
+import { Holidays } from '@/sections/Holidays';
+import { Schedule } from '@/sections/Schedule';
+import { ApiTest } from '@/sections/ApiTest';
 import { useAuthStore } from '@/lib/authStore';
 import { useLayoutStore } from '@/lib/layoutStore';
 
@@ -42,14 +42,14 @@ function DashboardLayout({ children, title, subtitle }: {
   const { isSidebarCollapsed } = useLayoutStore();
 
   return (
-    <div className="h-screen bg-slate-50 text-slate-800 selection:bg-primary-500/20 relative overflow-hidden font-sans">
-      <div className="relative h-screen flex">
+    <div className="fixed inset-0 bg-slate-100 text-slate-800 selection:bg-primary-500/20 font-sans overflow-hidden">
+      <div className="flex h-full w-full relative">
         <Sidebar />
 
         {/* Main Content Area */}
-        <div className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-[250px]'}`}>
+        <div className={`flex-1 flex flex-col h-full min-w-0 w-full transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-[250px]'}`}>
           <Header title={title} subtitle={subtitle} />
-          <main className="flex-1 p-4 sm:p-5 lg:p-6 overflow-x-hidden overflow-y-auto">
+          <main className="flex-1 overflow-x-hidden overflow-y-auto w-full p-4 sm:p-5 lg:p-6 relative">
             <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
               {children}
             </div>
@@ -64,7 +64,7 @@ function DashboardLayout({ children, title, subtitle }: {
 function DashboardPage() {
   return (
     <DashboardLayout title="Dashboard" subtitle="Selamat datang di Admin SMAN 1 Ketapang">
-      <DashboardSection />
+      <Dashboard />
     </DashboardLayout>
   );
 }
@@ -72,7 +72,7 @@ function DashboardPage() {
 function PersonnelPage() {
   return (
     <DashboardLayout title="Personel Pendidik" subtitle="Kelola data tenaga pendidik">
-      <PersonnelSection />
+      <Personnel />
     </DashboardLayout>
   );
 }
@@ -80,7 +80,7 @@ function PersonnelPage() {
 function PostsPage() {
   return (
     <DashboardLayout title="Postingan" subtitle="Kelola berita dan konten">
-      <PostsSection />
+      <Posts />
     </DashboardLayout>
   );
 }
@@ -88,7 +88,7 @@ function PostsPage() {
 function GraduationPage() {
   return (
     <DashboardLayout title="Data Kelulusan" subtitle="Kelola data kelulusan siswa">
-      <GraduationSection />
+      <Graduation />
     </DashboardLayout>
   );
 }
@@ -96,7 +96,7 @@ function GraduationPage() {
 function DocumentsPage() {
   return (
     <DashboardLayout title="Dokumen Akademik" subtitle="Kelola dokumen dan regulasi">
-      <DocumentsSection />
+      <Documents />
     </DashboardLayout>
   );
 }
@@ -104,7 +104,7 @@ function DocumentsPage() {
 function HolidaysPage() {
   return (
     <DashboardLayout title="Kalender Libur" subtitle="Kelola kalender dan perayaan">
-      <HolidaysSection />
+      <Holidays />
     </DashboardLayout>
   );
 }
@@ -112,7 +112,7 @@ function HolidaysPage() {
 function SchedulePage() {
   return (
     <DashboardLayout title="Jadwal Pelajaran" subtitle="Kelola jadwal pelajaran sekolah">
-      <ScheduleSection />
+      <Schedule />
     </DashboardLayout>
   );
 }
@@ -120,7 +120,7 @@ function SchedulePage() {
 function ExtracurricularPage() {
   return (
     <DashboardLayout title="Ekstrakurikuler" subtitle="Kelola kegiatan siswa">
-      <ExtracurricularSection />
+      <Extracurricular />
     </DashboardLayout>
   );
 }
@@ -128,7 +128,7 @@ function ExtracurricularPage() {
 function FacilitiesPage() {
   return (
     <DashboardLayout title="Fasilitas" subtitle="Kelola sarana dan prasarana">
-      <FacilitiesSection />
+      <Facilities />
     </DashboardLayout>
   );
 }
@@ -136,7 +136,7 @@ function FacilitiesPage() {
 function UsersPage() {
   return (
     <DashboardLayout title="Pengelola Sistem" subtitle="Kelola pengguna admin dan role">
-      <UsersSection />
+      <Users />
     </DashboardLayout>
   );
 }
@@ -144,7 +144,7 @@ function UsersPage() {
 function ApiTestPage() {
   return (
     <DashboardLayout title="Uji Data API" subtitle="Ujicoba get data JSON murni">
-      <ApiTestSection />
+      <ApiTest />
     </DashboardLayout>
   );
 }
@@ -165,7 +165,7 @@ function App() {
         richColors
       />
       <Routes>
-        <Route path="/login" element={<LoginSection />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="/personnel" element={<ProtectedRoute><PersonnelPage /></ProtectedRoute>} />
         <Route path="/posts" element={<ProtectedRoute><PostsPage /></ProtectedRoute>} />

@@ -70,14 +70,14 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-3">
       {/* Table */}
-      <div className="rounded-xl border border-slate-200/60 bg-white shadow-card overflow-hidden w-full">
-        <div className="w-full overflow-x-auto -webkit-overflow-scrolling-touch">
+      <div className="rounded-xl border border-slate-200/60 bg-white shadow-card w-full max-w-full overflow-hidden">
+        <div className="w-full overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
           <Table className="w-full min-w-[640px]">
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
                   key={headerGroup.id}
-                  className="bg-slate-50 border-b border-slate-200 hover:bg-slate-50"
+                  className="bg-primary-100 border-b border-primary-200 hover:bg-primary-100"
                 >
                   {headerGroup.headers.map((header) => {
                     const isSortable = header.column.getCanSort();
@@ -87,8 +87,8 @@ export function DataTable<TData, TValue>({
                       <TableHead
                         key={header.id}
                         className={cn(
-                          'text-slate-500 font-semibold text-[11px] sm:text-xs uppercase tracking-wider py-3 px-4',
-                          isSortable && 'cursor-pointer select-none hover:text-slate-700'
+                          'text-slate-900 font-bold text-[11px] sm:text-xs uppercase tracking-wider py-3 px-4',
+                          isSortable && 'cursor-pointer select-none'
                         )}
                         onClick={isSortable ? header.column.getToggleSortingHandler() : undefined}
                       >

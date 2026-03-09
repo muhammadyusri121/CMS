@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { cn } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -20,6 +21,7 @@ interface FormDialogProps {
   isSubmitting?: boolean;
   submitLabel?: string;
   cancelLabel?: string;
+  className?: string;
 }
 
 export function FormDialog({
@@ -32,24 +34,33 @@ export function FormDialog({
   isSubmitting = false,
   submitLabel = 'Simpan',
   cancelLabel = 'Batal',
+  className,
 }: FormDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[560px] w-[95vw] max-h-[90vh] overflow-auto border border-slate-200 bg-white rounded-xl sm:rounded-2xl shadow-dialog p-4 sm:p-6">
-        <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl font-bold text-slate-800">{title}</DialogTitle>
+      <DialogContent
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+        onEscapeKeyDown={(e) => {
+          e.preventDefault();
+        }}
+        className={cn("sm:max-w-[560px] w-[95vw] max-h-[90vh] flex flex-col overflow-hidden border border-slate-200 bg-white rounded-xl sm:rounded-2xl shadow-dialog p-0 gap-0", className)}
+      >
+        <DialogHeader className="px-4 py-4 sm:px-6 sm:py-5 border-b border-slate-100 shrink-0">
+          <DialogTitle className="text-lg sm:text-xl font-bold text-slate-800 pr-6">{title}</DialogTitle>
           {description && (
-            <DialogDescription className="text-sm text-slate-500">
+            <DialogDescription className="text-sm text-slate-500 mt-1">
               {description}
             </DialogDescription>
           )}
         </DialogHeader>
 
-        <div className="py-2 sm:py-3">
+        <div className="p-4 sm:p-6 flex-1 overflow-y-auto min-h-0 custom-scrollbar">
           {children}
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-2.5 flex-col sm:flex-row w-full sm:w-auto mt-2">
+        <DialogFooter className="px-4 py-4 sm:px-6 sm:py-5 border-t border-slate-100 gap-2 flex-col sm:flex-row w-full sm:justify-end shrink-0 bg-slate-50/50">
           <Button
             type="button"
             variant="outline"

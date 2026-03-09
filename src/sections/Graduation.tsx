@@ -29,7 +29,7 @@ import {
 import { toast } from 'sonner';
 import type { ColumnDef, SortingState } from '@tanstack/react-table';
 
-export function GraduationSection() {
+export function Graduation() {
   const [graduations, setGraduations] = useState<Graduation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [nisnSearch, setNisnSearch] = useState('');
@@ -324,7 +324,6 @@ export function GraduationSection() {
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
         title={selectedGraduation ? 'Edit Data Kelulusan' : 'Tambah Data Kelulusan'}
-        description={selectedGraduation ? 'Perbarui data kelulusan siswa' : 'Tambahkan data kelulusan baru'}
         onSubmit={form.handleSubmit(onSubmit)}
         isSubmitting={isSubmitting}
       >

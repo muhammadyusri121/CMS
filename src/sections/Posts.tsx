@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Search, Pencil, Trash2, Eye, EyeOff, ImageIcon, Upload } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Eye, EyeOff, ImageIcon, Upload, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTable } from '@/components/ui-custom/DataTable';
@@ -67,7 +67,7 @@ const categoryColors: Record<PostCategory, string> = {
   [PostCategory.OSIS_MPK]: 'bg-red-100 text-red-700',
 };
 
-export function PostsSection() {
+export function Posts() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -401,9 +401,9 @@ export function PostsSection() {
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
         title={selectedPost ? 'Edit Postingan' : 'Tambah Postingan'}
-        description={selectedPost ? 'Perbarui data postingan' : 'Tambahkan postingan baru'}
         onSubmit={form.handleSubmit(onSubmit)}
         isSubmitting={isSubmitting}
+        className="sm:max-w-3xl lg:max-w-4xl"
       >
         <Form {...form}>
           <div className="space-y-4">
@@ -424,39 +424,58 @@ export function PostsSection() {
               control={form.control}
               name="slug"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Slug</FormLabel>
+                <FormItem className="hidden">
                   <FormControl>
-                    <Input {...field} placeholder="auto-generated-slug" disabled className="bg-slate-50 border-slate-200 rounded-lg text-slate-500 shadow-xs font-medium px-3 h-10 cursor-not-allowed opacity-80" />
+                    <Input {...field} />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Kategori</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="bg-white border-slate-200 rounded-lg text-slate-800 focus:ring-2 focus:ring-primary-100 shadow-xs font-medium px-3 h-10">
-                        <SelectValue placeholder="Pilih kategori" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.entries(categoryLabels).map(([value, label]) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kategori</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="bg-white border-slate-200 rounded-lg text-slate-800 focus:ring-2 focus:ring-primary-100 shadow-xs font-medium px-3 h-10">
+                          <SelectValue placeholder="Pilih kategori" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.entries(categoryLabels).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="is_published"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status Publikasi</FormLabel>
+                    <div className="flex items-center justify-between rounded-lg bg-slate-50 border border-slate-200 px-4 h-10 shadow-xs">
+                      <span className="text-sm font-medium text-slate-600">Tampilkan ke publik</span>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="data-[state=checked]:bg-primary-500 data-[state=unchecked]:bg-slate-200"
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="images"
@@ -469,7 +488,7 @@ export function PostsSection() {
                         <div className="flex flex-wrap gap-3">
                           {field.value.map((url, idx) => (
                             <div key={idx} className="relative h-24 w-24 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center group border border-slate-200 shadow-sm">
-                              <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                              <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                               <button
                                 type="button"
                                 onClick={() => {
@@ -490,8 +509,8 @@ export function PostsSection() {
                         <div className="relative flex-1">
                           <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                           <Input
-                            placeholder="Tempel URL gambar manual..."
-                            className="w-full pl-9 h-10 bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium"
+                            placeholder="Tempel URL gambar baru (Enter)"
+                            className="w-full pl-9 h-10 bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium text-sm"
                             id="manual-url-input"
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') {
@@ -506,24 +525,6 @@ export function PostsSection() {
                             }}
                           />
                         </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="h-10 w-10 rounded-lg bg-white border-slate-200 text-primary-500 hover:text-primary-600 shadow-xs hover:bg-primary-50"
-                          onClick={() => {
-                            const inputNode = document.getElementById('manual-url-input') as HTMLInputElement;
-                            const val = inputNode?.value.trim();
-                            if (val) {
-                              field.onChange([...(field.value || []), val]);
-                              if (inputNode) inputNode.value = '';
-                            }
-                          }}
-                        >
-                          <Plus className="h-5 w-5" strokeWidth={2.5} />
-                        </Button>
-                      </div>
-
-                      <div className="flex items-center gap-2">
                         <input
                           type="file"
                           ref={fileInputRef}
@@ -537,10 +538,10 @@ export function PostsSection() {
                           variant="outline"
                           onClick={() => fileInputRef.current?.click()}
                           disabled={isUploading}
-                          className="w-full h-10 rounded-lg bg-white border-slate-200 text-primary-500 hover:text-primary-600 shadow-xs hover:bg-primary-50 font-medium"
+                          className="h-10 px-4 rounded-lg bg-white border-slate-200 text-primary-500 hover:text-primary-600 shadow-xs hover:bg-primary-50 font-medium shrink-0"
                         >
-                          {isUploading ? 'Menunggu Proses...' : (
-                            <><Upload className="h-5 w-5 mr-2" strokeWidth={2.5} /> Upload Multiple dari PC</>
+                          {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
+                            <><Upload className="h-4 w-4 mr-2" strokeWidth={2} /> Upload PC</>
                           )}
                         </Button>
                       </div>
@@ -568,27 +569,7 @@ export function PostsSection() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="is_published"
-              render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-xl bg-slate-50 border border-slate-100 p-4 shadow-xs">
-                  <div className="space-y-1">
-                    <FormLabel className="text-sm font-semibold text-slate-700">Publikasikan</FormLabel>
-                    <p className="text-sm font-medium text-slate-500">
-                      Postingan akan terlihat di website publik
-                    </p>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      className="data-[state=checked]:bg-primary-500 data-[state=unchecked]:bg-slate-200"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+
           </div>
         </Form>
       </FormDialog>

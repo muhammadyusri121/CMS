@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 
-export function DashboardSection() {
+export function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 

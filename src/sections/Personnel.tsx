@@ -30,7 +30,7 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/lib/authStore';
 import type { ColumnDef } from '@tanstack/react-table';
 
-export function PersonnelSection() {
+export function Personnel() {
   const [personnel, setPersonnel] = useState<EducationPersonnel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -277,7 +277,7 @@ export function PersonnelSection() {
     <div className="space-y-6">
       {/* Header Actions */}
       <div className="flex items-center justify-end">
-        <Button onClick={handleCreate} className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-4 h-9 sm:h-10 text-sm shadow-sm font-medium transition-colors w-full sm:w-auto">
+        <Button onClick={handleCreate} className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-3 sm:px-4 h-9 sm:h-10 text-xs sm:text-sm shadow-sm font-medium transition-colors w-auto">
           <Plus className="h-4 w-4" strokeWidth={2} />
           Tambah Personel
         </Button>
@@ -313,7 +313,6 @@ export function PersonnelSection() {
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
         title={selectedPersonnel ? 'Edit Personel' : 'Tambah Personel'}
-        description={selectedPersonnel ? 'Perbarui data personel' : 'Tambahkan personel baru'}
         onSubmit={form.handleSubmit(onSubmit)}
         isSubmitting={isSubmitting}
       >

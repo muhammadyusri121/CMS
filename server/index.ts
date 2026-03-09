@@ -145,13 +145,20 @@ app.get(/^\/api\/files\/(.+)$/, async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        if (!email || !password) return res.status(400).json({ success: false, error: "Email dan Password wajib diisi." });
+        if (!email || !password) return res.status(400).json({ success: false, error: "Email/NIP dan Password wajib diisi." });
 
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return res.status(401).json({ success: false, error: "Email atau Password salah." });
+        const user = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { email: email },
+                    { nip: email }
+                ]
+            }
+        });
+        if (!user) return res.status(401).json({ success: false, error: "Email/NIP atau Password salah." });
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(401).json({ success: false, error: "Email atau Password salah." });
+        if (!isMatch) return res.status(401).json({ success: false, error: "Email/NIP atau Password salah." });
 
         const token = jsonwebtoken.sign({ id: user.id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '1d' });
 
@@ -171,14 +178,18 @@ app.get('/api/users', requireAuth, requireAdmin, async (req, res) => {
 
 app.post('/api/users', requireAuth, requireAdmin, async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, nip } = req.body;
         const existing = await prisma.user.findUnique({ where: { email } });
         if (existing) return res.status(400).json({ success: false, error: "Email sudah digunakan." });
+        if (nip) {
+            const existingNip = await prisma.user.findUnique({ where: { nip } });
+            if (existingNip) return res.status(400).json({ success: false, error: "NIP sudah digunakan." });
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await prisma.user.create({
-            data: { name, email, password: hashedPassword, role },
-            select: { id: true, name: true, email: true, role: true, createdAt: true, updatedAt: true }
+            data: { name, email, password: hashedPassword, role, nip: nip || null },
+            select: { id: true, name: true, email: true, nip: true, role: true, createdAt: true, updatedAt: true }
         });
         handleSuccess(res, user, 'Admin pengguna berhasil ditambahkan');
     } catch (error) { handleError(res, error); }
@@ -187,9 +198,9 @@ app.post('/api/users', requireAuth, requireAdmin, async (req, res) => {
 app.put('/api/users/:id', requireAuth, requireAdmin, async (req, res) => {
     try {
         const { id } = req.params as { id: string };
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, nip } = req.body;
 
-        const data: any = { name, email, role };
+        const data: any = { name, email, role, nip: nip || null };
         if (password) {
             data.password = await bcrypt.hash(password, 10);
         }
@@ -198,10 +209,15 @@ app.put('/api/users/:id', requireAuth, requireAdmin, async (req, res) => {
         const existing = await prisma.user.findFirst({ where: { email, NOT: { id } } });
         if (existing) return res.status(400).json({ success: false, error: "Email sudah digunakan oleh admin lain." });
 
+        if (nip) {
+            const existingNip = await prisma.user.findFirst({ where: { nip, NOT: { id } } });
+            if (existingNip) return res.status(400).json({ success: false, error: "NIP sudah digunakan oleh admin lain." });
+        }
+
         const user = await prisma.user.update({
             where: { id },
             data,
-            select: { id: true, name: true, email: true, role: true, createdAt: true, updatedAt: true }
+            select: { id: true, name: true, email: true, nip: true, role: true, createdAt: true, updatedAt: true }
         });
         handleSuccess(res, user, 'Admin pengguna berhasil diperbarui');
     } catch (error) { handleError(res, error); }

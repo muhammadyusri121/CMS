@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import {
     Plus,
     Trash2,
-    Edit,
+    Pencil,
     Search,
     BookOpen,
     UploadCloud,
@@ -43,7 +43,7 @@ const scheduleSchema = z.object({
 
 type ScheduleFormValues = z.infer<typeof scheduleSchema>;
 
-export function ScheduleSection() {
+export function Schedule() {
     const [data, setData] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -269,23 +269,27 @@ export function ScheduleSection() {
             header: 'Aksi',
             cell: ({ row }) => (
                 <div className="flex items-center gap-1.5">
-                    <button
+                    <Button
+                        variant="outline"
+                        size="icon"
                         onClick={() => handleEdit(row.original)}
-                        className="flex items-center justify-center h-8 w-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-primary-600 hover:border-primary-200 transition-colors shadow-xs"
+                        className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-primary-600 hover:border-primary-200 border-slate-200 shadow-xs transition-colors"
                         title="Edit"
                     >
-                        <Edit className="h-3.5 w-3.5" strokeWidth={2} />
-                    </button>
-                    <button
+                        <Pencil className="h-4 w-4" strokeWidth={2} />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
                         onClick={() => {
                             setSelectedItem(row.original);
                             setIsDeleteDialogOpen(true);
                         }}
-                        className="flex items-center justify-center h-8 w-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 transition-colors shadow-xs"
+                        className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-red-500 hover:border-red-200 border-slate-200 shadow-xs transition-colors"
                         title="Hapus"
                     >
-                        <Trash2 className="h-3.5 w-3.5" strokeWidth={2} />
-                    </button>
+                        <Trash2 className="h-4 w-4" strokeWidth={2} />
+                    </Button>
                 </div>
             ),
         },
@@ -319,12 +323,12 @@ export function ScheduleSection() {
             {/* Search */}
             <div className="flex items-center gap-3">
                 <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" strokeWidth={2} />
                     <Input
                         placeholder="Cari kelas, NIP, atau mapel..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-9 h-9 sm:h-10 text-sm bg-white border border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium"
+                        className="w-full pl-9 h-9 sm:h-10 text-sm bg-white border border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium transition-all"
                     />
                 </div>
             </div>
@@ -345,7 +349,6 @@ export function ScheduleSection() {
                 open={isDialogOpen}
                 onOpenChange={setIsDialogOpen}
                 title={selectedItem ? "Edit Jadwal" : "Tambah Jadwal Manual"}
-                description={selectedItem ? "Ubah data jadwal" : "Tambahkan jadwal baru"}
                 onSubmit={form.handleSubmit(onSubmit)}
                 isSubmitting={isUploading}
             >

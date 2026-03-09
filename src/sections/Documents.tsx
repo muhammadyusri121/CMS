@@ -54,7 +54,7 @@ const documentTypeColors: Record<DocumentType, string> = {
   [DocumentType.TEACHING_MATERIAL]: 'bg-purple-100 text-purple-700',
 };
 
-export function DocumentsSection() {
+export function Documents() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [documents, setDocuments] = useState<AcademicDocument[]>([]);
@@ -337,7 +337,6 @@ export function DocumentsSection() {
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
         title={selectedDocument ? 'Edit Dokumen' : 'Tambah Dokumen'}
-        description={selectedDocument ? 'Perbarui data dokumen' : 'Tambahkan dokumen baru'}
         onSubmit={form.handleSubmit(onSubmit)}
         isSubmitting={isSubmitting}
       >
