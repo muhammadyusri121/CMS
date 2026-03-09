@@ -1,37 +1,38 @@
-FROM node:24-alpine AS builder
-
-# Set working directory
+# Stage 1: Install dependencies & Build
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Salin config dan dependensi
+# Copy package files dan folder prisma
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install seluruh dependency
-RUN npm cache clean --force
+# Install semua library (termasuk Prisma)
 RUN npm install
 
-# Salin sisa kode program (Front-end & Server Backend)
+# Copy semua source code aplikasi
 COPY . .
 
-# Buat Prisma Client & Build Aplikasi Vite (Front-end SPA)
+# HANYA generate client (agar kode Next.js kenal database)
+# Perintah ini tidak melakukan migrasi/perubahan pada isi database
 RUN npx prisma generate
+
+# Build aplikasi Next.js
 RUN npm run build
 
-# --- TAHAP 2: PROD RUNNER ---
-FROM node:24-alpine
-
+# Stage 2: Run aplikasi
+FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Salin dependencies & folder yang diperlukan dari image builder 
-COPY --from=builder /app/node_modules ./node_modules
+ENV NODE_ENV=production
+
+# Copy file yang dibutuhkan saja dari stage builder
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/server ./server
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/next.config.mjs ./
+# Jika pakai next.config.js (bukan .mjs), sesuaikan baris di atas ^
 
-# Expose port (Internal Docker)
-EXPOSE 3000
+EXPOSE 3001
 
-# Eksekusi migrasi database otomatis saat jalan, lalu hidupkan server API (TSX)
-# CMD ["sh", "-c", "npx prisma db push && npx tsx server/index.ts"]
+CMD ["npm", "run", "start"]
