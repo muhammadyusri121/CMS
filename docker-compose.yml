@@ -1,13 +1,15 @@
 services:
   cms-app:
     build:
-      context: ./CMS
+      context: .  # Titik artinya "Gunakan folder tempat file ini berada"
+      dockerfile: Dockerfile
     container_name: smanka-cms-app
     restart: always
-    env_file: .env
+    env_file:
+      - .env
     environment:
       - PORT=3000
     ports:
-      - "3001:3000" # Mapping ke port 3001 agar tidak bentrok
+      - "3001:3000"
     volumes:
-      - ./CMS/prisma:/app/prisma
+      - ./prisma:/app/prisma
