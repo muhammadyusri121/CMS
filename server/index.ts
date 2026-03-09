@@ -310,10 +310,9 @@ const generateUniqueSlug = async (title: string, excludeId?: string) => {
     const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     let slug = baseSlug;
     let counter = 1;
-    const condition: any = { slug };
-    if (excludeId) condition.NOT = { id: excludeId };
+    const where: any = excludeId ? { NOT: { id: excludeId } } : {};
 
-    while (await prisma.post.findFirst({ where: condition })) {
+    while (await prisma.post.findFirst({ where: { ...where, slug } })) {
         slug = `${baseSlug}-${counter}`;
         counter++;
     }
@@ -459,11 +458,14 @@ app.delete('/api/academic-documents/:id', requireAuth, async (req, res) => {
 });
 
 // --- Manajemen Kegiatan Ekstrakurikuler ---
-const generateUniqueEkskulSlug = async (title: string) => {
+const generateUniqueEkskulSlug = async (title: string, excludeId?: string) => {
     const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     let slug = baseSlug;
     let counter = 1;
-    while (await prisma.extracurricular.findUnique({ where: { slug } })) {
+
+    const where: any = excludeId ? { NOT: { id: excludeId } } : {};
+
+    while (await prisma.extracurricular.findFirst({ where: { ...where, slug } })) {
         slug = `${baseSlug}-${counter}`;
         counter++;
     }
@@ -520,7 +522,7 @@ app.put('/api/extracurriculars/:id', requireAuth, async (req, res) => {
 
         let slug = undefined;
         if (data.title) {
-            slug = await generateUniqueEkskulSlug(data.title);
+            slug = await generateUniqueEkskulSlug(data.title, id);
             (data as any).slug = slug;
         }
 
