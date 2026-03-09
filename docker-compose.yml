@@ -1,15 +1,13 @@
 services:
   cms-app:
-    build: .
+    build:
+      context: ./CMS
     container_name: smanka-cms-app
     restart: always
+    env_file: ./CMS/.env
     environment:
       - PORT=3000
-    env_file:
-      - .env
     ports:
-      - "127.0.0.1:3001:3000" # Map ke port 3001 di Host
+      - "3001:3000" # Mapping ke port 3001 agar tidak bentrok
     volumes:
-      - ./prisma:/app/prisma
-
-# HAPUS ATAU KOMENTAR SERVICE NGINX DI SINI
+      - ./CMS/prisma:/app/prisma
