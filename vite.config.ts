@@ -26,26 +26,12 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
-              return 'vendor-react';
-            }
-            if (id.includes('@radix-ui') || id.includes('lucide-react') || id.includes('cmdk') || id.includes('vaul') || id.includes('sonner')) {
-              return 'vendor-ui';
-            }
-            if (id.includes('@tiptap')) {
-              return 'vendor-editor';
-            }
-            if (id.includes('recharts')) {
-              return 'vendor-charts';
-            }
-            if (id.includes('xlsx')) {
-              return 'vendor-excel';
-            }
+            // Gabungkan semua library ke satu chunk vendor untuk menghindari circular dependency
             return 'vendor';
           }
         }
       }
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 1500, // Naikkan limit agar tidak muncul warning untuk vendor besar
   }
 });
