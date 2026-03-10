@@ -1,7 +1,7 @@
 services:
   cms-app:
     build:
-      context: .  # Titik artinya "Gunakan folder tempat file ini berada"
+      context: .
       dockerfile: Dockerfile
     container_name: smanka-cms-app
     restart: always
@@ -9,13 +9,24 @@ services:
       - .env
     environment:
       - PORT=3000
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://admin_sekolah:passwordku@202.52.147.214:5433/sekolah_db?schema=public&sslmode=disable&connect_timeout=30
     ports:
-      - "127.0.0.1:3001:3000"
-    volumes:
-      - ./prisma:/app/prisma
+      - "3001:3000"
+    # Volume hanya untuk logs atau upload jika diperlukan, 
+    # prisma sudah ada di dalam image hasil build optimal
+    # Jika Anda butuh database lokal (SQLite), aktifkan volume di bawah:
+    # volumes:
+    #   - ./prisma/dev.db:/app/prisma/dev.db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - app-network
 
 networks:
   app-network:
     driver: bridge
+
