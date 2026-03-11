@@ -50,6 +50,8 @@ export const getAcademicDocuments = async (): Promise<any> => fetchApi('/academi
 export const createAcademicDocument = async (v: any): Promise<any> => fetchApi('/academic-documents', { method: 'POST', body: JSON.stringify(v) });
 export const updateAcademicDocument = async (id: any, v: any): Promise<any> => fetchApi(`/academic-documents/${id}`, { method: 'PUT', body: JSON.stringify(v) });
 export const deleteAcademicDocument = async (id: any): Promise<any> => fetchApi(`/academic-documents/${id}`, { method: 'DELETE' });
+export const deleteAllAcademicDocuments = async (): Promise<any> => fetchApi('/academic-documents', { method: 'DELETE' });
+export const deleteSelectedAcademicDocuments = async (ids: string[]): Promise<any> => fetchApi('/academic-documents/batch-delete', { method: 'DELETE', body: JSON.stringify({ ids }) });
 
 export const getExtracurriculars = async (v?: any): Promise<any> => {
     return fetchApi(`/extracurriculars?page=${v?.page || 1}&limit=${v?.limit || 10}&sortBy=${v?.sortBy || 'createdAt'}&sortOrder=${v?.sortOrder || 'desc'}`);
@@ -59,13 +61,19 @@ export const updateExtracurricular = async (id: any, v: any): Promise<any> => fe
 export const deleteExtracurricular = async (id: any): Promise<any> => fetchApi(`/extracurriculars/${id}`, { method: 'DELETE' });
 
 export const getHolidays = async (): Promise<any> => fetchApi('/holidays');
+export const createHoliday = async (v: any): Promise<any> => fetchApi('/holidays', { method: 'POST', body: JSON.stringify(v) });
+export const updateHoliday = async (id: any, v: any): Promise<any> => fetchApi(`/holidays/${id}`, { method: 'PUT', body: JSON.stringify(v) });
 export const uploadHolidays = async (formData: FormData): Promise<any> => fetchApi('/holidays/upload', { method: 'POST', body: formData });
 export const deleteHoliday = async (id: string): Promise<any> => fetchApi(`/holidays/${id}`, { method: 'DELETE' });
+export const deleteAllHolidays = async (): Promise<any> => fetchApi('/holidays', { method: 'DELETE' });
+export const deleteSelectedHolidays = async (ids: string[]): Promise<any> => fetchApi('/holidays/batch-delete', { method: 'DELETE', body: JSON.stringify({ ids }) });
 
 export const getFacilities = async (): Promise<any> => fetchApi('/facilities');
 export const createFacility = async (v: any): Promise<any> => fetchApi('/facilities', { method: 'POST', body: JSON.stringify(v) });
 export const updateFacility = async (id: any, v: any): Promise<any> => fetchApi(`/facilities/${id}`, { method: 'PUT', body: JSON.stringify(v) });
 export const deleteFacility = async (id: any): Promise<any> => fetchApi(`/facilities/${id}`, { method: 'DELETE' });
+export const deleteAllFacilities = async (): Promise<any> => fetchApi('/facilities', { method: 'DELETE' });
+export const deleteSelectedFacilities = async (ids: string[]): Promise<any> => fetchApi('/facilities/batch-delete', { method: 'DELETE', body: JSON.stringify({ ids }) });
 
 export const getGraduations = async (v: any, v2?: any): Promise<any> => {
     let url = `/graduations?page=${v?.page || 1}&limit=${v?.limit || 10}&sortBy=${v?.sortBy || 'createdAt'}&sortOrder=${v?.sortOrder || 'desc'}`;
@@ -75,11 +83,15 @@ export const getGraduations = async (v: any, v2?: any): Promise<any> => {
 export const createGraduation = async (v: any): Promise<any> => fetchApi('/graduations', { method: 'POST', body: JSON.stringify(v) });
 export const updateGraduation = async (id: any, v: any): Promise<any> => fetchApi(`/graduations/${id}`, { method: 'PUT', body: JSON.stringify(v) });
 export const deleteGraduation = async (id: any): Promise<any> => fetchApi(`/graduations/${id}`, { method: 'DELETE' });
+export const deleteAllGraduations = async (): Promise<any> => fetchApi('/graduations', { method: 'DELETE' });
+export const deleteSelectedGraduations = async (ids: string[]): Promise<any> => fetchApi('/graduations/batch-delete', { method: 'DELETE', body: JSON.stringify({ ids }) });
 
 export const getEducationPersonnel = async (): Promise<any> => fetchApi('/education-personnel');
 export const createEducationPersonnel = async (v: any): Promise<any> => fetchApi('/education-personnel', { method: 'POST', body: JSON.stringify(v) });
 export const updateEducationPersonnel = async (id: any, v: any): Promise<any> => fetchApi(`/education-personnel/${id}`, { method: 'PUT', body: JSON.stringify(v) });
 export const deleteEducationPersonnel = async (id: any): Promise<any> => fetchApi(`/education-personnel/${id}`, { method: 'DELETE' });
+export const deleteAllEducationPersonnel = async (): Promise<any> => fetchApi('/education-personnel', { method: 'DELETE' });
+export const deleteSelectedEducationPersonnel = async (ids: string[]): Promise<any> => fetchApi('/education-personnel/batch-delete', { method: 'DELETE', body: JSON.stringify({ ids }) });
 
 export const getPosts = async (v?: any): Promise<any> => {
     return fetchApi(`/posts?page=${v?.page || 1}&limit=${v?.limit || 10}&sortBy=${v?.sortBy || 'createdAt'}&sortOrder=${v?.sortOrder || 'desc'}`);
@@ -96,7 +108,9 @@ export const getSchedules = async (v?: any): Promise<any> => {
 export const createSchedule = async (v: any): Promise<any> => fetchApi('/school-schedule', { method: 'POST', body: JSON.stringify(v) });
 export const updateSchedule = async (id: any, v: any): Promise<any> => fetchApi(`/school-schedule/${id}`, { method: 'PUT', body: JSON.stringify(v) });
 export const deleteSchedule = async (id: any): Promise<any> => fetchApi(`/school-schedule/${id}`, { method: 'DELETE' });
+export const deleteAllSchedules = async (): Promise<any> => fetchApi('/school-schedule', { method: 'DELETE' });
 export const uploadSchedules = async (formData: FormData): Promise<any> => fetchApi('/school-schedule/upload', { method: 'POST', body: formData });
+export const deleteSelectedSchedules = async (ids: string[]): Promise<any> => fetchApi('/school-schedule/batch-delete', { method: 'DELETE', body: JSON.stringify({ ids }) });
 
 // Auth
 export const login = async (data: any): Promise<any> => fetchApi('/auth/login', { method: 'POST', body: JSON.stringify(data) });

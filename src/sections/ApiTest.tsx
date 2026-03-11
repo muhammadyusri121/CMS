@@ -7,7 +7,9 @@ import {
     getEducationPersonnel,
     getFacilities,
     getAcademicDocuments,
-    getHolidays
+    getHolidays,
+    getSchedules,
+    createSchedule
 } from '@/actions';
 
 export function ApiTest() {
@@ -55,6 +57,43 @@ export function ApiTest() {
                 </Button>
                 <Button onClick={() => handleFetch(getHolidays, 'Holidays')} disabled={loading} variant="outline" className="border-slate-200 text-orange-600 hover:bg-orange-50 rounded-xl transition-all shadow-sm font-bold bg-white">
                     Get Holidays
+                </Button>
+                <Button onClick={() => handleFetch(getSchedules, 'Schedules')} disabled={loading} variant="outline" className="border-slate-200 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all shadow-sm font-bold bg-white">
+                    Get Schedules
+                </Button>
+                <Button 
+                    onClick={() => {
+                        const dummy = {
+                            class_name: "X IPS 1",
+                            period: "1",
+                            subject: "Uji Bentrok",
+                            day_of_week: "Senin",
+                            teacher_nip: "199001012020121001"
+                        };
+                        handleFetch(() => createSchedule(dummy), 'Create Schedule (Conflict Test)');
+                    }} 
+                    disabled={loading} 
+                    variant="outline" 
+                    className="border-slate-200 text-red-600 hover:bg-red-50 rounded-xl transition-all shadow-sm font-bold bg-white"
+                >
+                    Test Schedule Conflict
+                </Button>
+                <Button 
+                    onClick={() => {
+                        const dummy = {
+                            class_name: "XI IPA 5", // Kelas Berbeda
+                            period: "1", // Jam yang sama (Senin Jam 1)
+                            subject: "Uji Bentrok Guru",
+                            day_of_week: "Senin",
+                            teacher_nip: "199001012020121001" // Guru yang sudah ada jadwal di X IPS 1
+                        };
+                        handleFetch(() => createSchedule(dummy), 'Create Schedule (Teacher Conflict Test)');
+                    }} 
+                    disabled={loading} 
+                    variant="outline" 
+                    className="border-slate-200 text-rose-600 hover:bg-rose-50 rounded-xl transition-all shadow-sm font-bold bg-white"
+                >
+                    Test Teacher Conflict
                 </Button>
             </div>
 

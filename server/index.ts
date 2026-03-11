@@ -74,6 +74,35 @@ import { minioClient, BUCKET_NAME, uploadMiddleware, initBucket } from './minio'
 // Otomatis membuat wadah penyimpanan (Bucket) saat server pertama menyala
 initBucket();
 
+// Otomatis membuat data referensi jam pelajaran (PeriodTime) jika belum ada di dalam database
+const initPeriods = async () => {
+    try {
+        const periods = [
+            { id: 1, time: '07:00 - 07:40' },
+            { id: 2, time: '07:40 - 08:20' },
+            { id: 3, time: '08:20 - 09:00' },
+            { id: 4, time: '09:00 - 09:40' },
+            { id: 5, time: '10:00 - 10:40' },
+            { id: 6, time: '10:40 - 11:20' },
+            { id: 7, time: '12:20 - 13:00' },
+            { id: 8, time: '13:00 - 13:40' },
+            { id: 9, time: '13:40 - 14:20' },
+            { id: 10, time: '14:20 - 15:00' }
+        ];
+
+        for (const p of periods) {
+            await prisma.periodTime.upsert({
+                where: { id: p.id },
+                update: { time: p.time }, // Perbarui waktu jika berbeda
+                create: { id: p.id, time: p.time }
+            });
+        }
+    } catch (e) {
+        console.error('❌ Gagal inisialisasi PeriodTime:', e);
+    }
+};
+initPeriods();
+
 app.post('/api/upload', requireAuth, (req, res, next) => {
     uploadMiddleware.single('file')(req, res, (err: any) => {
         // Jika ada peringatan multer (Ditolak karena beda format MIME / terlalu besar sizenya)
@@ -267,6 +296,21 @@ app.put('/api/education-personnel/:id', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
+app.delete('/api/education-personnel', requireAuth, async (req, res) => {
+    try {
+        await prisma.educationPersonnel.deleteMany();
+        handleSuccess(res, null, 'Semua personel berhasil dihapus');
+    } catch (error) { handleError(res, error); }
+});
+
+app.delete('/api/education-personnel/batch-delete', requireAuth, async (req, res) => {
+    try {
+        const { ids } = req.body as { ids: string[] };
+        await prisma.educationPersonnel.deleteMany({ where: { id: { in: ids } } });
+        handleSuccess(res, null, `${ids.length} personel berhasil dihapus`);
+    } catch (error) { handleError(res, error); }
+});
+
 app.delete('/api/education-personnel/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params as { id: string };
@@ -415,6 +459,21 @@ app.put('/api/graduations/:nisn', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
+app.delete('/api/graduations', requireAuth, async (req, res) => {
+    try {
+        await prisma.graduation.deleteMany();
+        handleSuccess(res, null, 'Semua data kelulusan berhasil dihapus');
+    } catch (error) { handleError(res, error); }
+});
+
+app.delete('/api/graduations/batch-delete', requireAuth, async (req, res) => {
+    try {
+        const { ids } = req.body as { ids: string[] }; // Here ids are nisn strings
+        await prisma.graduation.deleteMany({ where: { nisn: { in: ids } } });
+        handleSuccess(res, null, `${ids.length} data kelulusan berhasil dihapus`);
+    } catch (error) { handleError(res, error); }
+});
+
 app.delete('/api/graduations/:nisn', requireAuth, async (req, res) => {
     try {
         const { nisn } = req.params as { nisn: string };
@@ -446,6 +505,21 @@ app.put('/api/academic-documents/:id', requireAuth, async (req, res) => {
         const { created_at, updated_at, id: _, ...data } = req.body;
         const doc = await prisma.academicDocument.update({ where: { id }, data });
         handleSuccess(res, { ...doc, created_at: doc.createdAt, updated_at: doc.createdAt }, 'Dokumen berhasil diperbarui');
+    } catch (error) { handleError(res, error); }
+});
+
+app.delete('/api/academic-documents', requireAuth, async (req, res) => {
+    try {
+        await prisma.academicDocument.deleteMany();
+        handleSuccess(res, null, 'Semua dokumen berhasil dihapus');
+    } catch (error) { handleError(res, error); }
+});
+
+app.delete('/api/academic-documents/batch-delete', requireAuth, async (req, res) => {
+    try {
+        const { ids } = req.body as { ids: string[] };
+        await prisma.academicDocument.deleteMany({ where: { id: { in: ids } } });
+        handleSuccess(res, null, `${ids.length} dokumen berhasil dihapus`);
     } catch (error) { handleError(res, error); }
 });
 
@@ -568,6 +642,21 @@ app.put('/api/facilities/:id', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
+app.delete('/api/facilities', requireAuth, async (req, res) => {
+    try {
+        await prisma.facility.deleteMany();
+        handleSuccess(res, null, 'Semua fasilitas berhasil dihapus');
+    } catch (error) { handleError(res, error); }
+});
+
+app.delete('/api/facilities/batch-delete', requireAuth, async (req, res) => {
+    try {
+        const { ids } = req.body as { ids: string[] };
+        await prisma.facility.deleteMany({ where: { id: { in: ids } } });
+        handleSuccess(res, null, `${ids.length} fasilitas berhasil dihapus`);
+    } catch (error) { handleError(res, error); }
+});
+
 app.delete('/api/facilities/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params as { id: string };
@@ -584,6 +673,43 @@ app.get('/api/holidays', requireAuth, async (req, res) => {
         });
         const formatted = holidays.map((h: any) => ({ ...h, created_at: h.createdAt, updated_at: h.updatedAt }));
         handleSuccess(res, formatted);
+    } catch (error) { handleError(res, error); }
+});
+
+app.post('/api/holidays', requireAuth, async (req, res) => {
+    try {
+        const { date, description } = req.body;
+        const holiday = await prisma.holiday.create({
+            data: { date: new Date(date), description }
+        });
+        handleSuccess(res, { ...holiday, created_at: holiday.createdAt, updated_at: holiday.updatedAt }, 'Hari libur berhasil ditambahkan');
+    } catch (error) { handleError(res, error); }
+});
+
+app.put('/api/holidays/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params as { id: string };
+        const { date, description } = req.body;
+        const holiday = await prisma.holiday.update({
+            where: { id },
+            data: { date: new Date(date), description }
+        });
+        handleSuccess(res, { ...holiday, created_at: holiday.createdAt, updated_at: holiday.updatedAt }, 'Hari libur berhasil diperbarui');
+    } catch (error) { handleError(res, error); }
+});
+
+app.delete('/api/holidays', requireAuth, async (req, res) => {
+    try {
+        await prisma.holiday.deleteMany();
+        handleSuccess(res, null, 'Semua hari libur berhasil dihapus');
+    } catch (error) { handleError(res, error); }
+});
+
+app.delete('/api/holidays/batch-delete', requireAuth, async (req, res) => {
+    try {
+        const { ids } = req.body as { ids: string[] };
+        await prisma.holiday.deleteMany({ where: { id: { in: ids } } });
+        handleSuccess(res, null, `${ids.length} hari libur berhasil dihapus`);
     } catch (error) { handleError(res, error); }
 });
 
@@ -674,12 +800,17 @@ app.get('/api/school-schedule', requireAuth, async (req, res) => {
                     { day_of_week: 'asc' },
                     { period: 'asc' }
                 ],
-                include: { teacher: true }
+                include: { teacher: true, period_time: true }
             })
         ]);
 
+        const formattedItems = items.map((item: any) => ({
+            ...item,
+            time: item.period_time ? item.period_time.time : '-'
+        }));
+
         handleSuccess(res, {
-            data: items,
+            data: formattedItems,
             total,
             page,
             limit,
@@ -688,18 +819,47 @@ app.get('/api/school-schedule', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
+// Removed internal mapping function getScheduleTime
+
 app.post('/api/school-schedule', requireAuth, async (req, res) => {
     try {
-        const { class_name, period, time, subject, day_of_week, teacher_nip } = req.body;
+        const { class_name, period, subject, day_of_week, teacher_nip } = req.body;
+
+        const periodNum = parseInt(period);
+
+        // Validasi: Cek apakah KELAS ini sudah punya jadwal di hari dan jam yang sama
+        const existingClassSchedule = await prisma.schoolSchedule.findFirst({
+            where: {
+                class_name: class_name,
+                day_of_week: day_of_week as any,
+                period: periodNum
+            }
+        });
+        if (existingClassSchedule) {
+            return res.status(400).json({ success: false, error: `Kelas ${class_name} sudah ada jadwal (Mata Pelajaran: ${existingClassSchedule.subject}) pada ${day_of_week} Jam ke-${period}` });
+        }
 
         let validNip = null;
         if (teacher_nip) {
             const checkNip = await prisma.educationPersonnel.findUnique({ where: { nip: teacher_nip } });
-            if (checkNip) validNip = teacher_nip;
+            if (checkNip) {
+                validNip = teacher_nip;
+                // Validasi: Cek apakah GURU ini sudah mengajar di kelas lain pada hari dan jam yang sama
+                const existingTeacherSchedule = await prisma.schoolSchedule.findFirst({
+                    where: {
+                        teacher_nip: validNip,
+                        day_of_week: day_of_week as any,
+                        period: periodNum
+                    }
+                });
+                if (existingTeacherSchedule) {
+                    return res.status(400).json({ success: false, error: `Guru tersebut sudah memiliki jadwal mengajar di Kelas ${existingTeacherSchedule.class_name} pada ${day_of_week} Jam ke-${period}` });
+                }
+            }
         }
 
         const item = await prisma.schoolSchedule.create({
-            data: { class_name, period, time, subject, day_of_week, teacher_nip: validNip }
+            data: { class_name, period: parseInt(period), subject, day_of_week, teacher_nip: validNip }
         });
         handleSuccess(res, item, 'Jadwal berhasil ditambahkan');
     } catch (error) { handleError(res, error); }
@@ -708,19 +868,64 @@ app.post('/api/school-schedule', requireAuth, async (req, res) => {
 app.put('/api/school-schedule/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params as { id: string };
-        const { class_name, period, time, subject, day_of_week, teacher_nip } = req.body;
+        const { class_name, period, subject, day_of_week, teacher_nip } = req.body;
+
+        const periodNum = parseInt(period);
+
+        // Validasi: Cek bentrok KELAS (mengabaikan jadwal saat ini menggunakan NOT { id })
+        const existingClassSchedule = await prisma.schoolSchedule.findFirst({
+            where: {
+                class_name: class_name,
+                day_of_week: day_of_week as any,
+                period: periodNum,
+                NOT: { id: id }
+            }
+        });
+        if (existingClassSchedule) {
+            return res.status(400).json({ success: false, error: `Kelas ${class_name} sudah ada jadwal (Mata Pelajaran: ${existingClassSchedule.subject}) pada ${day_of_week} Jam ke-${period}` });
+        }
 
         let validNip = null;
         if (teacher_nip) {
             const checkNip = await prisma.educationPersonnel.findUnique({ where: { nip: teacher_nip } });
-            if (checkNip) validNip = teacher_nip;
+            if (checkNip) {
+                validNip = teacher_nip;
+                // Validasi: Cek bentrok GURU (mengabaikan jadwal saat ini menggunakan NOT { id })
+                const existingTeacherSchedule = await prisma.schoolSchedule.findFirst({
+                    where: {
+                        teacher_nip: validNip,
+                        day_of_week: day_of_week as any,
+                        period: periodNum,
+                        NOT: { id: id }
+                    }
+                });
+                if (existingTeacherSchedule) {
+                    return res.status(400).json({ success: false, error: `Guru tersebut sudah memiliki jadwal mengajar di Kelas ${existingTeacherSchedule.class_name} pada ${day_of_week} Jam ke-${period}` });
+                }
+            }
         }
 
         const item = await prisma.schoolSchedule.update({
             where: { id },
-            data: { class_name, period, time, subject, day_of_week, teacher_nip: validNip }
+            data: { class_name, period: parseInt(period), subject, day_of_week, teacher_nip: validNip }
         });
         handleSuccess(res, item, 'Jadwal berhasil diperbarui');
+    } catch (error) { handleError(res, error); }
+});
+
+app.delete('/api/school-schedule', requireAuth, async (req, res) => {
+    try {
+        await prisma.schoolSchedule.deleteMany();
+        handleSuccess(res, null, 'Semua jadwal berhasil dihapus');
+    } catch (error) { handleError(res, error); }
+});
+
+app.delete('/api/school-schedule/batch-delete', requireAuth, async (req, res) => {
+    try {
+        const { ids } = req.body as { ids: string[] };
+        if (!ids || ids.length === 0) return res.status(400).json({ success: false, error: 'Tidak ada ID yang dipilih' });
+        await prisma.schoolSchedule.deleteMany({ where: { id: { in: ids } } });
+        handleSuccess(res, null, `${ids.length} jadwal berhasil dihapus`);
     } catch (error) { handleError(res, error); }
 });
 
@@ -749,37 +954,70 @@ app.post('/api/school-schedule/upload', requireAuth, (req, res, next) => {
         const allPersonnel = await prisma.educationPersonnel.findMany({ select: { nip: true } });
         const nipSet = new Set(allPersonnel.filter(p => p.nip).map(p => p.nip));
 
-        const insertData = data
-            .map(row => {
-                const class_name = row['Nama Kelas']?.toString() || row['Kelas']?.toString();
-                const period = row['Jam Ke']?.toString();
-                const time = row['Jam']?.toString() || row['Waktu']?.toString();
-                const subject = row['Mata Pelajaran']?.toString();
-                const teacher_nip_raw = row['NIP Guru Pengajar']?.toString() || row['NIP']?.toString();
-                const day_of_week = row['Hari']?.toString();
+        const existingSchedules = await prisma.schoolSchedule.findMany({
+            select: { class_name: true, day_of_week: true, period: true, teacher_nip: true }
+        });
 
-                if (!class_name || !period || !time || !subject || !day_of_week) return null;
+        const validDays = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const insertData: any[] = [];
+        const conflicts: string[] = [];
 
-                const validNip = (teacher_nip_raw && nipSet.has(teacher_nip_raw)) ? teacher_nip_raw : null;
+        for (const [index, row] of data.entries()) {
+            const rowNum = index + 2; // +1 for 0-index, +1 for header
+            const class_name = row['Nama Kelas']?.toString() || row['Kelas']?.toString();
+            const period = row['Jam Ke']?.toString();
+            const subject = row['Mata Pelajaran']?.toString();
+            const teacher_nip_raw = row['NIP Guru Pengajar']?.toString() || row['NIP']?.toString();
+            const day_of_week = row['Hari']?.toString();
 
-                return {
-                    class_name,
-                    period,
-                    time,
-                    subject,
-                    day_of_week,
-                    teacher_nip: validNip
-                };
-            })
-            .filter((row): row is Exclude<typeof row, null> => row !== null);
+            if (!class_name || !period || !subject || !day_of_week) continue;
 
-        if (insertData.length === 0) {
-            return res.status(400).json({ success: false, error: "Format Excel tidak valid. Pastikan kolom: Nama Kelas, Jam Ke, Jam, Mata Pelajaran, NIP Guru Pengajar, Hari" });
+            const validNip = (teacher_nip_raw && nipSet.has(teacher_nip_raw)) ? teacher_nip_raw : null;
+            const normalizedDay = validDays.find(d => d.toLowerCase() === day_of_week.toLowerCase()) || 'Senin';
+            const periodNum = parseInt(period) || 1;
+
+            // Cek conflict dengan database existing dan data yang sedang di proses
+            const classConflictDb = existingSchedules.find(s => s.class_name === class_name && s.day_of_week === normalizedDay && s.period === periodNum);
+            const classConflictNew = insertData.find(s => s.class_name === class_name && s.day_of_week === normalizedDay && s.period === periodNum);
+            
+            if (classConflictDb || classConflictNew) {
+                conflicts.push(`Baris ${rowNum}: Kelas ${class_name} bentrok pada ${normalizedDay} jam ke-${periodNum}`);
+                continue;
+            }
+
+            if (validNip) {
+                const teacherConflictDb = existingSchedules.find(s => s.teacher_nip === validNip && s.day_of_week === normalizedDay && s.period === periodNum);
+                const teacherConflictNew = insertData.find(s => s.teacher_nip === validNip && s.day_of_week === normalizedDay && s.period === periodNum);
+                
+                if (teacherConflictDb || teacherConflictNew) {
+                    conflicts.push(`Baris ${rowNum}: Guru (NIP: ${validNip}) bentrok pada ${normalizedDay} jam ke-${periodNum}`);
+                    continue;
+                }
+            }
+
+            insertData.push({
+                class_name,
+                period: periodNum,
+                subject,
+                day_of_week: normalizedDay as any,
+                teacher_nip: validNip
+            });
         }
 
-        await prisma.schoolSchedule.createMany({ data: insertData });
+        if (insertData.length === 0 && conflicts.length === 0) {
+            return res.status(400).json({ success: false, error: "Format Excel tidak valid. Pastikan kolom: Nama Kelas, Jam Ke, Mata Pelajaran, NIP Guru Pengajar, Hari" });
+        }
 
-        handleSuccess(res, { count: insertData.length }, `${insertData.length} jadwal berhasil ditambahkan`);
+        let message = `${insertData.length} jadwal berhasil ditambahkan.`;
+        if (conflicts.length > 0) {
+            message += ` Namun, ${conflicts.length} data GAGAL dimasukkan karena bentrok: ${conflicts.slice(0, 3).join(', ')}${conflicts.length > 3 ? '...' : ''}`;
+        }
+
+        if (insertData.length > 0) {
+            await prisma.schoolSchedule.createMany({ data: insertData });
+        }
+
+        handleSuccess(res, { count: insertData.length, conflicts: conflicts }, message);
     } catch (error) { console.error("Error process excel", error); handleError(res, error); }
 });
 

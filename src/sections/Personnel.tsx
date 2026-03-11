@@ -21,12 +21,17 @@ import type { EducationPersonnel } from '@/types';
 import { educationPersonnelSchema } from '@/schemas';
 import type { EducationPersonnelFormData } from '@/schemas';
 import {
+  deleteAllEducationPersonnel,
+  deleteSelectedEducationPersonnel,
   getEducationPersonnel,
   createEducationPersonnel,
   updateEducationPersonnel,
   deleteEducationPersonnel,
 } from '@/actions';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { SecureDeleteAllDialog } from '@/components/ui-custom/SecureDeleteAllDialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useAuthStore } from '@/lib/authStore';
 import type { ColumnDef } from '@tanstack/react-table';
 
@@ -40,6 +45,11 @@ export function Personnel() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedPersonnel, setSelectedPersonnel] = useState<EducationPersonnel | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rowSelection, setRowSelection] = useState({});
+  const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState(false);
+  const [confirmCode, setConfirmCode] = useState('');
+  const [userCodeInput, setUserCodeInput] = useState('');
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -111,6 +121,64 @@ export function Personnel() {
       toast.error('Terjadi kesalahan saat memuat data');
     } finally {
       setIsLoading(false);
+      setRowSelection({});
+    }
+  };
+
+  const handleDeleteAll = () => {
+    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let result = '';
+    for (let i = 0; i < 5; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    setConfirmCode(result);
+    setUserCodeInput('');
+    setIsDeleteAllDialogOpen(true);
+  };
+
+  const confirmDeleteAll = async () => {
+    if (userCodeInput.toUpperCase() !== confirmCode) {
+        toast.error('Kode konfirmasi tidak cocok');
+        return;
+    }
+
+    try {
+        setIsDeletingAll(true);
+        const res = await deleteAllEducationPersonnel();
+        if (res.success) {
+            toast.success('Semua personel berhasil dihapus');
+            setIsDeleteAllDialogOpen(false);
+            loadPersonnel();
+        } else {
+            toast.error(res.error || 'Gagal menghapus semua personel');
+        }
+    } catch (error) {
+        toast.error('Terjadi kesalahan koneksi');
+    } finally {
+        setIsDeletingAll(false);
+    }
+  };
+
+  const handleDeleteSelection = async () => {
+    const selectedIds = Object.keys(rowSelection);
+    if (selectedIds.length === 0) return;
+    
+    if (!confirm(`Hapus ${selectedIds.length} personel yang dipilih?`)) return;
+
+    try {
+        setIsLoading(true);
+        const res = await deleteSelectedEducationPersonnel(selectedIds);
+        if (res.success) {
+            toast.success(res.message || 'Pilihan berhasil dihapus');
+            setRowSelection({});
+            loadPersonnel();
+        } else {
+            toast.error(res.error || 'Gagal menghapus pilihan');
+        }
+    } catch (error) {
+        toast.error('Terjadi kesalahan koneksi');
+    } finally {
+        setIsLoading(false);
     }
   };
 
@@ -207,6 +275,20 @@ export function Personnel() {
 
   const columns: ColumnDef<EducationPersonnel>[] = [
     {
+      id: 'select',
+      header: '',
+      cell: ({ row }) => (
+          <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+              className="translate-y-[2px] border-slate-300 data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600"
+          />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
       accessorKey: 'full_name',
       header: 'Nama Lengkap',
       cell: ({ row }) => {
@@ -276,8 +358,23 @@ export function Personnel() {
   return (
     <div className="space-y-6">
       {/* Header Actions */}
-      <div className="flex items-center justify-end">
-        <Button onClick={handleCreate} className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-3 sm:px-4 h-9 sm:h-10 text-xs sm:text-sm shadow-sm font-medium transition-colors w-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
+        {personnel.length > 0 && (
+          <Button
+            onClick={Object.keys(rowSelection).length > 0 ? handleDeleteSelection : handleDeleteAll}
+            variant="outline"
+            className={cn(
+              "flex items-center justify-center gap-2 rounded-lg px-4 h-9 sm:h-10 text-sm font-medium transition-colors shadow-xs w-full sm:w-auto",
+              Object.keys(rowSelection).length > 0
+                ? "text-amber-600 bg-white border-amber-200 hover:bg-amber-50 hover:border-amber-300"
+                : "text-rose-600 bg-white border-rose-200 hover:bg-rose-50 hover:border-rose-300"
+            )}
+          >
+            <Trash2 className="h-4 w-4" strokeWidth={2} />
+            {Object.keys(rowSelection).length > 0 ? `Hapus Pilihan (${Object.keys(rowSelection).length})` : 'Hapus Semua'}
+          </Button>
+        )}
+        <Button onClick={handleCreate} className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-3 sm:px-4 h-9 sm:h-10 text-xs sm:text-sm shadow-sm font-medium transition-colors w-full sm:w-auto">
           <Plus className="h-4 w-4" strokeWidth={2} />
           Tambah Personel
         </Button>
@@ -306,6 +403,8 @@ export function Personnel() {
         totalItems={filteredPersonnel.length}
         onPageChange={() => { }}
         isLoading={isLoading}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection}
       />
 
       {/* Form Dialog */}
@@ -427,13 +526,24 @@ export function Personnel() {
         </Form>
       </FormDialog>
 
-      {/* Delete Dialog */}
       <DeleteDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
         itemName={selectedPersonnel?.full_name}
         onConfirm={onDeleteConfirm}
         isDeleting={isSubmitting}
+      />
+
+      <SecureDeleteAllDialog
+          open={isDeleteAllDialogOpen}
+          onOpenChange={setIsDeleteAllDialogOpen}
+          confirmCode={confirmCode}
+          userCodeInput={userCodeInput}
+          setUserCodeInput={setUserCodeInput}
+          onConfirm={confirmDeleteAll}
+          isDeleting={isDeletingAll}
+          title="Hapus Semua Personel"
+          description="Anda sedang mencoba menghapus SELURUH data personel pendidik."
       />
     </div>
   );

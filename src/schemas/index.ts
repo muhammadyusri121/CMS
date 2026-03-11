@@ -85,6 +85,14 @@ export const facilitySchema = z.object({
 
 export type FacilityFormData = z.infer<typeof facilitySchema>;
 
+// Holiday Schema
+export const holidaySchema = z.object({
+  date: z.string().min(1, 'Tanggal wajib diisi'),
+  description: z.string().min(1, 'Keterangan wajib diisi').max(255, 'Keterangan maksimal 255 karakter'),
+});
+
+export type HolidayFormData = z.infer<typeof holidaySchema>;
+
 // Slug generation helper
 export const generateSlug = (title: string): string => {
   return title

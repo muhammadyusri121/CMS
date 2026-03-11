@@ -90,17 +90,32 @@ model Holiday {
   updatedAt   DateTime @updatedAt
 }
 
+model PeriodTime {
+  id        Int              @id
+  time      String
+  schedules SchoolSchedule[]
+}
+
 model SchoolSchedule {
   id          String              @id @default(cuid())
   class_name  String
-  period      String
-  time        String
+  period      Int
+  period_time PeriodTime          @relation(fields: [period], references: [id])
   subject     String
-  day_of_week String
+  day_of_week DayOfWeek
   teacher_nip String?
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
   teacher     EducationPersonnel? @relation(fields: [teacher_nip], references: [nip])
+}
+
+enum DayOfWeek {
+  Senin
+  Selasa
+  Rabu
+  Kamis
+  Jumat
+  Sabtu
 }
 
 enum Role {

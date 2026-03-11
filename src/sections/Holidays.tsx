@@ -6,11 +6,31 @@ import { DataTable } from '@/components/ui-custom/DataTable';
 import { DeleteDialog } from '@/components/ui-custom/DeleteDialog';
 
 import {
+  deleteAllHolidays,
+  deleteSelectedHolidays,
   getHolidays,
   uploadHolidays,
   deleteHoliday,
+  createHoliday,
+  updateHoliday,
 } from '@/actions';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { Plus, Pencil } from 'lucide-react';
+import { SecureDeleteAllDialog } from '@/components/ui-custom/SecureDeleteAllDialog';
+import { FormDialog } from '@/components/ui-custom/FormDialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { holidaySchema, type HolidayFormData } from '@/schemas';
+import { Checkbox } from '@/components/ui/checkbox';
 import type { ColumnDef } from '@tanstack/react-table';
 
 export function Holidays() {
@@ -22,6 +42,20 @@ export function Holidays() {
   const [isHolidayDeleteOpen, setIsHolidayDeleteOpen] = useState(false);
   const [selectedHoliday, setSelectedHoliday] = useState<any | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [rowSelection, setRowSelection] = useState({});
+  const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState(false);
+  const [confirmCode, setConfirmCode] = useState('');
+  const [userCodeInput, setUserCodeInput] = useState('');
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
+
+  const form = useForm<HolidayFormData>({
+    resolver: zodResolver(holidaySchema),
+    defaultValues: {
+      date: '',
+      description: '',
+    },
+  });
 
   useEffect(() => {
     loadHolidays();
@@ -40,6 +74,113 @@ export function Holidays() {
       toast.error('Terjadi kesalahan saat memuat data hari libur');
     } finally {
       setIsHolidayLoading(false);
+      setRowSelection({});
+    }
+  };
+
+  const handleCreate = () => {
+    setSelectedHoliday(null);
+    form.reset({
+      date: '',
+      description: '',
+    });
+    setIsFormOpen(true);
+  };
+
+  const handleEdit = (h: any) => {
+    setSelectedHoliday(h);
+    // Format date string for input type="date" (YYYY-MM-DD)
+    const d = h.date ? new Date(h.date).toISOString().split('T')[0] : '';
+    form.reset({
+      date: d,
+      description: h.description,
+    });
+    setIsFormOpen(true);
+  };
+
+  const onSubmit = async (data: HolidayFormData) => {
+    try {
+      setIsSubmitting(true);
+      if (selectedHoliday) {
+        const res = await updateHoliday(selectedHoliday.id, data);
+        if (res.success) {
+          toast.success('Hari libur berhasil diperbarui');
+          setIsFormOpen(false);
+          loadHolidays();
+        } else {
+          toast.error(res.error || 'Gagal memperbarui hari libur');
+        }
+      } else {
+        const res = await createHoliday(data);
+        if (res.success) {
+          toast.success('Hari libur berhasil ditambahkan');
+          setIsFormOpen(false);
+          loadHolidays();
+        } else {
+          toast.error(res.error || 'Gagal menambahkan hari libur');
+        }
+      }
+    } catch (error) {
+      toast.error('Terjadi kesalahan koneksi');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteAll = () => {
+    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let result = '';
+    for (let i = 0; i < 5; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    setConfirmCode(result);
+    setUserCodeInput('');
+    setIsDeleteAllDialogOpen(true);
+  };
+
+  const confirmDeleteAll = async () => {
+    if (userCodeInput.toUpperCase() !== confirmCode) {
+        toast.error('Kode konfirmasi tidak cocok');
+        return;
+    }
+
+    try {
+        setIsDeletingAll(true);
+        const res = await deleteAllHolidays();
+        if (res.success) {
+            toast.success('Semua hari libur berhasil dihapus');
+            setIsDeleteAllDialogOpen(false);
+            loadHolidays();
+        } else {
+            toast.error(res.error || 'Gagal menghapus semua hari libur');
+        }
+    } catch (error) {
+        toast.error('Terjadi kesalahan koneksi');
+    } finally {
+        setIsDeletingAll(false);
+    }
+  };
+
+  const handleDeleteSelection = async () => {
+    const selectedIds = Object.keys(rowSelection);
+    if (selectedIds.length === 0) return;
+    
+    if (!confirm(`Hapus ${selectedIds.length} hari libur yang dipilih?`)) return;
+
+    try {
+        setIsHolidayLoading(true);
+        const res = await deleteSelectedHolidays(selectedIds);
+        if (res.success) {
+            toast.success(res.message || 'Pilihan berhasil dihapus');
+            setRowSelection({});
+            loadHolidays();
+        } else {
+            toast.error(res.error || 'Gagal menghapus pilihan');
+        }
+    } catch (error) {
+        toast.error('Terjadi kesalahan koneksi');
+    } finally {
+        setIsHolidayLoading(false);
     }
   };
 
@@ -102,6 +243,20 @@ export function Holidays() {
 
   const holidayColumns: ColumnDef<any>[] = [
     {
+      id: 'select',
+      header: '',
+      cell: ({ row }) => (
+          <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+              className="translate-y-[2px] border-slate-300 data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600"
+          />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
       accessorKey: 'date',
       header: 'Tanggal',
       cell: ({ row }) => {
@@ -123,22 +278,55 @@ export function Holidays() {
       id: 'actions',
       header: 'Kelola',
       cell: ({ row }) => (
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => handleDeleteHoliday(row.original)}
-          className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-red-500 hover:border-red-200 border-slate-200 shadow-xs hover:bg-red-50 transition-colors"
-        >
-          <Trash2 className="h-3.5 w-3.5" strokeWidth={2} />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => handleEdit(row.original)}
+            className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-primary-600 hover:border-primary-200 border-slate-200 shadow-xs hover:bg-primary-50 transition-colors"
+          >
+            <Pencil className="h-3.5 w-3.5" strokeWidth={2} />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => handleDeleteHoliday(row.original)}
+            className="h-8 w-8 rounded-lg bg-white text-slate-400 hover:text-red-500 hover:border-red-200 border-slate-200 shadow-xs hover:bg-red-50 transition-colors"
+          >
+            <Trash2 className="h-3.5 w-3.5" strokeWidth={2} />
+          </Button>
+        </div>
       ),
     },
   ];
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-end">
-        <div>
+      <div className="flex flex-col sm:flex-row items-center justify-end gap-2">
+        {holidays.length > 0 && (
+          <Button
+            onClick={Object.keys(rowSelection).length > 0 ? handleDeleteSelection : handleDeleteAll}
+            variant="outline"
+            className={cn(
+              "flex items-center justify-center gap-2 rounded-lg px-4 h-9 sm:h-10 text-sm font-medium transition-colors shadow-xs w-full sm:w-auto",
+              Object.keys(rowSelection).length > 0
+                ? "text-amber-600 bg-white border-amber-200 hover:bg-amber-50 hover:border-amber-300"
+                : "text-rose-600 bg-white border-rose-200 hover:bg-rose-50 hover:border-rose-300"
+            )}
+          >
+            <Trash2 className="h-4 w-4" strokeWidth={2} />
+            {Object.keys(rowSelection).length > 0 ? `Hapus Pilihan (${Object.keys(rowSelection).length})` : 'Hapus Semua'}
+          </Button>
+        )}
+        <Button 
+          onClick={handleCreate}
+          variant="outline"
+          className="flex items-center justify-center gap-2 border-primary-200 text-primary-600 hover:bg-primary-50 rounded-lg px-4 h-9 sm:h-10 text-sm shadow-xs font-medium transition-colors w-full sm:w-auto"
+        >
+          <Plus className="h-4 w-4" strokeWidth={2} />
+          Input Manual
+        </Button>
+        <div className="w-full sm:w-auto">
           <input
             type="file"
             className="hidden"
@@ -178,6 +366,8 @@ export function Holidays() {
         totalItems={filteredHolidays.length}
         onPageChange={() => { }}
         isLoading={isHolidayLoading}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection}
       />
 
       <DeleteDialog
@@ -186,6 +376,57 @@ export function Holidays() {
         itemName={selectedHoliday?.description}
         onConfirm={onDeleteHolidayConfirm}
         isDeleting={isSubmitting}
+      />
+
+      <FormDialog
+          open={isFormOpen}
+          onOpenChange={setIsFormOpen}
+          title={selectedHoliday ? 'Edit Hari Libur' : 'Tambah Hari Libur'}
+          onSubmit={form.handleSubmit(onSubmit)}
+          isSubmitting={isSubmitting}
+      >
+          <Form {...form}>
+              <div className="space-y-4">
+                  <FormField
+                      control={form.control}
+                      name="date"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Tanggal</FormLabel>
+                              <FormControl>
+                                  <Input type="date" {...field} className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+                  <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Keterangan / Perayaan</FormLabel>
+                              <FormControl>
+                                  <Input {...field} placeholder="Masukkan keterangan libur" className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 placeholder:text-slate-400 shadow-xs font-medium px-3 h-10" />
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+              </div>
+          </Form>
+      </FormDialog>
+
+      <SecureDeleteAllDialog
+          open={isDeleteAllDialogOpen}
+          onOpenChange={setIsDeleteAllDialogOpen}
+          confirmCode={confirmCode}
+          userCodeInput={userCodeInput}
+          setUserCodeInput={setUserCodeInput}
+          onConfirm={confirmDeleteAll}
+          isDeleting={isDeletingAll}
+          title="Hapus Semua Hari Libur"
+          description="Anda sedang mencoba menghapus SELURUH data kalender hari libur."
       />
     </div>
   );

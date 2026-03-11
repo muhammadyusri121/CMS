@@ -11,9 +11,12 @@ import {
     UserCheck,
     ChevronDown
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { SecureDeleteAllDialog } from '@/components/ui-custom/SecureDeleteAllDialog';
 import { DataTable } from '@/components/ui-custom/DataTable';
 import { FormDialog } from '@/components/ui-custom/FormDialog';
 import { DeleteDialog } from '@/components/ui-custom/DeleteDialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,7 +30,9 @@ import {
     createSchedule,
     updateSchedule,
     deleteSchedule,
+    deleteAllSchedules,
     uploadSchedules,
+    deleteSelectedSchedules,
     getEducationPersonnel
 } from '@/actions';
 
@@ -35,7 +40,6 @@ import {
 const scheduleSchema = z.object({
     class_name: z.string().min(1, 'Nama kelas wajib diisi'),
     period: z.string().min(1, 'Jam ke- wajib diisi'),
-    time: z.string().min(1, 'Waktu (Jam) wajib diisi'),
     subject: z.string().min(1, 'Mata pelajaran wajib diisi'),
     day_of_week: z.string().min(1, 'Hari wajib diisi'),
     teacher_nip: z.string().optional(),
@@ -46,16 +50,23 @@ type ScheduleFormValues = z.infer<typeof scheduleSchema>;
 export function Schedule() {
     const [data, setData] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [rowSelection, setRowSelection] = useState({});
     const [search, setSearch] = useState('');
 
     // Dialog states
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState(false);
+
+    // Code confirmation states
+    const [confirmCode, setConfirmCode] = useState('');
+    const [userCodeInput, setUserCodeInput] = useState('');
 
     // Selection states
     const [selectedItem, setSelectedItem] = useState<any | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [isDeletingAll, setIsDeletingAll] = useState(false);
 
     // Teacher dropdown states
     const [personnelList, setPersonnelList] = useState<any[]>([]);
@@ -69,8 +80,7 @@ export function Schedule() {
         resolver: zodResolver(scheduleSchema),
         defaultValues: {
             class_name: '',
-            period: '',
-            time: '',
+            period: '1',
             subject: '',
             day_of_week: 'Senin',
             teacher_nip: '',
@@ -114,6 +124,41 @@ export function Schedule() {
             toast.error('Terjadi kesalahan koneksi');
         } finally {
             setIsLoading(false);
+            setRowSelection({}); // Reset selection on load
+        }
+    };
+
+    const handleDeleteAll = () => {
+        const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Avoid ambiguous characters
+        let result = '';
+        for (let i = 0; i < 5; i++) {
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        setConfirmCode(result);
+        setUserCodeInput('');
+        setIsDeleteAllDialogOpen(true);
+    };
+
+    const confirmDeleteAll = async () => {
+        if (userCodeInput.toUpperCase() !== confirmCode) {
+            toast.error('Kode konfirmasi tidak cocok');
+            return;
+        }
+
+        try {
+            setIsDeletingAll(true);
+            const res = await deleteAllSchedules();
+            if (res.success) {
+                toast.success('Semua jadwal berhasil dihapus');
+                setIsDeleteAllDialogOpen(false);
+                loadData();
+            } else {
+                toast.error(res.error || 'Gagal menghapus semua jadwal');
+            }
+        } catch (error) {
+            toast.error('Terjadi kesalahan koneksi');
+        } finally {
+            setIsDeletingAll(false);
         }
     };
 
@@ -143,12 +188,34 @@ export function Schedule() {
         form.reset({
             class_name: item.class_name,
             period: item.period,
-            time: item.time,
             subject: item.subject,
             day_of_week: item.day_of_week,
             teacher_nip: item.teacher_nip || '',
         });
         setIsDialogOpen(true);
+    };
+
+    const handleDeleteSelection = async () => {
+        const selectedIds = Object.keys(rowSelection);
+        if (selectedIds.length === 0) return;
+        
+        if (!confirm(`Hapus ${selectedIds.length} jadwal yang dipilih?`)) return;
+
+        try {
+            setIsLoading(true);
+            const res = await deleteSelectedSchedules(selectedIds);
+            if (res.success) {
+                toast.success(res.message || 'Pilihan berhasil dihapus');
+                setRowSelection({});
+                loadData();
+            } else {
+                toast.error(res.error || 'Gagal menghapus pilihan');
+            }
+        } catch (error) {
+            toast.error('Terjadi kesalahan koneksi');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleDelete = async () => {
@@ -196,6 +263,20 @@ export function Schedule() {
     };
 
     const columns: ColumnDef<any>[] = [
+        {
+            id: 'select',
+            header: '', // Remove Select All checkbox
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                    className="translate-y-[2px] border-slate-300 data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600"
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             accessorKey: 'day_of_week',
             header: 'Hari',
@@ -299,6 +380,30 @@ export function Schedule() {
         <div className="space-y-4">
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
+                {data.length > 0 && (
+                    <Button
+                        onClick={Object.keys(rowSelection).length > 0 ? handleDeleteSelection : handleDeleteAll}
+                        variant="outline"
+                        className={cn(
+                            "flex items-center justify-center gap-2 rounded-lg px-4 h-9 sm:h-10 text-sm font-medium transition-colors shadow-xs w-full sm:w-auto",
+                            Object.keys(rowSelection).length > 0
+                                ? "text-amber-600 bg-white border-amber-200 hover:bg-amber-50 hover:border-amber-300"
+                                : "text-rose-600 bg-white border-rose-200 hover:bg-rose-50 hover:border-rose-300"
+                        )}
+                    >
+                        {Object.keys(rowSelection).length > 0 ? (
+                            <>
+                                <Trash2 className="h-4 w-4" strokeWidth={2} />
+                                <span>Hapus Pilihan ({Object.keys(rowSelection).length})</span>
+                            </>
+                        ) : (
+                            <>
+                                <Trash2 className="h-4 w-4" strokeWidth={2} />
+                                <span>Hapus Semua</span>
+                            </>
+                        )}
+                    </Button>
+                )}
                 <Button
                     onClick={() => setIsUploadDialogOpen(true)}
                     variant="outline"
@@ -342,6 +447,8 @@ export function Schedule() {
                 totalItems={data.length}
                 onPageChange={() => { }}
                 isLoading={isLoading}
+                rowSelection={rowSelection}
+                onRowSelectionChange={setRowSelection}
             />
 
             {/* Dialog Form for Manual Add/Edit */}
@@ -388,20 +495,14 @@ export function Schedule() {
 
                     <div className="space-y-1.5">
                         <label className="text-xs font-medium text-slate-600">Jam Ke-</label>
-                        <input
+                        <select
                             {...form.register("period")}
                             className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-100 focus-visible:border-primary-400"
-                            placeholder="Cth: 1-2"
-                        />
-                    </div>
-
-                    <div className="space-y-1.5">
-                        <label className="text-xs font-medium text-slate-600">Waktu / Jam</label>
-                        <input
-                            {...form.register("time")}
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-100 focus-visible:border-primary-400"
-                            placeholder="Cth: 07:00 - 08:30"
-                        />
+                        >
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(p => (
+                                <option key={p} value={String(p)}>Jam ke-{p}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <div className="space-y-1.5 sm:col-span-2 relative" ref={dropdownRef}>
@@ -502,7 +603,7 @@ export function Schedule() {
 
                         <h3 className="text-lg font-semibold text-slate-700 mb-1">Upload File Excel</h3>
                         <p className="text-slate-500 text-sm mb-4 leading-relaxed">
-                            Format Excel: <b className="text-slate-700">Nama Kelas, Jam Ke, Jam, Mata Pelajaran, NIP Guru, Hari</b>.
+                            Format Excel: <b className="text-slate-700">Nama Kelas, Jam Ke, Mata Pelajaran, NIP Guru, Hari</b>.
                         </p>
 
                         <div className="border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-colors rounded-xl p-6 text-center cursor-pointer relative">
@@ -544,6 +645,18 @@ export function Schedule() {
                 onConfirm={handleDelete}
                 title="Hapus Jadwal"
                 description="Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan."
+            />
+
+            <SecureDeleteAllDialog
+                open={isDeleteAllDialogOpen}
+                onOpenChange={setIsDeleteAllDialogOpen}
+                confirmCode={confirmCode}
+                userCodeInput={userCodeInput}
+                setUserCodeInput={setUserCodeInput}
+                onConfirm={confirmDeleteAll}
+                isDeleting={isDeletingAll}
+                title="Hapus Semua Jadwal"
+                description="Anda sedang mencoba menghapus SELURUH data jadwal pelajaran."
             />
         </div>
     );

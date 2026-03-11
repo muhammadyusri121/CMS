@@ -127,6 +127,33 @@ var requireAdmin = (req, res, next) => {
   next();
 };
 initBucket();
+var initPeriods = async () => {
+  try {
+    const periods = [
+      { id: 1, time: "07:00 - 07:40" },
+      { id: 2, time: "07:40 - 08:20" },
+      { id: 3, time: "08:20 - 09:00" },
+      { id: 4, time: "09:00 - 09:40" },
+      { id: 5, time: "10:00 - 10:40" },
+      { id: 6, time: "10:40 - 11:20" },
+      { id: 7, time: "12:20 - 13:00" },
+      { id: 8, time: "13:00 - 13:40" },
+      { id: 9, time: "13:40 - 14:20" },
+      { id: 10, time: "14:20 - 15:00" }
+    ];
+    for (const p of periods) {
+      await prisma.periodTime.upsert({
+        where: { id: p.id },
+        update: { time: p.time },
+        // Perbarui waktu jika berbeda
+        create: { id: p.id, time: p.time }
+      });
+    }
+  } catch (e) {
+    console.error("\u274C Gagal inisialisasi PeriodTime:", e);
+  }
+};
+initPeriods();
 app.post("/api/upload", requireAuth, (req, res, next) => {
   uploadMiddleware.single("file")(req, res, (err) => {
     if (err) return res.status(400).json({ success: false, error: err.message });
@@ -680,11 +707,15 @@ app.get("/api/school-schedule", requireAuth, async (req, res) => {
           { day_of_week: "asc" },
           { period: "asc" }
         ],
-        include: { teacher: true }
+        include: { teacher: true, period_time: true }
       })
     ]);
+    const formattedItems = items.map((item) => ({
+      ...item,
+      time: item.period_time ? item.period_time.time : "-"
+    }));
     handleSuccess(res, {
-      data: items,
+      data: formattedItems,
       total,
       page,
       limit,
@@ -696,14 +727,37 @@ app.get("/api/school-schedule", requireAuth, async (req, res) => {
 });
 app.post("/api/school-schedule", requireAuth, async (req, res) => {
   try {
-    const { class_name, period, time, subject, day_of_week, teacher_nip } = req.body;
+    const { class_name, period, subject, day_of_week, teacher_nip } = req.body;
+    const periodNum = parseInt(period);
+    const existingClassSchedule = await prisma.schoolSchedule.findFirst({
+      where: {
+        class_name,
+        day_of_week,
+        period: periodNum
+      }
+    });
+    if (existingClassSchedule) {
+      return res.status(400).json({ success: false, error: `Kelas ${class_name} sudah ada jadwal (Mata Pelajaran: ${existingClassSchedule.subject}) pada ${day_of_week} Jam ke-${period}` });
+    }
     let validNip = null;
     if (teacher_nip) {
       const checkNip = await prisma.educationPersonnel.findUnique({ where: { nip: teacher_nip } });
-      if (checkNip) validNip = teacher_nip;
+      if (checkNip) {
+        validNip = teacher_nip;
+        const existingTeacherSchedule = await prisma.schoolSchedule.findFirst({
+          where: {
+            teacher_nip: validNip,
+            day_of_week,
+            period: periodNum
+          }
+        });
+        if (existingTeacherSchedule) {
+          return res.status(400).json({ success: false, error: `Guru tersebut sudah memiliki jadwal mengajar di Kelas ${existingTeacherSchedule.class_name} pada ${day_of_week} Jam ke-${period}` });
+        }
+      }
     }
     const item = await prisma.schoolSchedule.create({
-      data: { class_name, period, time, subject, day_of_week, teacher_nip: validNip }
+      data: { class_name, period: parseInt(period), subject, day_of_week, teacher_nip: validNip }
     });
     handleSuccess(res, item, "Jadwal berhasil ditambahkan");
   } catch (error) {
@@ -713,15 +767,40 @@ app.post("/api/school-schedule", requireAuth, async (req, res) => {
 app.put("/api/school-schedule/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { class_name, period, time, subject, day_of_week, teacher_nip } = req.body;
+    const { class_name, period, subject, day_of_week, teacher_nip } = req.body;
+    const periodNum = parseInt(period);
+    const existingClassSchedule = await prisma.schoolSchedule.findFirst({
+      where: {
+        class_name,
+        day_of_week,
+        period: periodNum,
+        NOT: { id }
+      }
+    });
+    if (existingClassSchedule) {
+      return res.status(400).json({ success: false, error: `Kelas ${class_name} sudah ada jadwal (Mata Pelajaran: ${existingClassSchedule.subject}) pada ${day_of_week} Jam ke-${period}` });
+    }
     let validNip = null;
     if (teacher_nip) {
       const checkNip = await prisma.educationPersonnel.findUnique({ where: { nip: teacher_nip } });
-      if (checkNip) validNip = teacher_nip;
+      if (checkNip) {
+        validNip = teacher_nip;
+        const existingTeacherSchedule = await prisma.schoolSchedule.findFirst({
+          where: {
+            teacher_nip: validNip,
+            day_of_week,
+            period: periodNum,
+            NOT: { id }
+          }
+        });
+        if (existingTeacherSchedule) {
+          return res.status(400).json({ success: false, error: `Guru tersebut sudah memiliki jadwal mengajar di Kelas ${existingTeacherSchedule.class_name} pada ${day_of_week} Jam ke-${period}` });
+        }
+      }
     }
     const item = await prisma.schoolSchedule.update({
       where: { id },
-      data: { class_name, period, time, subject, day_of_week, teacher_nip: validNip }
+      data: { class_name, period: parseInt(period), subject, day_of_week, teacher_nip: validNip }
     });
     handleSuccess(res, item, "Jadwal berhasil diperbarui");
   } catch (error) {
@@ -751,29 +830,56 @@ app.post("/api/school-schedule/upload", requireAuth, (req, res, next) => {
     const data = xlsx.utils.sheet_to_json(sheet);
     const allPersonnel = await prisma.educationPersonnel.findMany({ select: { nip: true } });
     const nipSet = new Set(allPersonnel.filter((p) => p.nip).map((p) => p.nip));
-    const insertData = data.map((row) => {
+    const existingSchedules = await prisma.schoolSchedule.findMany({
+      select: { class_name: true, day_of_week: true, period: true, teacher_nip: true }
+    });
+    const validDays = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const insertData = [];
+    const conflicts = [];
+    for (const [index, row] of data.entries()) {
+      const rowNum = index + 2;
       const class_name = row["Nama Kelas"]?.toString() || row["Kelas"]?.toString();
       const period = row["Jam Ke"]?.toString();
-      const time = row["Jam"]?.toString() || row["Waktu"]?.toString();
       const subject = row["Mata Pelajaran"]?.toString();
       const teacher_nip_raw = row["NIP Guru Pengajar"]?.toString() || row["NIP"]?.toString();
       const day_of_week = row["Hari"]?.toString();
-      if (!class_name || !period || !time || !subject || !day_of_week) return null;
+      if (!class_name || !period || !subject || !day_of_week) continue;
       const validNip = teacher_nip_raw && nipSet.has(teacher_nip_raw) ? teacher_nip_raw : null;
-      return {
+      const normalizedDay = validDays.find((d) => d.toLowerCase() === day_of_week.toLowerCase()) || "Senin";
+      const periodNum = parseInt(period) || 1;
+      const classConflictDb = existingSchedules.find((s) => s.class_name === class_name && s.day_of_week === normalizedDay && s.period === periodNum);
+      const classConflictNew = insertData.find((s) => s.class_name === class_name && s.day_of_week === normalizedDay && s.period === periodNum);
+      if (classConflictDb || classConflictNew) {
+        conflicts.push(`Baris ${rowNum}: Kelas ${class_name} bentrok pada ${normalizedDay} jam ke-${periodNum}`);
+        continue;
+      }
+      if (validNip) {
+        const teacherConflictDb = existingSchedules.find((s) => s.teacher_nip === validNip && s.day_of_week === normalizedDay && s.period === periodNum);
+        const teacherConflictNew = insertData.find((s) => s.teacher_nip === validNip && s.day_of_week === normalizedDay && s.period === periodNum);
+        if (teacherConflictDb || teacherConflictNew) {
+          conflicts.push(`Baris ${rowNum}: Guru (NIP: ${validNip}) bentrok pada ${normalizedDay} jam ke-${periodNum}`);
+          continue;
+        }
+      }
+      insertData.push({
         class_name,
-        period,
-        time,
+        period: periodNum,
         subject,
-        day_of_week,
+        day_of_week: normalizedDay,
         teacher_nip: validNip
-      };
-    }).filter((row) => row !== null);
-    if (insertData.length === 0) {
-      return res.status(400).json({ success: false, error: "Format Excel tidak valid. Pastikan kolom: Nama Kelas, Jam Ke, Jam, Mata Pelajaran, NIP Guru Pengajar, Hari" });
+      });
     }
-    await prisma.schoolSchedule.createMany({ data: insertData });
-    handleSuccess(res, { count: insertData.length }, `${insertData.length} jadwal berhasil ditambahkan`);
+    if (insertData.length === 0 && conflicts.length === 0) {
+      return res.status(400).json({ success: false, error: "Format Excel tidak valid. Pastikan kolom: Nama Kelas, Jam Ke, Mata Pelajaran, NIP Guru Pengajar, Hari" });
+    }
+    let message = `${insertData.length} jadwal berhasil ditambahkan.`;
+    if (conflicts.length > 0) {
+      message += ` Namun, ${conflicts.length} data GAGAL dimasukkan karena bentrok: ${conflicts.slice(0, 3).join(", ")}${conflicts.length > 3 ? "..." : ""}`;
+    }
+    if (insertData.length > 0) {
+      await prisma.schoolSchedule.createMany({ data: insertData });
+    }
+    handleSuccess(res, { count: insertData.length, conflicts }, message);
   } catch (error) {
     console.error("Error process excel", error);
     handleError(res, error);
