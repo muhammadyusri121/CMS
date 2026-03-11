@@ -20,15 +20,15 @@ import { useLayoutStore } from '@/lib/layoutStore';
 
 const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Personel Pendidik', href: '/personnel', icon: Users },
-    { name: 'Postingan', href: '/posts', icon: FileText },
-    { name: 'Data Kelulusan', href: '/graduation', icon: GraduationCap },
-    { name: 'Dokumen Akademik', href: '/documents', icon: Files },
-    { name: 'Jadwal Pelajaran', href: '/schedule', icon: Clock },
-    { name: 'Kalender Libur', href: '/holidays', icon: Calendar },
-    { name: 'Ekstrakurikuler', href: '/extracurricular', icon: Activity },
-    { name: 'Fasilitas', href: '/facilities', icon: Building },
-    { name: 'Uji Data API', href: '/test-api', icon: Database },
+    { name: 'Personel Pendidik', href: '/personnel', icon: Users, permission: 'manage_personnel' },
+    { name: 'Postingan', href: '/posts', icon: FileText, permission: 'cat:' },
+    { name: 'Data Kelulusan', href: '/graduation', icon: GraduationCap, permission: 'manage_graduation' },
+    { name: 'Dokumen Akademik', href: '/documents', icon: Files, permission: 'manage_documents' },
+    { name: 'Jadwal Pelajaran', href: '/schedule', icon: Clock, permission: 'manage_schedules' },
+    { name: 'Kalender Libur', href: '/holidays', icon: Calendar, permission: 'manage_holidays' },
+    { name: 'Ekstrakurikuler', href: '/extracurricular', icon: Activity, permission: 'ekskul:' },
+    { name: 'Fasilitas', href: '/facilities', icon: Building, permission: 'manage_facilities' },
+    { name: 'Uji Data API', href: '/test-api', icon: Database, permission: 'ADMIN' },
 ];
 
 export function Sidebar() {
@@ -80,7 +80,18 @@ export function Sidebar() {
                 {/* Navigation Menu */}
                 <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden custom-scrollbar px-3 py-3">
                     <nav className="flex-1 space-y-0.5">
-                        {navigation.map((item) => {
+                        {navigation.filter(item => {
+                            if (isAdmin) return true;
+                            if (item.name === 'Dashboard') return true;
+                            if (item.permission === 'ADMIN') return false;
+                            
+                            // Special check for categories and ekskuls
+                            if (item.permission?.endsWith(':')) {
+                                return user?.permissions?.some(p => p.startsWith(item.permission!));
+                            }
+                            
+                            return user?.permissions?.includes(item.permission!);
+                        }).map((item) => {
                             const isActive = location.pathname === item.href;
                             const Icon = item.icon;
 

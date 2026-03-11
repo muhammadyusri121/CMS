@@ -45,7 +45,7 @@ export function FormDialog({
         onEscapeKeyDown={(e) => {
           e.preventDefault();
         }}
-        className={cn("sm:max-w-[560px] w-[95vw] max-h-[90vh] flex flex-col overflow-hidden border border-slate-200 bg-white rounded-xl sm:rounded-2xl shadow-dialog p-0 gap-0", className)}
+        className={cn("sm:max-w-[600px] w-[95vw] max-h-[80vh] flex flex-col overflow-hidden border border-slate-200 bg-white rounded-xl sm:rounded-2xl shadow-dialog p-0 gap-0", className)}
       >
         <DialogHeader className="px-4 py-4 sm:px-6 sm:py-5 border-b border-slate-100 shrink-0">
           <DialogTitle className="text-lg sm:text-xl font-bold text-slate-800 pr-6">{title}</DialogTitle>

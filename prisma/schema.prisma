@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  nip       String?  @unique
-  password  String
-  name      String
-  role      Role     @default(EDITOR)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  email       String   @unique
+  nip         String?  @unique
+  password    String
+  name        String
+  role        Role     @default(OPERATOR)
+  permissions String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model EducationPersonnel {
@@ -120,8 +121,8 @@ enum DayOfWeek {
 
 enum Role {
   ADMIN
-  EDITOR
-  AUTHOR
+  OPERATOR
+  KONTRIBUTOR
 }
 
 enum PostCategory {

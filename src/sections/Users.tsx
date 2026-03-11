@@ -10,8 +10,27 @@ import { toast } from 'sonner';
 
 const roleBadgeStyles: Record<string, string> = {
     ADMIN: 'bg-purple-50 text-purple-700 border-purple-200',
-    EDITOR: 'bg-blue-50 text-blue-700 border-blue-200',
-    AUTHOR: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    OPERATOR: 'bg-blue-50 text-blue-700 border-blue-200',
+    KONTRIBUTOR: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+};
+
+const AVAILABLE_PERMISSIONS = {
+    modules: [
+        { id: 'manage_personnel', label: 'Tenaga Pendidik' },
+        { id: 'manage_graduation', label: 'Data Kelulusan' },
+        { id: 'manage_documents', label: 'Dokumen Akademik' },
+        { id: 'manage_facilities', label: 'Sarana Prasarana' },
+        { id: 'manage_holidays', label: 'Kalender Pendidikan' },
+        { id: 'manage_schedules', label: 'Jadwal Pelajaran' },
+    ],
+    categories: [
+        'SUPERVISI_GURU', 'ASAS', 'ASAJ', 'TKA', 'KARYA_SISWA', 
+        'HUMAS', 'KOMITE', 'KEMITRAAN', 'DOUBLE_TRACK', 'OSIS_MPK'
+    ],
+    ekskuls: [
+        'Pramuka', 'Paskibraka', 'Sains_Club', 'Basket', 'Voli', 
+        'Seni_Tari', 'Paduan_Suara', 'PMR', 'Jurnalistik'
+    ]
 };
 
 export function Users() {
@@ -23,7 +42,15 @@ export function Users() {
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
     const [selectedUserName, setSelectedUserName] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formData, setFormData] = useState({ id: '', name: '', email: '', password: '', role: 'EDITOR', nip: '' });
+    const [formData, setFormData] = useState({ 
+        id: '', 
+        name: '', 
+        email: '', 
+        password: '', 
+        role: 'OPERATOR', 
+        nip: '',
+        permissions: [] as string[]
+    });
     const currentUser = useAuthStore(state => state.user);
 
     const fetchUsers = async () => {
@@ -68,7 +95,10 @@ export function Users() {
                 } else toast.error(res.error || 'Gagal membuat pengguna');
             }
             setIsEditing(false);
-            setFormData({ id: '', name: '', email: '', password: '', role: 'EDITOR', nip: '' });
+            setFormData({ 
+                id: '', name: '', email: '', password: '', 
+                role: 'OPERATOR', nip: '', permissions: [] 
+            });
         } catch {
             toast.error('Terjadi kesalahan');
         } finally {
@@ -78,13 +108,24 @@ export function Users() {
 
     const handleCreate = () => {
         setIsEditing(false);
-        setFormData({ id: '', name: '', email: '', password: '', role: 'EDITOR', nip: '' });
+        setFormData({ 
+            id: '', name: '', email: '', password: '', 
+            role: 'OPERATOR', nip: '', permissions: [] 
+        });
         setIsFormOpen(true);
     };
 
     const handleEdit = (user: any) => {
         setIsEditing(true);
-        setFormData({ id: user.id, name: user.name, email: user.email, password: '', role: user.role, nip: user.nip || '' });
+        setFormData({ 
+            id: user.id, 
+            name: user.name, 
+            email: user.email, 
+            password: '', 
+            role: user.role, 
+            nip: user.nip || '',
+            permissions: user.permissions || []
+        });
         setIsFormOpen(true);
     };
 
@@ -201,10 +242,82 @@ export function Users() {
                         <label className="text-sm font-medium text-slate-700">Role</label>
                         <select name="role" value={formData.role} onChange={handleChange} className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 focus-visible:outline-none focus:ring-2 focus:ring-primary-100 shadow-xs font-medium cursor-pointer">
                             <option value="ADMIN">ADMIN (Super User)</option>
-                            <option value="EDITOR">EDITOR (Ubah Konten)</option>
-                            <option value="AUTHOR">AUTHOR (Tulis Konten)</option>
+                            <option value="OPERATOR">OPERATOR (Instansi/Data)</option>
+                            <option value="KONTRIBUTOR">KONTRIBUTOR (Berita/Konten)</option>
                         </select>
                     </div>
+
+                    {formData.role !== 'ADMIN' && (
+                        <div className="pt-2 space-y-4 border-t border-slate-100">
+                            <div>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Akses Modul Sistem</p>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {AVAILABLE_PERMISSIONS.modules.map(p => (
+                                        <label key={p.id} className="flex items-center gap-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={formData.permissions.includes(p.id)}
+                                                onChange={(e) => {
+                                                    const perms = e.target.checked 
+                                                        ? [...formData.permissions, p.id]
+                                                        : formData.permissions.filter(i => i !== p.id);
+                                                    setFormData({ ...formData, permissions: perms });
+                                                }}
+                                                className="rounded border-slate-300 text-primary-600 focus:ring-primary-100"
+                                            />
+                                            <span className="text-xs font-medium text-slate-600">{p.label}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Akses Kategori Berita</p>
+                                <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                                    {AVAILABLE_PERMISSIONS.categories.map(cat => (
+                                        <label key={cat} className="flex items-center gap-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={formData.permissions.includes(`cat:${cat}`)}
+                                                onChange={(e) => {
+                                                    const id = `cat:${cat}`;
+                                                    const perms = e.target.checked 
+                                                        ? [...formData.permissions, id]
+                                                        : formData.permissions.filter(i => i !== id);
+                                                    setFormData({ ...formData, permissions: perms });
+                                                }}
+                                                className="rounded border-slate-300 text-primary-600 focus:ring-primary-100"
+                                            />
+                                            <span className="text-xs font-medium text-slate-600 italic whitespace-nowrap overflow-hidden text-ellipsis">{cat.replace(/_/g, ' ')}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Akses Ekstrakurikuler</p>
+                                <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                                    {AVAILABLE_PERMISSIONS.ekskuls.map(ekskul => (
+                                        <label key={ekskul} className="flex items-center gap-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={formData.permissions.includes(`ekskul:${ekskul}`)}
+                                                onChange={(e) => {
+                                                    const id = `ekskul:${ekskul}`;
+                                                    const perms = e.target.checked 
+                                                        ? [...formData.permissions, id]
+                                                        : formData.permissions.filter(i => i !== id);
+                                                    setFormData({ ...formData, permissions: perms });
+                                                }}
+                                                className="rounded border-slate-300 text-primary-600 focus:ring-primary-100"
+                                            />
+                                            <span className="text-xs font-medium text-slate-600">{ekskul.replace(/_/g, ' ')}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </FormDialog>
 

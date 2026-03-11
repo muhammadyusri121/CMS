@@ -98,12 +98,19 @@ export function Extracurricular() {
     }
   };
 
+  const filteredEkskuls = EKSKUL_OPTIONS.filter(opt => {
+    if (useAuthStore.getState().user?.role === 'ADMIN') return true;
+    return useAuthStore.getState().user?.permissions?.includes(`ekskul:${opt}`);
+  });
+
+  const defaultEkskul = filteredEkskuls.length > 0 ? filteredEkskuls[0] : EKSKUL_OPTIONS[0];
+
   const form = useForm<ExtracurricularFormData>({
     resolver: zodResolver(extracurricularSchema),
     defaultValues: {
       title: '',
       content: '',
-      ekskul_name: EKSKUL_OPTIONS[0],
+      ekskul_name: defaultEkskul,
       thumbnail: '',
       is_published: false,
     },
@@ -141,7 +148,7 @@ export function Extracurricular() {
     form.reset({
       title: '',
       content: '',
-      ekskul_name: EKSKUL_OPTIONS[0],
+      ekskul_name: defaultEkskul,
       thumbnail: '',
       is_published: false,
     });
@@ -383,18 +390,28 @@ export function Extracurricular() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Nama Ekstrakurikuler</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || defaultEkskul}>
                       <FormControl>
-                        <SelectTrigger className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 font-medium px-3 h-10">
+                        <SelectTrigger className="bg-white border-slate-200 rounded-lg text-slate-800 focus-visible:ring-2 focus-visible:ring-primary-100 font-medium px-3 h-10 shadow-xs">
                           <SelectValue placeholder="Pilih Ekstrakurikuler..." />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="rounded-lg border-slate-200 shadow-dropdown bg-white">
-                        {EKSKUL_OPTIONS.map((opt) => (
-                          <SelectItem key={opt} value={opt} className="font-semibold text-slate-700 hover:text-blue-600 focus:bg-blue-50 cursor-pointer py-3 rounded-xl">
-                            {opt.replace(/_/g, ' ')}
-                          </SelectItem>
-                        ))}
+                      <SelectContent 
+                        position="popper" 
+                        sideOffset={5}
+                        className="rounded-lg border-slate-200 shadow-xl min-w-[var(--radix-select-trigger-width)] z-[100]"
+                      >
+                        {filteredEkskuls.length > 0 ? (
+                          filteredEkskuls.map((opt) => (
+                            <SelectItem key={opt} value={opt} className="font-semibold text-slate-700 hover:text-primary-600 focus:bg-primary-50 cursor-pointer py-2.5 px-3 rounded-md">
+                              {opt.replace(/_/g, ' ')}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <div className="py-6 px-3 text-center">
+                            <p className="text-xs text-slate-400 italic">Izin ekskul tidak ditemukan</p>
+                          </div>
+                        )}
                       </SelectContent>
                     </Select>
                     <FormMessage />

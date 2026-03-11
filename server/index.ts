@@ -42,7 +42,8 @@ const handleError = (res: Response, error: any, status = 500) => {
 };
 
 // -- Lapisan Keamanan (Middleware Autentikasi) --
-const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+// -- Lapisan Keamanan (Middleware Autentikasi) --
+const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         return res.status(401).json({ success: false, error: "Akses ditolak. Token tidak ditemukan." });
@@ -51,8 +52,19 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
     const token = authHeader.split(' ')[1];
 
     try {
-        const decoded = jsonwebtoken.verify(token, JWT_SECRET);
-        (req as any).user = decoded;
+        const decoded = jsonwebtoken.verify(token, JWT_SECRET) as any;
+        
+        // Ambil data user terbaru dari DB untuk memvalidasi permissions & status aktif
+        const user = await prisma.user.findUnique({
+            where: { id: decoded.id },
+            select: { id: true, email: true, role: true, name: true, permissions: true }
+        });
+
+        if (!user) {
+            return res.status(401).json({ success: false, error: "Sesi tidak valid atau pengguna tidak ditemukan." });
+        }
+
+        (req as any).user = user;
         next();
     } catch (error) {
         console.error("JWT Verification failed. Token received:", token, "Error:", error);
@@ -66,6 +78,22 @@ const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
         return res.status(403).json({ success: false, error: "Akses ditolak. Memerlukan role ADMIN." });
     }
     next();
+};
+
+// Middleware untuk cek permission spesifik (Admin otomatis punya semua akses)
+const requirePermission = (permission: string) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        const user = (req as any).user;
+        if (!user) return res.status(401).json({ success: false, error: "Autentikasi diperlukan." });
+
+        if (user.role === 'ADMIN') return next();
+
+        if (user.permissions && user.permissions.includes(permission)) {
+            return next();
+        }
+
+        return res.status(403).json({ success: false, error: `Akses ditolak. Membutuhkan izin: ${permission}` });
+    };
 };
 
 // --- Rute Unggah File (Server MinIO) ---
@@ -200,14 +228,25 @@ app.post('/api/auth/login', async (req, res) => {
 // --- Manajemen Pengguna (Admin Sistem CMS) ---
 app.get('/api/users', requireAuth, requireAdmin, async (req, res) => {
     try {
-        const users = await prisma.user.findMany({ select: { id: true, name: true, email: true, role: true, createdAt: true, updatedAt: true } });
+        const users = await prisma.user.findMany({ 
+            select: { 
+                id: true, 
+                name: true, 
+                email: true, 
+                role: true, 
+                nip: true,
+                permissions: true,
+                createdAt: true, 
+                updatedAt: true 
+            } 
+        });
         handleSuccess(res, users);
     } catch (error) { handleError(res, error); }
 });
 
 app.post('/api/users', requireAuth, requireAdmin, async (req, res) => {
     try {
-        const { name, email, password, role, nip } = req.body;
+        const { name, email, password, role, nip, permissions } = req.body;
         const existing = await prisma.user.findUnique({ where: { email } });
         if (existing) return res.status(400).json({ success: false, error: "Email sudah digunakan." });
         if (nip) {
@@ -217,8 +256,15 @@ app.post('/api/users', requireAuth, requireAdmin, async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await prisma.user.create({
-            data: { name, email, password: hashedPassword, role, nip: nip || null },
-            select: { id: true, name: true, email: true, nip: true, role: true, createdAt: true, updatedAt: true }
+            data: { 
+                name, email, password: hashedPassword, role, 
+                nip: nip || null, 
+                permissions: permissions || [] 
+            },
+            select: { 
+                id: true, name: true, email: true, nip: true, role: true, 
+                permissions: true, createdAt: true, updatedAt: true 
+            }
         });
         handleSuccess(res, user, 'Admin pengguna berhasil ditambahkan');
     } catch (error) { handleError(res, error); }
@@ -227,9 +273,9 @@ app.post('/api/users', requireAuth, requireAdmin, async (req, res) => {
 app.put('/api/users/:id', requireAuth, requireAdmin, async (req, res) => {
     try {
         const { id } = req.params as { id: string };
-        const { name, email, password, role, nip } = req.body;
+        const { name, email, password, role, nip, permissions } = req.body;
 
-        const data: any = { name, email, role, nip: nip || null };
+        const data: any = { name, email, role, nip: nip || null, permissions: permissions || [] };
         if (password) {
             data.password = await bcrypt.hash(password, 10);
         }
@@ -246,7 +292,10 @@ app.put('/api/users/:id', requireAuth, requireAdmin, async (req, res) => {
         const user = await prisma.user.update({
             where: { id },
             data,
-            select: { id: true, name: true, email: true, nip: true, role: true, createdAt: true, updatedAt: true }
+            select: { 
+                id: true, name: true, email: true, nip: true, role: true, 
+                permissions: true, createdAt: true, updatedAt: true 
+            }
         });
         handleSuccess(res, user, 'Admin pengguna berhasil diperbarui');
     } catch (error) { handleError(res, error); }
@@ -276,7 +325,7 @@ app.get('/api/education-personnel', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.post('/api/education-personnel', requireAuth, async (req, res) => {
+app.post('/api/education-personnel', requireAuth, requirePermission('manage_personnel'), async (req, res) => {
     try {
         const { created_at, updated_at, ...data } = req.body;
         const personnel = await prisma.educationPersonnel.create({ data });
@@ -284,7 +333,7 @@ app.post('/api/education-personnel', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.put('/api/education-personnel/:id', requireAuth, async (req, res) => {
+app.put('/api/education-personnel/:id', requireAuth, requirePermission('manage_personnel'), async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         const { created_at, updated_at, id: _, ...data } = req.body;
@@ -296,14 +345,14 @@ app.put('/api/education-personnel/:id', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/education-personnel', requireAuth, async (req, res) => {
+app.delete('/api/education-personnel', requireAuth, requirePermission('manage_personnel'), async (req, res) => {
     try {
         await prisma.educationPersonnel.deleteMany();
         handleSuccess(res, null, 'Semua personel berhasil dihapus');
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/education-personnel/batch-delete', requireAuth, async (req, res) => {
+app.delete('/api/education-personnel/batch-delete', requireAuth, requirePermission('manage_personnel'), async (req, res) => {
     try {
         const { ids } = req.body as { ids: string[] };
         await prisma.educationPersonnel.deleteMany({ where: { id: { in: ids } } });
@@ -311,7 +360,7 @@ app.delete('/api/education-personnel/batch-delete', requireAuth, async (req, res
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/education-personnel/:id', requireAuth, async (req, res) => {
+app.delete('/api/education-personnel/:id', requireAuth, requirePermission('manage_personnel'), async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         await prisma.educationPersonnel.delete({ where: { id } });
@@ -324,14 +373,31 @@ app.get('/api/posts', requireAuth, async (req, res) => {
     try {
         const page = parseInt(req.query.page as string || '1');
         const limit = parseInt(req.query.limit as string || '10');
-        // Mencocokkan bahasa waktu urutan (sorting) dari Frontend ke struktur Database Anda
         const rawSortBy = req.query.sortBy as string || 'createdAt';
         const sortBy = rawSortBy === 'created_at' ? 'createdAt' : rawSortBy === 'updated_at' ? 'updatedAt' : rawSortBy;
         const sortOrder = req.query.sortOrder as 'asc' | 'desc' || 'desc';
 
+        // Filter berdasarkan izin kategori (RBAC)
+        const user = (req as any).user;
+        const where: any = {};
+        
+        if (user.role !== 'ADMIN') {
+            const allowedCategories = (user.permissions || [])
+                .filter((p: string) => p.startsWith('cat:'))
+                .map((p: string) => p.replace('cat:', ''));
+            
+            // Jika tidak punya izin kategori apa pun, kembalikan array kosong
+            if (allowedCategories.length === 0) {
+                return handleSuccess(res, { data: [], total: 0, page, limit, totalPages: 0 });
+            }
+            
+            where.category = { in: allowedCategories };
+        }
+
         const [total, posts] = await Promise.all([
-            prisma.post.count(),
+            prisma.post.count({ where }),
             prisma.post.findMany({
+                where,
                 skip: (page - 1) * limit,
                 take: limit,
                 orderBy: { [sortBy]: sortOrder },
@@ -366,6 +432,13 @@ const generateUniqueSlug = async (title: string, excludeId?: string) => {
 app.post('/api/posts', requireAuth, async (req, res) => {
     try {
         const { created_at, updated_at, category, ...data } = req.body;
+        
+        // Cek Izin Kategori
+        const user = (req as any).user;
+        if (user.role !== 'ADMIN' && (!user.permissions || !user.permissions.includes(`cat:${category}`))) {
+            return res.status(403).json({ success: false, error: `Akses ditolak. Anda tidak memiliki izin untuk kategori: ${category}` });
+        }
+
         const slug = await generateUniqueSlug(data.title);
         const post = await prisma.post.create({
             data: {
@@ -383,6 +456,21 @@ app.put('/api/posts/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         const { created_at, updated_at, id: _, category, ...data } = req.body;
+        
+        const existing = await prisma.post.findUnique({ where: { id } });
+        if (!existing) return res.status(404).json({ success: false, error: "Postingan tidak ditemukan" });
+
+        // Cek Izin Kategori (Kategori Lama & Kategori Baru)
+        const user = (req as any).user;
+        if (user.role !== 'ADMIN') {
+            const hasOldAccess = user.permissions && user.permissions.includes(`cat:${existing.category}`);
+            const hasNewAccess = !category || (user.permissions && user.permissions.includes(`cat:${category}`));
+            
+            if (!hasOldAccess || !hasNewAccess) {
+                return res.status(403).json({ success: false, error: `Akses ditolak untuk kategori ini.` });
+            }
+        }
+
         let slug = undefined;
         if (data.title) {
             slug = await generateUniqueSlug(data.title, id);
@@ -399,6 +487,15 @@ app.put('/api/posts/:id', requireAuth, async (req, res) => {
 app.delete('/api/posts/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params as { id: string };
+        const existing = await prisma.post.findUnique({ where: { id } });
+        if (!existing) return res.status(404).json({ success: false, error: "Postingan tidak ditemukan" });
+
+        // Cek Izin Kategori
+        const user = (req as any).user;
+        if (user.role !== 'ADMIN' && (!user.permissions || !user.permissions.includes(`cat:${existing.category}`))) {
+            return res.status(403).json({ success: false, error: "Akses ditolak." });
+        }
+
         await prisma.post.delete({ where: { id } });
         handleSuccess(res, null, 'Postingan berhasil dihapus');
     } catch (error) { handleError(res, error); }
@@ -438,7 +535,7 @@ app.get('/api/graduations', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.post('/api/graduations', requireAuth, async (req, res) => {
+app.post('/api/graduations', requireAuth, requirePermission('manage_graduation'), async (req, res) => {
     try {
         const { created_at, updated_at, ...data } = req.body;
         const existing = await prisma.graduation.findUnique({ where: { nisn: data.nisn } });
@@ -450,7 +547,7 @@ app.post('/api/graduations', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.put('/api/graduations/:nisn', requireAuth, async (req, res) => {
+app.put('/api/graduations/:nisn', requireAuth, requirePermission('manage_graduation'), async (req, res) => {
     try {
         const { nisn } = req.params as { nisn: string };
         const { created_at, updated_at, ...data } = req.body;
@@ -459,14 +556,14 @@ app.put('/api/graduations/:nisn', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/graduations', requireAuth, async (req, res) => {
+app.delete('/api/graduations', requireAuth, requirePermission('manage_graduation'), async (req, res) => {
     try {
         await prisma.graduation.deleteMany();
         handleSuccess(res, null, 'Semua data kelulusan berhasil dihapus');
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/graduations/batch-delete', requireAuth, async (req, res) => {
+app.delete('/api/graduations/batch-delete', requireAuth, requirePermission('manage_graduation'), async (req, res) => {
     try {
         const { ids } = req.body as { ids: string[] }; // Here ids are nisn strings
         await prisma.graduation.deleteMany({ where: { nisn: { in: ids } } });
@@ -474,7 +571,7 @@ app.delete('/api/graduations/batch-delete', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/graduations/:nisn', requireAuth, async (req, res) => {
+app.delete('/api/graduations/:nisn', requireAuth, requirePermission('manage_graduation'), async (req, res) => {
     try {
         const { nisn } = req.params as { nisn: string };
         await prisma.graduation.delete({ where: { nisn } });
@@ -491,7 +588,7 @@ app.get('/api/academic-documents', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.post('/api/academic-documents', requireAuth, async (req, res) => {
+app.post('/api/academic-documents', requireAuth, requirePermission('manage_documents'), async (req, res) => {
     try {
         const { created_at, updated_at, ...data } = req.body;
         const doc = await prisma.academicDocument.create({ data });
@@ -499,7 +596,7 @@ app.post('/api/academic-documents', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.put('/api/academic-documents/:id', requireAuth, async (req, res) => {
+app.put('/api/academic-documents/:id', requireAuth, requirePermission('manage_documents'), async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         const { created_at, updated_at, id: _, ...data } = req.body;
@@ -508,14 +605,14 @@ app.put('/api/academic-documents/:id', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/academic-documents', requireAuth, async (req, res) => {
+app.delete('/api/academic-documents', requireAuth, requirePermission('manage_documents'), async (req, res) => {
     try {
         await prisma.academicDocument.deleteMany();
         handleSuccess(res, null, 'Semua dokumen berhasil dihapus');
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/academic-documents/batch-delete', requireAuth, async (req, res) => {
+app.delete('/api/academic-documents/batch-delete', requireAuth, requirePermission('manage_documents'), async (req, res) => {
     try {
         const { ids } = req.body as { ids: string[] };
         await prisma.academicDocument.deleteMany({ where: { id: { in: ids } } });
@@ -523,7 +620,7 @@ app.delete('/api/academic-documents/batch-delete', requireAuth, async (req, res)
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/academic-documents/:id', requireAuth, async (req, res) => {
+app.delete('/api/academic-documents/:id', requireAuth, requirePermission('manage_documents'), async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         await prisma.academicDocument.delete({ where: { id } });
@@ -554,9 +651,26 @@ app.get('/api/extracurriculars', requireAuth, async (req, res) => {
         const sortBy = rawSortBy === 'created_at' ? 'createdAt' : rawSortBy === 'updated_at' ? 'updatedAt' : rawSortBy;
         const sortOrder = req.query.sortOrder as 'asc' | 'desc' || 'desc';
 
+        // Filter berdasarkan izin ekskul (RBAC)
+        const user = (req as any).user;
+        const where: any = {};
+
+        if (user.role !== 'ADMIN') {
+            const allowedEkskuls = (user.permissions || [])
+                .filter((p: string) => p.startsWith('ekskul:'))
+                .map((p: string) => p.replace('ekskul:', ''));
+            
+            if (allowedEkskuls.length === 0) {
+                return handleSuccess(res, { data: [], total: 0, page, limit, totalPages: 0 });
+            }
+
+            where.ekskul_name = { in: allowedEkskuls };
+        }
+
         const [total, items] = await Promise.all([
-            prisma.extracurricular.count(),
+            prisma.extracurricular.count({ where }),
             prisma.extracurricular.findMany({
+                where,
                 skip: (page - 1) * limit,
                 take: limit,
                 orderBy: { [sortBy]: sortOrder },
@@ -577,6 +691,13 @@ app.get('/api/extracurriculars', requireAuth, async (req, res) => {
 app.post('/api/extracurriculars', requireAuth, async (req, res) => {
     try {
         const { created_at, updated_at, ...data } = req.body;
+        
+        // Cek Izin Ekskul
+        const user = (req as any).user;
+        if (user.role !== 'ADMIN' && (!user.permissions || !user.permissions.includes(`ekskul:${data.ekskul_name}`))) {
+            return res.status(403).json({ success: false, error: `Akses ditolak untuk ekskul: ${data.ekskul_name}` });
+        }
+
         const slug = await generateUniqueEkskulSlug(data.title);
         const item = await prisma.extracurricular.create({
             data: {
@@ -593,6 +714,20 @@ app.put('/api/extracurriculars/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         const { created_at, updated_at, id: _, ...data } = req.body;
+
+        const existing = await prisma.extracurricular.findUnique({ where: { id } });
+        if (!existing) return res.status(404).json({ success: false, error: "Ekstrakurikuler tidak ditemukan" });
+
+        // Cek Izin Ekskul
+        const user = (req as any).user;
+        if (user.role !== 'ADMIN') {
+            const hasOldAccess = user.permissions && user.permissions.includes(`ekskul:${existing.ekskul_name}`);
+            const hasNewAccess = !data.ekskul_name || (user.permissions && user.permissions.includes(`ekskul:${data.ekskul_name}`));
+            
+            if (!hasOldAccess || !hasNewAccess) {
+                return res.status(403).json({ success: false, error: "Akses ditolak untuk ekskul ini." });
+            }
+        }
 
         let slug = undefined;
         if (data.title) {
@@ -611,6 +746,15 @@ app.put('/api/extracurriculars/:id', requireAuth, async (req, res) => {
 app.delete('/api/extracurriculars/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params as { id: string };
+        const existing = await prisma.extracurricular.findUnique({ where: { id } });
+        if (!existing) return res.status(404).json({ success: false, error: "Ekstrakurikuler tidak ditemukan" });
+
+        // Cek Izin Ekskul
+        const user = (req as any).user;
+        if (user.role !== 'ADMIN' && (!user.permissions || !user.permissions.includes(`ekskul:${existing.ekskul_name}`))) {
+            return res.status(403).json({ success: false, error: "Akses ditolak." });
+        }
+
         await prisma.extracurricular.delete({ where: { id } });
         handleSuccess(res, null, 'Artikel ekstrakurikuler berhasil dihapus');
     } catch (error) { handleError(res, error); }
@@ -625,7 +769,7 @@ app.get('/api/facilities', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.post('/api/facilities', requireAuth, async (req, res) => {
+app.post('/api/facilities', requireAuth, requirePermission('manage_facilities'), async (req, res) => {
     try {
         const { created_at, updated_at, ...data } = req.body;
         const item = await prisma.facility.create({ data });
@@ -633,7 +777,7 @@ app.post('/api/facilities', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.put('/api/facilities/:id', requireAuth, async (req, res) => {
+app.put('/api/facilities/:id', requireAuth, requirePermission('manage_facilities'), async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         const { created_at, updated_at, id: _, ...data } = req.body;
@@ -642,14 +786,14 @@ app.put('/api/facilities/:id', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/facilities', requireAuth, async (req, res) => {
+app.delete('/api/facilities', requireAuth, requirePermission('manage_facilities'), async (req, res) => {
     try {
         await prisma.facility.deleteMany();
         handleSuccess(res, null, 'Semua fasilitas berhasil dihapus');
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/facilities/batch-delete', requireAuth, async (req, res) => {
+app.delete('/api/facilities/batch-delete', requireAuth, requirePermission('manage_facilities'), async (req, res) => {
     try {
         const { ids } = req.body as { ids: string[] };
         await prisma.facility.deleteMany({ where: { id: { in: ids } } });
@@ -657,7 +801,7 @@ app.delete('/api/facilities/batch-delete', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/facilities/:id', requireAuth, async (req, res) => {
+app.delete('/api/facilities/:id', requireAuth, requirePermission('manage_facilities'), async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         await prisma.facility.delete({ where: { id } });
@@ -676,7 +820,7 @@ app.get('/api/holidays', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.post('/api/holidays', requireAuth, async (req, res) => {
+app.post('/api/holidays', requireAuth, requirePermission('manage_holidays'), async (req, res) => {
     try {
         const { date, description } = req.body;
         const holiday = await prisma.holiday.create({
@@ -686,7 +830,7 @@ app.post('/api/holidays', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.put('/api/holidays/:id', requireAuth, async (req, res) => {
+app.put('/api/holidays/:id', requireAuth, requirePermission('manage_holidays'), async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         const { date, description } = req.body;
@@ -698,14 +842,14 @@ app.put('/api/holidays/:id', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/holidays', requireAuth, async (req, res) => {
+app.delete('/api/holidays', requireAuth, requirePermission('manage_holidays'), async (req, res) => {
     try {
         await prisma.holiday.deleteMany();
         handleSuccess(res, null, 'Semua hari libur berhasil dihapus');
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/holidays/batch-delete', requireAuth, async (req, res) => {
+app.delete('/api/holidays/batch-delete', requireAuth, requirePermission('manage_holidays'), async (req, res) => {
     try {
         const { ids } = req.body as { ids: string[] };
         await prisma.holiday.deleteMany({ where: { id: { in: ids } } });
@@ -713,7 +857,7 @@ app.delete('/api/holidays/batch-delete', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.post('/api/holidays/upload', requireAuth, (req, res, next) => {
+app.post('/api/holidays/upload', requireAuth, requirePermission('manage_holidays'), (req, res, next) => {
     uploadMiddleware.single('file')(req, res, (err: any) => {
         if (err) return res.status(400).json({ success: false, error: err.message });
         next();
@@ -767,7 +911,7 @@ app.post('/api/holidays/upload', requireAuth, (req, res, next) => {
     }
 });
 
-app.delete('/api/holidays/:id', requireAuth, async (req, res) => {
+app.delete('/api/holidays/:id', requireAuth, requirePermission('manage_holidays'), async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         await prisma.holiday.delete({ where: { id } });
@@ -821,7 +965,7 @@ app.get('/api/school-schedule', requireAuth, async (req, res) => {
 
 // Removed internal mapping function getScheduleTime
 
-app.post('/api/school-schedule', requireAuth, async (req, res) => {
+app.post('/api/school-schedule', requireAuth, requirePermission('manage_schedules'), async (req, res) => {
     try {
         const { class_name, period, subject, day_of_week, teacher_nip } = req.body;
 
@@ -865,7 +1009,7 @@ app.post('/api/school-schedule', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.put('/api/school-schedule/:id', requireAuth, async (req, res) => {
+app.put('/api/school-schedule/:id', requireAuth, requirePermission('manage_schedules'), async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         const { class_name, period, subject, day_of_week, teacher_nip } = req.body;
@@ -913,14 +1057,14 @@ app.put('/api/school-schedule/:id', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/school-schedule', requireAuth, async (req, res) => {
+app.delete('/api/school-schedule', requireAuth, requirePermission('manage_schedules'), async (req, res) => {
     try {
         await prisma.schoolSchedule.deleteMany();
         handleSuccess(res, null, 'Semua jadwal berhasil dihapus');
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/school-schedule/batch-delete', requireAuth, async (req, res) => {
+app.delete('/api/school-schedule/batch-delete', requireAuth, requirePermission('manage_schedules'), async (req, res) => {
     try {
         const { ids } = req.body as { ids: string[] };
         if (!ids || ids.length === 0) return res.status(400).json({ success: false, error: 'Tidak ada ID yang dipilih' });
@@ -929,7 +1073,7 @@ app.delete('/api/school-schedule/batch-delete', requireAuth, async (req, res) =>
     } catch (error) { handleError(res, error); }
 });
 
-app.delete('/api/school-schedule/:id', requireAuth, async (req, res) => {
+app.delete('/api/school-schedule/:id', requireAuth, requirePermission('manage_schedules'), async (req, res) => {
     try {
         const { id } = req.params as { id: string };
         await prisma.schoolSchedule.delete({ where: { id } });
@@ -937,7 +1081,7 @@ app.delete('/api/school-schedule/:id', requireAuth, async (req, res) => {
     } catch (error) { handleError(res, error); }
 });
 
-app.post('/api/school-schedule/upload', requireAuth, (req, res, next) => {
+app.post('/api/school-schedule/upload', requireAuth, requirePermission('manage_schedules'), (req, res, next) => {
     uploadMiddleware.single('file')(req, res, (err: any) => {
         if (err) return res.status(400).json({ success: false, error: err.message });
         next();
@@ -979,7 +1123,7 @@ app.post('/api/school-schedule/upload', requireAuth, (req, res, next) => {
             // Cek conflict dengan database existing dan data yang sedang di proses
             const classConflictDb = existingSchedules.find(s => s.class_name === class_name && s.day_of_week === normalizedDay && s.period === periodNum);
             const classConflictNew = insertData.find(s => s.class_name === class_name && s.day_of_week === normalizedDay && s.period === periodNum);
-            
+
             if (classConflictDb || classConflictNew) {
                 conflicts.push(`Baris ${rowNum}: Kelas ${class_name} bentrok pada ${normalizedDay} jam ke-${periodNum}`);
                 continue;
@@ -988,7 +1132,7 @@ app.post('/api/school-schedule/upload', requireAuth, (req, res, next) => {
             if (validNip) {
                 const teacherConflictDb = existingSchedules.find(s => s.teacher_nip === validNip && s.day_of_week === normalizedDay && s.period === periodNum);
                 const teacherConflictNew = insertData.find(s => s.teacher_nip === validNip && s.day_of_week === normalizedDay && s.period === periodNum);
-                
+
                 if (teacherConflictDb || teacherConflictNew) {
                     conflicts.push(`Baris ${rowNum}: Guru (NIP: ${validNip}) bentrok pada ${normalizedDay} jam ke-${periodNum}`);
                     continue;

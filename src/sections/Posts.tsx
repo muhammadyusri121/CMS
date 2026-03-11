@@ -132,13 +132,22 @@ export function Posts() {
     }
   };
 
+  const filteredCategories = Object.entries(categoryLabels).filter(([value]) => {
+    if (useAuthStore.getState().user?.role === 'ADMIN') return true;
+    return useAuthStore.getState().user?.permissions?.includes(`cat:${value}`);
+  });
+
+  const defaultCategory = filteredCategories.length > 0 
+    ? (filteredCategories[0][0] as PostCategory) 
+    : PostCategory.HUMAS;
+
   const form = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
     defaultValues: {
       title: '',
       slug: '',
       content: '',
-      category: PostCategory.SUPERVISI_GURU,
+      category: defaultCategory,
       images: [],
       is_published: false,
     },
@@ -186,7 +195,7 @@ export function Posts() {
       title: '',
       slug: '',
       content: '',
-      category: PostCategory.SUPERVISI_GURU,
+      category: defaultCategory,
       images: [],
       is_published: false,
     });
@@ -438,18 +447,28 @@ export function Posts() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Kategori</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || defaultCategory}>
                       <FormControl>
                         <SelectTrigger className="bg-white border-slate-200 rounded-lg text-slate-800 focus:ring-2 focus:ring-primary-100 shadow-xs font-medium px-3 h-10">
                           <SelectValue placeholder="Pilih kategori" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
-                        {Object.entries(categoryLabels).map(([value, label]) => (
-                          <SelectItem key={value} value={value}>
-                            {label}
-                          </SelectItem>
-                        ))}
+                      <SelectContent 
+                        position="popper" 
+                        sideOffset={5}
+                        className="rounded-lg border-slate-200 shadow-xl min-w-[var(--radix-select-trigger-width)] z-[100]"
+                      >
+                        {filteredCategories.length > 0 ? (
+                          filteredCategories.map(([value, label]) => (
+                            <SelectItem key={value} value={value} className="py-2.5 cursor-pointer hover:bg-slate-50">
+                              {label}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <div className="py-6 px-3 text-center">
+                            <p className="text-xs text-slate-400 italic">Izin kategori tidak ditemukan</p>
+                          </div>
+                        )}
                       </SelectContent>
                     </Select>
                     <FormMessage />

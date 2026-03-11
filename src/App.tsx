@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Toaster } from 'sonner';
+import { Toaster } from '@/components/ui/sonner';
 import { Sidebar } from '@/components/ui-custom/Sidebar';
 import { Header } from '@/components/ui-custom/Header';
 import { useAuthStore } from '@/lib/authStore';
@@ -164,18 +164,7 @@ function ApiTestPage() {
 function App() {
   return (
     <BrowserRouter>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: '#fff',
-            border: '1px solid #93c5fd',
-            borderRadius: '0.5rem',
-          },
-          className: 'toast-gold',
-        }}
-        richColors
-      />
+      <Toaster />
       <Suspense fallback={<div className="flex h-screen items-center justify-center bg-slate-100"><LoadingSpinner /></div>}>
         <Routes>
           <Route path="/login" element={<Login />} />
