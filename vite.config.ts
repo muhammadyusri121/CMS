@@ -16,7 +16,7 @@ export default defineConfig({
     host: true, // Listen on all local IPs
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3001',
         changeOrigin: true,
       }
     }

@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=3001
 
 # Copy node_modules & hasil build
 COPY --from=builder /app/node_modules ./node_modules
@@ -39,7 +39,7 @@ COPY --from=builder /app/scripts ./scripts
 
 RUN chmod +x ./scripts/start.sh
 
-EXPOSE 3000
+EXPOSE 3001
 
 # Gunakan env var untuk memastikan Prisma menggunakan engine library yang stabil
 ENV PRISMA_CLIENT_ENGINE_TYPE="library"
