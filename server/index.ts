@@ -29,6 +29,33 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use(express.json());
 
+// --- Lapisan Keamanan Tambahan: Blokir Akses File Sensitif (Pencegahan Kebocoran) ---
+app.use((req, res, next) => {
+    const forbiddenPaths = [
+        '/.env', 
+        '/.git', 
+        '/package.json', 
+        '/package-lock.json', 
+        '/web.config',
+        '/Dockerfile',
+        '/docker-compose.yml',
+        '/prisma/schema.prisma'
+    ];
+
+    const isForbidden = forbiddenPaths.some(path => 
+        req.path.toLowerCase().startsWith(path.toLowerCase())
+    );
+
+    if (isForbidden) {
+        console.warn(`[SECURITY] Percobaan akses file sensitif diblokir: ${req.path} dari ${req.ip}`);
+        return res.status(403).json({ 
+            success: false, 
+            error: "Akses ditolak. Anda tidak memiliki izin untuk mengakses file ini demi keamanan sistem." 
+        });
+    }
+    next();
+});
+
 if (!process.env.JWT_SECRET) {
     console.error("FATAL ERROR: JWT_SECRET wajib diatur di file .env untuk keamanan Aplikasi!");
     process.exit(1);
