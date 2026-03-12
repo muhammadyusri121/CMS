@@ -1,4 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
+import helmet from 'helmet';
+import sharp from 'sharp';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
@@ -16,15 +18,18 @@ const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'heworqcv89y47ry34bcti4ycit438obvi74b57li6v534v13vy54y56';
 
-app.disable('x-powered-by'); // Keamanan: Menyembunyikan bahwa server ini berjalan dengan ExpressJS
-app.use((req, res, next) => {
-    // Keamanan: Security Headers Native tanpa perlu install Helmet
-    res.setHeader('X-Content-Type-Options', 'nosniff'); // Cegah celah MIMESniffing (bisa upload file .jpg isinya text/html JS -> dieksekusi client)
-    res.setHeader('X-Frame-Options', 'DENY'); // Cegah Clickjacking attack
-    res.setHeader('X-XSS-Protection', '1; mode=block'); // Pelindung kuno browser terhadap Reflected XSS
-    res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:;");
-    next();
-});
+app.disable('x-powered-by');
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+            "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+            "img-src": ["'self'", "data:", "https:", "http:"],
+            "connect-src": ["'self'", "https:", "http:"],
+        },
+    },
+    crossOriginEmbedderPolicy: false,
+}));
 
 app.use(cors());
 app.use(express.json());
@@ -168,27 +173,40 @@ app.post('/api/upload', requireAuth, (req, res, next) => {
     try {
         if (!req.file) return res.status(400).json({ success: false, error: "Tidak ada file yang diunggah" });
 
-        // Ambil nama folder tujuan dari field Form Data (contoh: 'posts', 'facilities', 'personnel'), default ke 'general'
         const folder = req.body.folder ? `${req.body.folder}/` : 'general/';
+        let fileBuffer = req.file.buffer;
+        let objectName = '';
+        let contentType = req.file.mimetype;
 
-        // Buat nama random, lalu pertahankan ekstensi file-nya
-        const ext = req.file.originalname.split('.').pop() || 'tmp';
-        const genFileName = `${Date.now()}-${randomUUID()}.${ext}`;
-        const objectName = `${folder}${genFileName}`;
+        // --- Langkah 1: Optimasi Gambar (Sharp) ---
+        if (req.file.mimetype.startsWith('image/') && !req.file.mimetype.includes('svg')) {
+            // Kompresi, Resize (Max Width 1600px), dan Ubah ke WebP agar ringan
+            fileBuffer = await sharp(req.file.buffer)
+                .resize({ width: 1600, withoutEnlargement: true }) // Jangan diperbesar jika aslinya kecil
+                .webp({ quality: 80 }) // Kualitas 80 (Seimbang antara size vs visual)
+                .toBuffer();
+            
+            contentType = 'image/webp';
+            const genFileName = `${Date.now()}-${randomUUID()}.webp`;
+            objectName = `${folder}${genFileName}`;
+        } else {
+            // Untuk file non-gambar (PDF, Docx, dll) tetap simpan aslinya
+            const ext = req.file.originalname.split('.').pop() || 'tmp';
+            const genFileName = `${Date.now()}-${randomUUID()}.${ext}`;
+            objectName = `${folder}${genFileName}`;
+        }
 
-        // Eksekusi tembakan file ke Server MinIO Remote!
+        // Simpan ke MinIO
         await minioClient.putObject(
             BUCKET_NAME,
             objectName,
-            req.file.buffer, // Datanya dikirim sebagai Memory Buffer (ram)
-            req.file.size,
-            { 'Content-Type': req.file.mimetype }
+            fileBuffer,
+            fileBuffer.length,
+            { 'Content-Type': contentType }
         );
 
-        // Buat URL proxy yang dapat diakses publik (tanpa membocorkan IP/Port Server VPS Asli)
         const fileUrl = `/api/files/${objectName}`;
-
-        handleSuccess(res, { url: fileUrl, fileName: objectName }, "File berhasil diunggah");
+        handleSuccess(res, { url: fileUrl, fileName: objectName }, "File berhasil diunggah dan dioptimasi");
     } catch (err: any) {
         console.error("Upload error:", err);
         handleError(res, err, 500);
@@ -202,8 +220,13 @@ app.get(/^\/api\/files\/(.+)$/, async (req, res) => {
 
         if (!objectName) return res.status(400).json({ success: false, error: "Nama file tidak valid" });
 
-        // Ambil data file (stat object) terlebih dahulu untuk mengisi Header (tipe konten dan ukuran)
+        // Ambil data file (stat object)
         const stat = await minioClient.statObject(BUCKET_NAME, objectName);
+        
+        // --- Langkah 2: Caching Sisi Browser ---
+        // Simpan di browser user selama 7 hari agar loading berikutnya instan
+        res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
+
         if (stat.metaData && stat.metaData['content-type']) {
             res.setHeader('Content-Type', stat.metaData['content-type']);
         } else {

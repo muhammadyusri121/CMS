@@ -8,38 +8,64 @@ import {
 import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
-const Toaster = ({ position = "top-center", ...props }: ToasterProps) => {
+const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme()
 
   return (
-    <Sonner
+    <>
+      <style>{`
+        [data-sonner-toast][data-type='success'] {
+          background-color: #10b981 !important;
+          color: #fff !important;
+        }
+        [data-sonner-toast][data-type='error'] {
+          background-color: #ef4444 !important;
+          color: #fff !important;
+        }
+        [data-sonner-toast][data-type='warning'] {
+          background-color: #f59e0b !important;
+          color: #fff !important;
+        }
+        [data-sonner-toast][data-type='info'] {
+          background-color: #3b82f6 !important;
+          color: #fff !important;
+        }
+        [data-sonner-toast][data-type] [data-icon], 
+        [data-sonner-toast][data-type] [data-title], 
+        [data-sonner-toast][data-type] [data-description] {
+          color: #fff !important;
+        }
+        [data-sonner-toast] [data-close-button] {
+          display: none !important;
+        }
+      `}</style>
+      <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       position="top-center"
       richColors
-      closeButton
+      expand={true}
       icons={{
-        success: <CircleCheckIcon className="size-4" />,
-        info: <InfoIcon className="size-4" />,
-        warning: <TriangleAlertIcon className="size-4" />,
-        error: <OctagonXIcon className="size-4" />,
-        loading: <Loader2Icon className="size-4 animate-spin" />,
+        success: <CircleCheckIcon className="size-5" />,
+        info: <InfoIcon className="size-5" />,
+        warning: <TriangleAlertIcon className="size-5" />,
+        error: <OctagonXIcon className="size-5" />,
+        loading: <Loader2Icon className="size-5 animate-spin" />,
       }}
       toastOptions={{
+        className: "font-sans",
         style: {
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(148, 163, 184, 0.2)',
-          borderRadius: '12px',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02)',
-          padding: '12px 16px',
+          borderRadius: '8px',
+          padding: '12px 20px',
           fontSize: '14px',
-          fontWeight: '600',
-          color: '#1e293b',
+          fontWeight: '500',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+          border: 'none',
         },
       }}
       {...props}
     />
+    </>
   )
 }
 
